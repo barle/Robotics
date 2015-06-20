@@ -1,0 +1,39 @@
+10:18:27 **** Build of configuration Debug for project Robotics ****
+make all 
+Building file: ../src/Robotics.cpp
+Invoking: Cross G++ Compiler
+g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Robotics.d" -MT"src/Robotics.d" -o "src/Robotics.o" "../src/Robotics.cpp"
+Finished building: ../src/Robotics.cpp
+ 
+Building target: Robotics
+Invoking: Cross G++ Linker
+g++  -o "Robotics"  ./src/Robotics.o   
+Finished building target: Robotics
+ 
+10:18:31 **** Incremental Build of configuration Debug for project Robotics ****
+make all 
+make: Nothing to be done for `all'.
+10:19:04 **** Incremental Build of configuration Debug for project Robotics ****
+make all 
+make: Nothing to be done for `all'.
+10:19:14 **** Incremental Build of configuration Debug for project Robotics ****
+make all 
+make: Nothing to be done for `all'.
+10:20:10 **** Incremental Build of configuration Debug for project Robotics ****
+make all 
+make: Nothing to be done for `all'.
+10:20:31 **** Incremental Build of configuration Debug for project Robotics ****
+make all 
+make: Nothing to be done for `all'.
+10:29:39 **** Incremental Build of configuration Debug for project Robotics ****
+make all 
+make: Nothing to be done for `all'.
+10:36:17 **** Incremental Build of configuration Debug for project Robotics ****
+make all 
+make: Nothing to be done for `all'.
+10:39:37 **** Build of configuration Debug for project Robotics ****
+make all 
+make: Nothing to be done for `all'.
+10:39:54 **** Incremental Build of configuration Debug for project Robotics ****
+make all 
+make: Nothing to be done for `all'.
