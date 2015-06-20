@@ -1,17 +1,21 @@
-//============================================================================
-// Name        : Robotics.cpp
-// Author      : 
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
-//============================================================================
+/*
+ * Main.cpp
+ *
+ *  Created on: May 26, 2015
+ *      Author: colman
+ */
 
+#include <player-2.0/libplayerc++/playerc++.h>
 #include <iostream>
-using namespace std;
+#include "Robot.h"
 
-int main() {
-	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
-	cout << "Test" << endl; // prints !!!Hello World!!!
-	cout << "karavani" << endl;
+using namespace PlayerCc;
+
+int main()
+{
+	Robot robot("localhost", 6665);
 	return 0;
 }
+
+
+
