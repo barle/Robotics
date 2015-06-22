@@ -13,7 +13,7 @@
 
 using namespace std;
 
-std::vector<bool> loadMap(char* fileName, unsigned& width, unsigned& height);
+vector<bool> loadMap(char* fileName, unsigned& width, unsigned& height);
 
 
 Map::Map(char* filePath) {
@@ -39,12 +39,12 @@ unsigned Map::GetWidth() {
 vector<unsigned char> image; //the raw pixels
 unsigned pixlesToAdd = 3;
 
-std::vector<bool> loadMap(char* fileName, unsigned& width, unsigned& height)
+vector<bool> loadMap(char* fileName, unsigned& width, unsigned& height)
 {
 	unsigned error = lodepng::decode(image, width, height, (const char*)fileName);
 
 	// If there's an error, display it
-	if(error) cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+	if(error) cout << "decoder error " << error << ": " << lodepng_error_text(error) << endl;
 
 	unsigned size = height * width * 4;
     vector<unsigned char> newImage(size);

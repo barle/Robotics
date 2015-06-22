@@ -14,7 +14,7 @@ using namespace std;
 
 class Map {
 private:
-	std::vector<bool> grid;
+	vector<bool> grid;
 	unsigned height;
 	unsigned width;
 
@@ -22,7 +22,7 @@ public:
 	Map(char* filePath);
 	virtual ~Map();
 
-	std::vector<bool> GetGrid();
+	vector<bool> GetGrid();
 	unsigned GetHeight();
 	unsigned GetWidth();
 };
