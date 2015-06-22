@@ -8,14 +8,12 @@
 #ifndef MOVEFORWARD_H_
 #define MOVEFORWARD_H_
 
-#include "Movement.h"
-#include "TurnLeft.h"
-#include "TurnRight.h"
 #include "Behavior.h"
 
-class MoveForward  : public Movement{
+class MoveForward : Behavior {
 private:
 	bool checkObstacleInFront();
+
 public:
 	MoveForward(Robot *robot);
 	virtual ~MoveForward();

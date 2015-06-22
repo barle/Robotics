@@ -1,55 +1,46 @@
-/*
- * MoveForward.cpp
- *
- *  Created on: May 26, 2015
- *      Author: colman
- */
-
 #include "MoveForward.h"
-#define MIN_ANGLE -30
-#define MAX_ANGLE 30
-#define MAX_DIST_TO_OBSTACLE 0.5
-#define FORWARD_SPEED 0.5
 
-MoveForward::MoveForward(Robot *robot) : Behavior(robot) {
-	// TODO Auto-generated constructor stub
-
+bool MoveForward::startCond() {
+	return true;
 }
 
-MoveForward::~MoveForward() {
-	// TODO Auto-generated destructor stub
-}
+bool MoveForward::stopCond() {
+	// Calculate all distances for moving
+	double forwardDistance = Get0DegreeDistance();
+	double rightDistance = Get45DegreeDistance();
+	double leftDistance = Get315DegreeDistance();
 
-bool MoveForward::checkObstacleInFront()
-{
-	bool isObstacleInFront = false;
-	int minIndex = _robot->deg_to_index(MIN_ANGLE);
-	int maxIndex = _robot->deg_to_index(MAX_ANGLE);
+	// make sure we can move forward or distance wasn't set yet.
 
-	float *scan = _robot->getLaserScan();
-
-	for (int i = minIndex; i <= maxIndex; i++)
+	if ((forwardDistance > 1 && rightDistance > 1 && leftDistance > 1) ||
+		(forwardDistance == 0 && rightDistance == 0 && leftDistance == 0))
 	{
-		if (scan[i] < MAX_DIST_TO_OBSTACLE)
+		return false;
+	}
+	else
+	{
+		// Choose which direction to turn (left or right)
+		if (rightDistance > leftDistance)
 		{
-			isObstacleInFront = true;
-			break;
+			this->_nextBehaviors.clear();
+			this->addNext(new TurnRight(_robot));
 		}
+		else
+		{
+			this->_nextBehaviors.clear();
+			this->addNext(new TurnLeft(_robot));
+		}
+		return true;
 	}
 }
 
-
-bool MoveForward::startCond()
-{
-	return !checkObstacleInFront();
-}
-
-bool MoveForward::stopCond()
-{
-	return checkObstacleInFront();
-}
-
-void MoveForward::action()
-{
+void MoveForward::action() {
 	_robot->setSpeed(FORWARD_SPEED, 0);
+}
+
+MoveForward::MoveForward(Robot *robot) :
+	Movement(robot) {
+}
+
+MoveForward::~MoveForward() {
 }

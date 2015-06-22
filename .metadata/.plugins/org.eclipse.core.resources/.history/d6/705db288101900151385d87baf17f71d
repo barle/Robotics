@@ -10,7 +10,6 @@
 
 #include <libplayerc++/playerc++.h>
 #include <string>
-
 using namespace PlayerCc;
 using namespace std;
 
@@ -32,8 +31,6 @@ public:
 
 	float* getLaserScan();
 	int deg_to_index(double deg);
-
-	void read();
 };
 
 #endif /* ROBOT_H_ */

@@ -40,9 +40,8 @@ float Robot::getYaw()
 
 float* Robot::getLaserScan()
 {
-	unsigned int samplesCount = _lp.GetCount();
-	float *scan = new float[samplesCount];
-	for (unsigned int i = 0; i < samplesCount; i++)
+	float *scan = new float[_lp.GetCount()];
+	for (unsigned int i = 0; i < _lp.GetCount(); i++)
 	{
 		scan[i] = _lp[i];
 	}
@@ -52,9 +51,4 @@ float* Robot::getLaserScan()
 int Robot::deg_to_index(double deg)
 {
 	return (deg + 120) / 0.36;
-}
-
-void Robot::read()
-{
-	_pc.Read();
 }
