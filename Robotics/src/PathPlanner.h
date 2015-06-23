@@ -1,0 +1,24 @@
+/*
+ * PathPlanner.h
+ *
+ *  Created on: Jun 23, 2015
+ *      Author: colman
+ */
+
+#ifndef PATHPLANNER_H_
+#define PATHPLANNER_H_
+
+using namespace std;
+
+#include <vector>
+
+class PathPlanner {
+public:
+	PathPlanner();
+	virtual ~PathPlanner();
+
+	vector<bool> GetShortestPath(vector<bool> grid, unsigned gridWidth, unsigned gridHeight,
+		unsigned locationX, unsigned locationY, unsigned goalX, unsigned goalY);
+};
+
+#endif /* PATHPLANNER_H_ */
