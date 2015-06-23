@@ -1,0 +1,35 @@
+/*
+ * Main.cpp
+ *
+ *  Created on: May 26, 2015
+ *      Author: colman
+ */
+
+#include <libplayerc++/playerc++.h>
+#include <iostream>
+#include "Parameters.h"
+#include "Robot.h"
+#include "Manager.h"
+#include "Plans/ObstacleAvoidPln.h"
+
+using namespace PlayerCc;
+
+int main()
+{
+	Parameters config("/home/colman/Desktop/parameters.txt");
+	cout << config.mapPath() << endl;
+	cout << config.GridResolutionCM() << endl;
+	cout << config.MapResolutionCM() << endl;
+	cout << config.goal().X() << " " << config.goal().Y() << endl;
+	cout << config.startLocation().X() << " " << config.startLocation().Y() << " " << config.startLocation().Yaw() << endl;
+	cout << config.robotSize().Height() << " " << config.robotSize().Width() << endl;
+	Robot robot("localhost", 6665);
+	ObstacleAvoidPln plan(&robot);
+	Manager manager(&plan, &robot);
+
+	manager.run();
+	return 0;
+}
+
+
+

@@ -1,0 +1,20 @@
+/*
+ * Position.cpp
+ *
+ *  Created on: Jun 23, 2015
+ *      Author: colman
+ */
+
+#include "Position.h"
+
+Position::Position(double x, double y, double ywal) {
+	_x = x;
+	_y = y;
+	_ywal = ywal;
+
+}
+
+Position::~Position() {
+	// TODO Auto-generated destructor stub
+}
+

@@ -1,0 +1,26 @@
+/*
+ * Parameters.h
+ *
+ *  Created on: Jun 22, 2015
+ *      Author: colman
+ */
+
+#ifndef PARAMETERS_H_
+#define PARAMETERS_H_
+
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+
+using namespace std;
+
+class Parameters {
+private:
+	string _trim(string str);
+public:
+	Parameters(const char *path);
+	virtual ~Parameters();
+};
+
+#endif /* PARAMETERS_H_ */

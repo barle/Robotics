@@ -1,0 +1,50 @@
+/*
+ * Parameters.cpp
+ *
+ *  Created on: Jun 22, 2015
+ *      Author: colman
+ */
+
+#include "Parameters.h"
+
+Parameters::Parameters(const char *path) {
+	ifstream file(path);
+	while(file)
+	{
+		string line;
+		getline(file, line);
+		istringstream lineStream(line);
+		string parameterName;
+		getline(lineStream, parameterName, ':');
+		string parameterValue;
+		getline(lineStream, parameterValue, ' ');
+
+		cout << _trim(parameterName) << endl;
+		cout << _trim(parameterValue) << endl;
+	}
+
+}
+
+string Parameters::_trim(string str)
+{
+	// trim trailing spaces
+	size_t endpos = str.find_last_not_of(" \t");
+	if( string::npos != endpos )
+	{
+	    str = str.substr( 0, endpos+1 );
+	}
+
+	// trim leading spaces
+	size_t startpos = str.find_first_not_of(" \t\n\r");
+	if( string::npos != startpos )
+	{
+		str = str.substr( startpos );
+	}
+
+	return str;
+}
+
+Parameters::~Parameters() {
+	// TODO Auto-generated destructor stub
+}
+

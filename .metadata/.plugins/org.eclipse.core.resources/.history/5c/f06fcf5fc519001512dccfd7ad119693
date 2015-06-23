@@ -1,0 +1,19 @@
+/*
+ * Size.cpp
+ *
+ *  Created on: Jun 23, 2015
+ *      Author: colman
+ */
+
+#include "Size.h"
+
+Size::Size(double height, double width) {
+	_height = height;
+	_width = width;
+
+}
+
+Size::~Size() {
+	// TODO Auto-generated destructor stub
+}
+

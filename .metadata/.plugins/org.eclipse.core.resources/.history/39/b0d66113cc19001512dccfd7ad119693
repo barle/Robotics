@@ -1,0 +1,119 @@
+/*
+ * Parameters.cpp
+ *
+ *  Created on: Jun 22, 2015
+ *      Author: colman
+ */
+
+#include "Parameters.h"
+#include "stdlib.h"
+
+Parameters::Parameters(const char *path) {
+	ifstream file(path);
+	while(file)
+	{
+		string line;
+		getline(file, line);
+		istringstream lineStream(line);
+		string parameterName;
+		getline(lineStream, parameterName, ':');
+		string parameterValue;
+		getline(lineStream, parameterValue, ':');
+
+		_trim(parameterName);
+		_trim(parameterValue);
+
+		_params.insert(make_pair(parameterName, parameterValue));
+	}
+
+}
+
+void Parameters::_trim(string str)
+{
+	// trim leading spaces
+	while(str.length() &&
+			(str.at(0) == ' ' || str.at(0) == 't' ||
+					str.at(0) == '\r' || str.at(0) == '\n'))
+	{
+		str.erase(0, 1);
+	}
+
+	// trim trailing spaces
+	while(str.length() &&
+			(str.at(str.length()-1) == ' ' || str.at(str.length()-1) == '\t' ||
+					str.at(str.length()-1) == '\r' || str.at(str.length()-1) == '\n'))
+	{
+		str.erase(str.length()-1, 1);
+	}
+}
+
+
+string Parameters::map()
+{
+	return _params["map"];
+}
+
+Position Parameters::startLocation()
+{
+	string valueStr = _params["startLocation"];
+	istringstream lineStream(valueStr);
+	string x;
+	getline(lineStream, x, ' ');
+	string y;
+	getline(lineStream, y, ' ');
+	string yaw;
+	getline(lineStream, yaw, ' ');
+
+	_trim(x);
+	_trim(y);
+	_trim(yaw);
+
+	return new Position((double)x, (double)y, (double)yaw);
+}
+
+Position Parameters::goal()
+{
+	string valueStr = _params["goal"];
+	istringstream lineStream(valueStr);
+	string x;
+	getline(lineStream, x, ' ');
+	string y;
+	getline(lineStream, y, ' ');
+
+	_trim(x);
+	_trim(y);
+
+	return new Position(atofx, (double)y);
+}
+
+Size Parameters::robotSize()
+{
+	string valueStr = _params["robotSize"];
+	istringstream lineStream(valueStr);
+	string height;
+	getline(lineStream, height, ' ');
+	string width;
+	getline(lineStream, width, ' ');
+
+	_trim(height);
+	_trim(width);
+
+	return new Size((double)height, (double)width);
+}
+
+double Parameters::MapResolutionCM()
+{
+	string value = _params["MapResolutionCM"];
+	return (double)value;
+}
+
+double Parameters::GridResolutionCM()
+{
+	string value = _params["GridResolutionCM"];
+	return (double)value;
+}
+
+Parameters::~Parameters() {
+	// TODO Auto-generated destructor stub
+}
+
