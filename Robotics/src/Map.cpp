@@ -133,11 +133,11 @@ vector<bool> loadMap(char* fileName, unsigned& width, unsigned& height)
         {
             if (newImage[(width * 4 * i) + j] == 255)
             {
-                grid[(width * i) + j/4] = 0; // Wall
+                grid[(width * i) + j/4] = 1; // Wall
             }
             else
             {
-                grid[(width * i) + j/4] = 1; // Free to move
+                grid[(width * i) + j/4] = 0; // Free to move
             }
         }
     }
