@@ -40,12 +40,13 @@ vector<bool> PathPlanner::GetShortestPath(vector<bool> grid, unsigned gridWidth,
 /* A recursive utility function to solve Maze problem */
 bool solveMazeUtil(vector<bool> grid, unsigned gridWidth, unsigned gridHeight, unsigned locationX,
 		unsigned locationY, unsigned goalX, unsigned goalY, vector<bool> solution) {
-    // Check if grid[x][y] is valid
-    if(locationX > gridWidth || locationY > gridHeight || grid[locationX * locationY] == 1)
+    // Check if grid[x][y] is valid (didn't pass max width or height, isn't a wall and didn't visit yet)
+    if(locationX > gridWidth || locationY > gridHeight || grid[locationX + ((locationY  - 1) * gridWidth) - 1] == 1
+    		|| solution[locationX + ((locationY  - 1) * gridWidth) - 1] == 0)
     	return false;
 
     // mark x,y as part of solution path
-	solution[locationX * locationY] = 0;
+	solution[locationX + ((locationY  - 1) * gridWidth) - 1] = 0;
 
 	/* Move forward in x direction */
 	if (solveMazeUtil(grid, gridWidth, gridHeight, locationX+1, locationY, goalX, goalY, solution))
@@ -68,6 +69,6 @@ bool solveMazeUtil(vector<bool> grid, unsigned gridWidth, unsigned gridHeight, u
 
 	/* If none of the above movements work then BACKTRACK:
 		unmark x,y as part of solution path */
-	solution[locationX * locationY] = 1;
+	solution[locationX + ((locationY  - 1) * gridWidth) - 1] = 1;
 	return false;
 }
