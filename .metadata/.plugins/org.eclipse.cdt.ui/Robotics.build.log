@@ -1,4 +1,4 @@
-10:42:15 **** Incremental Build of configuration Debug for project Robotics ****
+08:10:30 **** Incremental Build of configuration Debug for project Robotics ****
 make all 
 Building file: ../src/Robotics.cpp
 Invoking: Cross G++ Compiler
@@ -24,9 +24,9 @@ Finished building: ../src/Robotics.cpp
  
 Building target: Robotics
 Invoking: Cross G++ Linker
-g++  -o "Robotics"  ./src/Plans/ObstacleAvoidPln.o ./src/Plans/Plan.o  ./src/Models/Position.o ./src/Models/Size.o  ./src/Behaviors/Behavior.o ./src/Behaviors/MoveForward.o ./src/Behaviors/Movement.o ./src/Behaviors/TurnLeft.o ./src/Behaviors/TurnRight.o  ./src/Manager.o ./src/Map.o ./src/Parameters.o ./src/Robot.o ./src/Robotics.o ./src/lodepng.o   -lplayerc++
+g++  -o "Robotics"  ./src/Plans/ObstacleAvoidPln.o ./src/Plans/Plan.o  ./src/Models/Position.o ./src/Models/Size.o  ./src/Behaviors/Behavior.o ./src/Behaviors/MoveForward.o ./src/Behaviors/Movement.o ./src/Behaviors/TurnLeft.o ./src/Behaviors/TurnRight.o  ./src/ConfigurationManager.o ./src/Manager.o ./src/Map.o ./src/PathPlanner.o ./src/Robot.o ./src/Robotics.o ./src/lodepng.o   -lplayerc++
 Finished building target: Robotics
  
 
-10:42:18 Build Finished (took 2s.858ms)
+08:10:32 Build Finished (took 1s.166ms)
 

@@ -103,3 +103,78 @@ Invoking: Cross G++ Linker
 g++  -o "Robotics"  ./src/Plans/ObstacleAvoidPln.o ./src/Plans/Plan.o  ./src/Models/Position.o ./src/Models/Size.o  ./src/Behaviors/Behavior.o ./src/Behaviors/MoveForward.o ./src/Behaviors/Movement.o ./src/Behaviors/TurnLeft.o ./src/Behaviors/TurnRight.o  ./src/Manager.o ./src/Map.o ./src/Parameters.o ./src/Robot.o ./src/Robotics.o ./src/lodepng.o   -lplayerc++
 Finished building target: Robotics
  
+08:09:39 **** Build of configuration Debug for project Robotics ****
+make all 
+Building file: ../src/Map.cpp
+Invoking: Cross G++ Compiler
+g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Map.d" -MT"src/Map.d" -o "src/Map.o" "../src/Map.cpp"
+In file included from ../src/Map.cpp:9:0:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position2dProxy::GoTo(double, double, double)’:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aY’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aYaw’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position3dProxy::GoTo(double, double, double, double, double, double)’:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aY’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aZ’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aRoll’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aPitch’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aYaw’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+Finished building: ../src/Map.cpp
+ 
+Building file: ../src/ConfigurationManager.cpp
+Invoking: Cross G++ Compiler
+g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/ConfigurationManager.d" -MT"src/ConfigurationManager.d" -o "src/ConfigurationManager.o" "../src/ConfigurationManager.cpp"
+Finished building: ../src/ConfigurationManager.cpp
+ 
+Building file: ../src/PathPlanner.cpp
+Invoking: Cross G++ Compiler
+g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/PathPlanner.d" -MT"src/PathPlanner.d" -o "src/PathPlanner.o" "../src/PathPlanner.cpp"
+Finished building: ../src/PathPlanner.cpp
+ 
+Building target: Robotics
+Invoking: Cross G++ Linker
+g++  -o "Robotics"  ./src/Plans/ObstacleAvoidPln.o ./src/Plans/Plan.o  ./src/Models/Position.o ./src/Models/Size.o  ./src/Behaviors/Behavior.o ./src/Behaviors/MoveForward.o ./src/Behaviors/Movement.o ./src/Behaviors/TurnLeft.o ./src/Behaviors/TurnRight.o  ./src/ConfigurationManager.o ./src/Manager.o ./src/Map.o ./src/PathPlanner.o ./src/Robot.o ./src/Robotics.o ./src/lodepng.o   -lplayerc++
+./src/Robotics.o: In function `main':
+/home/colman/git/Robotics/Robotics/Debug/../src/Robotics.cpp:19: undefined reference to `Parameters::Parameters(char const*)'
+/home/colman/git/Robotics/Robotics/Debug/../src/Robotics.cpp:25: undefined reference to `Parameters::~Parameters()'
+/home/colman/git/Robotics/Robotics/Debug/../src/Robotics.cpp:25: undefined reference to `Parameters::~Parameters()'
+collect2: error: ld returned 1 exit status
+make: *** [Robotics] Error 1
+08:10:04 **** Incremental Build of configuration Debug for project Robotics ****
+make all 
+Building file: ../src/Robotics.cpp
+Invoking: Cross G++ Compiler
+g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Robotics.d" -MT"src/Robotics.d" -o "src/Robotics.o" "../src/Robotics.cpp"
+../src/Robotics.cpp:10:24: fatal error: Parameters.h: No such file or directory
+compilation terminated.
+make: *** [src/Robotics.o] Error 1
+08:10:30 **** Incremental Build of configuration Debug for project Robotics ****
+make all 
+Building file: ../src/Robotics.cpp
+Invoking: Cross G++ Compiler
+g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Robotics.d" -MT"src/Robotics.d" -o "src/Robotics.o" "../src/Robotics.cpp"
+In file included from ../src/Robotics.cpp:12:0:
+../src/Manager.h:11:2: warning: #import is a deprecated GCC extension [-Wdeprecated]
+../src/Manager.h:12:2: warning: #import is a deprecated GCC extension [-Wdeprecated]
+In file included from ../src/Robotics.cpp:12:0:
+../src/Manager.h:13:2: warning: #import is a deprecated GCC extension [-Wdeprecated]
+In file included from ../src/Robotics.cpp:8:0:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position2dProxy::GoTo(double, double, double)’:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aY’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aYaw’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position3dProxy::GoTo(double, double, double, double, double, double)’:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aY’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aZ’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aRoll’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aPitch’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aYaw’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+Finished building: ../src/Robotics.cpp
+ 
+Building target: Robotics
+Invoking: Cross G++ Linker
+g++  -o "Robotics"  ./src/Plans/ObstacleAvoidPln.o ./src/Plans/Plan.o  ./src/Models/Position.o ./src/Models/Size.o  ./src/Behaviors/Behavior.o ./src/Behaviors/MoveForward.o ./src/Behaviors/Movement.o ./src/Behaviors/TurnLeft.o ./src/Behaviors/TurnRight.o  ./src/ConfigurationManager.o ./src/Manager.o ./src/Map.o ./src/PathPlanner.o ./src/Robot.o ./src/Robotics.o ./src/lodepng.o   -lplayerc++
+Finished building target: Robotics
+ 

@@ -7,7 +7,7 @@
 
 #include <libplayerc++/playerc++.h>
 #include <iostream>
-#include "ConfigurationManager.h"
+#include "Parameters.h"
 #include "Robot.h"
 #include "Manager.h"
 #include "Plans/ObstacleAvoidPln.h"
