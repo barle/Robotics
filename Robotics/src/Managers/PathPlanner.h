@@ -12,18 +12,27 @@
 #include <map>
 #include <queue>
 #include "../Models/Vertex.h"
+#include "../Models/Position.h"
 #include "AStarComparison.h"
+#include "../Map.h"
 
 using namespace std;
 
 class PathPlanner {
-public:
-	PathPlanner();
-	virtual ~PathPlanner();
+private:
+	vector<Vertex*> _graph;
+	int _graphHeight;
+	int _graphWidth;
 
-	vector<Vertex*> AStar(Vertex* start, Vertex* goal);
 	vector<Vertex*> reconstructPath(map<Vertex*,Vertex*> cameFrom, Vertex *current);
 	double distBetween(Vertex *start, Vertex *goal);
+	vector<Vertex*> convertMapToGraph(vector<bool> mapGrid, int height, int width);
+	void addNeighborIfPossible(int currentIndex, int neighborIndex, int size, vector<bool> *mapGrid, vector<Vertex*> *graph);
+public:
+	PathPlanner(Map *map);
+	virtual ~PathPlanner();
+
+	vector<Vertex*> AStar(Position* start, Position* goal);
 };
 
 #endif /* PATHPLANNER_H_ */

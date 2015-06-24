@@ -19,7 +19,7 @@ private:
 	unsigned width;
 
 public:
-	Map(char* filePath);
+	Map(const char* filePath);
 	virtual ~Map();
 
 	vector<bool> GetGrid();

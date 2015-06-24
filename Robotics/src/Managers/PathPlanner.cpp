@@ -10,18 +10,21 @@
 
 using namespace std;
 
-PathPlanner::PathPlanner() {
-	// TODO Auto-generated constructor stub
+PathPlanner::PathPlanner(Map *map)
+{
+	vector<bool> mapGrid = map->GetGrid();
+	_graphHeight = map->GetHeight();
+	_graphWidth = map->GetWidth();
 
+	_graph = convertMapToGraph(mapGrid, _graphHeight, _graphWidth);
 }
 
-PathPlanner::~PathPlanner() {
-	// TODO Auto-generated destructor stub
-}
 
 // A* algorithm
-vector<Vertex*> PathPlanner::AStar(Vertex *start, Vertex *goal)
+vector<Vertex*> PathPlanner::AStar(Position *start, Position *goal)
 {
+	Vertex* startVertex = _graph[(_graphWidth*start->Y()) + start->X()];
+	Vertex* goalVertex = _graph[(_graphWidth*goal->Y()) + goal->X()];
 	map<Vertex*, Vertex*> cameFrom; // save for each vertex we visit the vertex we came from
 	priority_queue<Vertex*,vector<Vertex*>,AStarComparison> openset;
 
@@ -29,17 +32,17 @@ vector<Vertex*> PathPlanner::AStar(Vertex *start, Vertex *goal)
 	map<Vertex*,bool> opensetMap;
 	map<Vertex*,bool> closedsetMap;
 
-	openset.push(start);
-	opensetMap[start] = true;
+	openset.push(startVertex);
+	opensetMap[startVertex] = true;
 
-	start->setG(0);
-	start->setH(distBetween(start,goal));
+	startVertex->setG(0);
+	startVertex->setH(distBetween(startVertex,goalVertex));
 
 	while(!openset.empty())
 	{
 		Vertex* current = openset.top();
-		if(current == goal)
-			return reconstructPath(cameFrom, goal);
+		if(current == goalVertex)
+			return reconstructPath(cameFrom, goalVertex);
 
 		// remove the current vertex from the open set
 		openset.pop();
@@ -58,7 +61,7 @@ vector<Vertex*> PathPlanner::AStar(Vertex *start, Vertex *goal)
 			{
 				cameFrom[neighbor] = current;
 				neighbor->setG(tentativeGScore);
-				neighbor->setH(distBetween(neighbor,goal));
+				neighbor->setH(distBetween(neighbor,goalVertex));
 				if(!opensetMap[neighbor])
 				{
 					openset.push(neighbor);
@@ -91,4 +94,52 @@ vector<Vertex*> PathPlanner::reconstructPath(map<Vertex*,Vertex*> cameFrom, Vert
 		current = cameFrom[current];
 	}
 	return totalPath;
+}
+
+vector<Vertex*> PathPlanner::convertMapToGraph(vector<bool> mapGrid, int height, int width)
+{
+	int size = (height*width);
+	vector<Vertex*> graph(size);
+	for(int i = 0; i < height ; i++)
+	{
+		for(int j = 0; j < width; j++)
+		{
+			Vertex *v = new Vertex(new Position(j,i));
+			graph[(i* width) + j] = v;
+		}
+	}
+
+	//fill neighbors
+	for(int i = 0; i< height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			int currentIndex = (width * i) + j;
+			int neighborIndex = (width * (i-1)) + j; // upper cell
+			addNeighborIfPossible(currentIndex, neighborIndex, size, &mapGrid, &graph);
+			neighborIndex = (width * (i+1)) + j; // bottom cell
+			addNeighborIfPossible(currentIndex, neighborIndex, size, &mapGrid, &graph);
+			neighborIndex = (width * i) + j + 1; // right cell
+			addNeighborIfPossible(currentIndex, neighborIndex, size, &mapGrid, &graph);
+			neighborIndex = (width * (i-1)) + j - 1; // left cell
+			addNeighborIfPossible(currentIndex, neighborIndex, size, &mapGrid, &graph);
+		}
+	}
+
+	return graph;
+}
+
+void PathPlanner::addNeighborIfPossible(int currentIndex, int neighborIndex, int size, vector<bool> *mapGrid, vector<Vertex*> *graph)
+{
+	if(neighborIndex > 0 &&
+		neighborIndex < size &&
+		(*mapGrid)[neighborIndex] == 0)
+	{
+		(*graph)[currentIndex]->addNeighbor((*graph)[neighborIndex]);
+	}
+}
+
+
+PathPlanner::~PathPlanner() {
+	// TODO Auto-generated destructor stub
 }

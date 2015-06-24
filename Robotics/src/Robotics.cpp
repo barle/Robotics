@@ -34,9 +34,11 @@ void printPath(vector<Vertex*> path)
 	cout<< sum<<endl;
 }
 
-void testPathPlanner()
+void testPathPlanner(ConfigurationManager *config)
 {
-	PathPlanner pathPlanner;
+	Map map(config->getMapPath().c_str());
+
+	PathPlanner pathPlanner(&map);
 	Vertex v1(new Position(0,0));
 	Vertex v2(new Position(1,1));
 	Vertex v3(new Position(2,2));
@@ -53,7 +55,9 @@ void testPathPlanner()
 	v4.addNeighbor(&v5);
 	//v1.addNeighbor(&v5);
 
-	vector<Vertex*> bestWay = pathPlanner.AStar(&v1,&v5);
+	Position *start = config->getStartLocation();
+	Position *goal = config->getGoal();
+	vector<Vertex*> bestWay = pathPlanner.AStar(start, goal);
 	printPath(bestWay);
 }
 
@@ -61,7 +65,7 @@ int main()
 {
 	ConfigurationManager config("/home/colman/Desktop/parameters.txt");
 
-	testPathPlanner(); // todo: remove this!
+	testPathPlanner(&config); // todo: remove this!
 
 	Robot robot("localhost", 6665);
 	ObstacleAvoidPln plan(&robot);

@@ -13,10 +13,10 @@
 
 using namespace std;
 
-vector<bool> loadMap(char* fileName, unsigned& width, unsigned& height);
+vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height);
 
 
-Map::Map(char* filePath) {
+Map::Map(const char* filePath) {
 	this->grid = loadMap(filePath, this->width, this->height);
 }
 
@@ -39,7 +39,7 @@ unsigned Map::GetWidth() {
 vector<unsigned char> image; //the raw pixels
 unsigned pixlesToAdd = 3;
 
-vector<bool> loadMap(char* fileName, unsigned& width, unsigned& height)
+vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height)
 {
 	unsigned error = lodepng::decode(image, width, height, (const char*)fileName);
 

@@ -48,7 +48,7 @@ string ConfigurationManager::getMapPath()
 	return _params["map"];
 }
 
-Position ConfigurationManager::getStartLocation()
+Position* ConfigurationManager::getStartLocation()
 {
 	string valueStr = _params["startLocation"];
 	istringstream lineStream(valueStr);
@@ -63,11 +63,11 @@ Position ConfigurationManager::getStartLocation()
 	_trim(y);
 	_trim(yaw);
 
-	Position robotPos(atof(x.c_str()), atof(y.c_str()), atof(yaw.c_str()));
+	Position *robotPos = new Position(atof(x.c_str()), atof(y.c_str()), atof(yaw.c_str()));
 	return robotPos;
 }
 
-Position ConfigurationManager::getGoal()
+Position* ConfigurationManager::getGoal()
 {
 	string valueStr = _params["goal"];
 	istringstream lineStream(valueStr);
@@ -79,11 +79,11 @@ Position ConfigurationManager::getGoal()
 	_trim(x);
 	_trim(y);
 
-	Position goalPos(atof(x.c_str()), atof(y.c_str()));
+	Position *goalPos = new Position(atof(x.c_str()), atof(y.c_str()));
 	return goalPos;
 }
 
-Size ConfigurationManager::getRobotSize()
+Size* ConfigurationManager::getRobotSize()
 {
 	string valueStr = _params["robotSize"];
 	istringstream lineStream(valueStr);
@@ -95,7 +95,7 @@ Size ConfigurationManager::getRobotSize()
 	_trim(height);
 	_trim(width);
 
-	Size size(atof(height.c_str()), atof(width.c_str()));
+	Size *size = new Size(atof(height.c_str()), atof(width.c_str()));
 	return size;
 }
 

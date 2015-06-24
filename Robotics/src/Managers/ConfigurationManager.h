@@ -17,9 +17,9 @@ private:
 	string  _trim(string str);
 public:
 	string getMapPath();
-	Position getStartLocation();
-	Position getGoal();
-	Size getRobotSize();
+	Position* getStartLocation();
+	Position* getGoal();
+	Size* getRobotSize();
 	double getMapResolutionCM();
 	double getGridResolutionCM();
 	ConfigurationManager(const char *path);
