@@ -1,0 +1,17 @@
+/*
+ * AStarComparison.h
+ *
+ *  Created on: Jun 24, 2015
+ *      Author: colman
+ */
+
+#ifndef ASTARCOMPARISON_H_
+#define ASTARCOMPARISON_H_
+
+class AStarComparison {
+public:
+	AStarComparison();
+	virtual ~AStarComparison();
+};
+
+#endif /* ASTARCOMPARISON_H_ */

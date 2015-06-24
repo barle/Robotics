@@ -1,0 +1,45 @@
+/*
+ * Vertex.cpp
+ *
+ *  Created on: Jun 24, 2015
+ *      Author: colman
+ */
+
+#include "Vertex.h"
+
+
+void Vertex::setH(int h)
+{
+	_h = h;
+}
+
+void Vertex::setG(int g)
+{
+	_g = g;
+}
+
+int Vertex::getH()
+{
+	return _h;
+}
+
+int Vertex::getG()
+{
+	return _g;
+}
+
+int Vertex::getF()
+{
+	return _h + _g;
+}
+
+
+Vertex::Vertex() {
+	// TODO Auto-generated constructor stub
+
+}
+
+Vertex::~Vertex() {
+	// TODO Auto-generated destructor stub
+}
+

@@ -1,0 +1,17 @@
+/*
+ * AStarAlgo.h
+ *
+ *  Created on: Jun 24, 2015
+ *      Author: colman
+ */
+
+#ifndef ASTARALGO_H_
+#define ASTARALGO_H_
+
+class AStarAlgo {
+public:
+	AStarAlgo();
+	virtual ~AStarAlgo();
+};
+
+#endif /* ASTARALGO_H_ */

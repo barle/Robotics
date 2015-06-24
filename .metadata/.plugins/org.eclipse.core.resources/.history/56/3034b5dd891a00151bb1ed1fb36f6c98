@@ -1,0 +1,21 @@
+/*
+ * Vertex.h
+ *
+ *  Created on: Jun 24, 2015
+ *      Author: colman
+ */
+
+#ifndef VERTEX_H_
+#define VERTEX_H_
+
+class Vertex {
+public:
+	int f(); // total approximated cost
+	int g(); // cost (cost from the beginning..)
+	int h(); // Heuristic cost to the end point
+	
+	Vertex();
+	virtual ~Vertex();
+};
+
+#endif /* VERTEX_H_ */

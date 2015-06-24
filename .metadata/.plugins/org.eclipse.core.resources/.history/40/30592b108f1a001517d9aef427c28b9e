@@ -1,0 +1,18 @@
+/*
+ * AStarComparison.cpp
+ *
+ *  Created on: Jun 24, 2015
+ *      Author: colman
+ */
+
+#include "AStarComparison.h"
+
+AStarComparison::AStarComparison() {
+	// TODO Auto-generated constructor stub
+
+}
+
+AStarComparison::~AStarComparison() {
+	// TODO Auto-generated destructor stub
+}
+

@@ -1,0 +1,61 @@
+/*
+ * Main.cpp
+ *
+ *  Created on: May 26, 2015
+ *      Author: colman
+ */
+
+#include <libplayerc++/playerc++.h>
+#include <iostream>
+#include "ConfigurationManager.h"
+#include "Robot.h"
+#include "Manager.h"
+#include "Plans/ObstacleAvoidPln.h"
+
+#include "PathPlanner.h"
+#include "Models/Vertex.h"
+#include "Models/Position.h"
+
+using namespace PlayerCc;
+
+void printPath(vector<Vertex*> path)
+{
+	cout << "path:" << endl;
+	for(unsigned int i = 0; i < path.size(); i++)
+	{
+		Position* loc = path[i]->getLocation();
+		cout << loc->X() << "," << loc->Y() << endl;
+	}
+}
+
+int main()
+{
+	ConfigurationManager config("/home/colman/Desktop/parameters.txt");
+	PathPlanner pathPlanner;
+	Vertex v1(new Position(0,0));
+	Vertex v2(new Position(1,1));
+	Vertex v3(new Position(2,2));
+	Vertex v4(new Position(1,4));
+	Vertex v5(new Position(2,1));
+
+	v1.addNeighbor(&v2);
+	v2.addNeighbor(&v3);
+	v4.addNeighbor(&v2);
+	v2.addNeighbor(&v5);
+	v3.addNeighbor(&v5);
+	v1.addNeighbor(&v3);
+	v3.addNeighbor(&v4);
+	v4.addNeighbor(&v5);
+
+	vector<Vertex*> bestWay = pathPlanner.AStar(&v1,&v5);
+	printPath(bestWay);
+	Robot robot("localhost", 6665);
+	ObstacleAvoidPln plan(&robot);
+	Manager manager(&plan, &robot);
+
+	manager.run();
+	return 0;
+}
+
+
+

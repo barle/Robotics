@@ -1,0 +1,55 @@
+/*
+ * Vertex.cpp
+ *
+ *  Created on: Jun 24, 2015
+ *      Author: colman
+ */
+
+#include "Vertex.h"
+
+
+void Vertex::setH(double h)
+{
+	_h = h;
+}
+
+void Vertex::setG(double g)
+{
+	_g = g;
+}
+
+double Vertex::getH()
+{
+	return _h;
+}
+
+double Vertex::getG()
+{
+	return _g;
+}
+
+double Vertex::getF()
+{
+	return _h + _g;
+}
+
+Position* Vertex::getLocation()
+{
+	return _location;
+}
+
+vector<Vertex> Vertex::getAdj()
+{
+	return _adj;
+}
+
+Vertex::Vertex(Position *location) {
+	_location = location;
+	_g = -1;
+	_h = -1;
+}
+
+Vertex::~Vertex() {
+	// TODO Auto-generated destructor stub
+}
+

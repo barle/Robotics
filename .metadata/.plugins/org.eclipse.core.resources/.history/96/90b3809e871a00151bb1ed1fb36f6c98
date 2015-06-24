@@ -1,0 +1,14 @@
+#ifndef ASTARALGO_H_
+#define ASTARALGO_H_
+
+#include <vector>
+#include "../Models/Position.h"
+
+class AStarAlgo {
+public:
+	vector<Position> Solve
+	AStarAlgo();
+	virtual ~AStarAlgo();
+};
+
+#endif /* ASTARALGO_H_ */
