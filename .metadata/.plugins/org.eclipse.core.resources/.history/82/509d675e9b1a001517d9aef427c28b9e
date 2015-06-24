@@ -1,0 +1,33 @@
+/*
+ * PathPlanner.h
+ *
+ *  Created on: Jun 23, 2015
+ *      Author: colman
+ */
+
+#ifndef PATHPLANNER_H_
+#define PATHPLANNER_H_
+
+#include <vector>
+#include <map>
+#include <queue>
+#include "Models/Vertex.h"
+
+using namespace std;
+
+#include <vector>
+
+class PathPlanner {
+public:
+	PathPlanner();
+	virtual ~PathPlanner();
+
+	vector<bool> GetShortestPath(vector<bool> grid, unsigned gridWidth, unsigned gridHeight,
+		unsigned locationX, unsigned locationY, unsigned goalX, unsigned goalY);
+
+	vector<Vertex*> AStar(Vertex* start, Vertex* goal);
+	vector<Vertex*> reconstructPath(map<Vertex*,Vertex*> cameFrom, Vertex *current);
+	double distBetween(Vertex *start, Vertex *goal);
+};
+
+#endif /* PATHPLANNER_H_ */

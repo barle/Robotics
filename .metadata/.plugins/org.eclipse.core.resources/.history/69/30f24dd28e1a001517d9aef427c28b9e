@@ -1,0 +1,18 @@
+/*
+ * Vertex.cpp
+ *
+ *  Created on: Jun 24, 2015
+ *      Author: colman
+ */
+
+#include "Vertex.h"
+
+Vertex::Vertex() {
+	// TODO Auto-generated constructor stub
+
+}
+
+Vertex::~Vertex() {
+	// TODO Auto-generated destructor stub
+}
+

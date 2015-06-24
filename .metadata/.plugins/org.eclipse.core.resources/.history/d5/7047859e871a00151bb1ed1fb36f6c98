@@ -1,0 +1,18 @@
+#ifndef ASTARALGO_H_
+#define ASTARALGO_H_
+
+#include <vector>
+#include "../Models/Position.h"
+
+using namespace std;
+
+class AStarAlgo {
+private:
+	Graph converMapToGraph();
+public:
+	vector<Position> Solve(vector<bool> map, )
+	AStarAlgo();
+	virtual ~AStarAlgo();
+};
+
+#endif /* ASTARALGO_H_ */

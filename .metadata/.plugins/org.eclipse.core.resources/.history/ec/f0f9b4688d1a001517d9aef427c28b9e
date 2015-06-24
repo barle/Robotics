@@ -1,0 +1,27 @@
+/*
+ * Vertex.h
+ *
+ *  Created on: Jun 24, 2015
+ *      Author: colman
+ */
+
+#ifndef VERTEX_H_
+#define VERTEX_H_
+
+class Vertex {
+private:
+	int _h;
+	int _g;
+public:
+	void setH(int h);
+	void setG(int g);
+
+	int getF();
+	int getH();
+	int getG();
+
+	Vertex();
+	virtual ~Vertex();
+};
+
+#endif /* VERTEX_H_ */

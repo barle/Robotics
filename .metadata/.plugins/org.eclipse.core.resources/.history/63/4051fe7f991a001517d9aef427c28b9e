@@ -1,0 +1,38 @@
+/*
+ * Vertex.h
+ *
+ *  Created on: Jun 24, 2015
+ *      Author: colman
+ */
+
+#ifndef VERTEX_H_
+#define VERTEX_H_
+
+#include <vector>
+#include "Position.h"
+
+using namespace std;
+
+class Vertex {
+private:
+	double _h;
+	double _g;
+	Position *_location;
+	vector<Vertex> _adj;
+public:
+	void setH(double h);
+	void setG(double g);
+
+	double getF();
+	double getH();
+	double getG();
+
+	Position* getLocation();
+
+	vector<Vertex*> getAdj();
+
+	Vertex(Position *location);
+	virtual ~Vertex();
+};
+
+#endif /* VERTEX_H_ */

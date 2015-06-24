@@ -1,13 +1,23 @@
-08:10:30 **** Incremental Build of configuration Debug for project Robotics ****
+12:48:46 **** Incremental Build of configuration Debug for project Robotics ****
 make all 
+Building file: ../src/Models/Vertex.cpp
+Invoking: Cross G++ Compiler
+g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Models/Vertex.d" -MT"src/Models/Vertex.d" -o "src/Models/Vertex.o" "../src/Models/Vertex.cpp"
+Finished building: ../src/Models/Vertex.cpp
+ 
+Building file: ../src/Managers/AStarComparison.cpp
+Invoking: Cross G++ Compiler
+g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Managers/AStarComparison.d" -MT"src/Managers/AStarComparison.d" -o "src/Managers/AStarComparison.o" "../src/Managers/AStarComparison.cpp"
+Finished building: ../src/Managers/AStarComparison.cpp
+ 
+Building file: ../src/Managers/PathPlanner.cpp
+Invoking: Cross G++ Compiler
+g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Managers/PathPlanner.d" -MT"src/Managers/PathPlanner.d" -o "src/Managers/PathPlanner.o" "../src/Managers/PathPlanner.cpp"
+Finished building: ../src/Managers/PathPlanner.cpp
+ 
 Building file: ../src/Robotics.cpp
 Invoking: Cross G++ Compiler
 g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Robotics.d" -MT"src/Robotics.d" -o "src/Robotics.o" "../src/Robotics.cpp"
-In file included from ../src/Robotics.cpp:12:0:
-../src/Manager.h:11:2: warning: #import is a deprecated GCC extension [-Wdeprecated]
-../src/Manager.h:12:2: warning: #import is a deprecated GCC extension [-Wdeprecated]
-In file included from ../src/Robotics.cpp:12:0:
-../src/Manager.h:13:2: warning: #import is a deprecated GCC extension [-Wdeprecated]
 In file included from ../src/Robotics.cpp:8:0:
 /usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position2dProxy::GoTo(double, double, double)’:
 /usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
@@ -24,9 +34,9 @@ Finished building: ../src/Robotics.cpp
  
 Building target: Robotics
 Invoking: Cross G++ Linker
-g++  -o "Robotics"  ./src/Plans/ObstacleAvoidPln.o ./src/Plans/Plan.o  ./src/Models/Position.o ./src/Models/Size.o  ./src/Behaviors/Behavior.o ./src/Behaviors/MoveForward.o ./src/Behaviors/Movement.o ./src/Behaviors/TurnLeft.o ./src/Behaviors/TurnRight.o  ./src/ConfigurationManager.o ./src/Manager.o ./src/Map.o ./src/PathPlanner.o ./src/Robot.o ./src/Robotics.o ./src/lodepng.o   -lplayerc++
+g++  -o "Robotics"  ./src/Plans/ObstacleAvoidPln.o ./src/Plans/Plan.o  ./src/Models/Position.o ./src/Models/Size.o ./src/Models/Vertex.o  ./src/Managers/AStarComparison.o ./src/Managers/ConfigurationManager.o ./src/Managers/Manager.o ./src/Managers/PathPlanner.o  ./src/Behaviors/Behavior.o ./src/Behaviors/MoveForward.o ./src/Behaviors/Movement.o ./src/Behaviors/TurnLeft.o ./src/Behaviors/TurnRight.o  ./src/Map.o ./src/Robot.o ./src/Robotics.o ./src/lodepng.o   -lplayerc++
 Finished building target: Robotics
  
 
-08:10:32 Build Finished (took 1s.166ms)
+12:48:48 Build Finished (took 1s.813ms)
 
