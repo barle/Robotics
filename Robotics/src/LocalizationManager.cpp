@@ -1,4 +1,4 @@
-#include "SlamManager.h"
+#include "LocalizationManager.h"
 
 SlamManager::SlamManager() {
 	// Build particles
