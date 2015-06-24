@@ -32,7 +32,7 @@
 #define ANGULAR_RESOLUTION 240
 
 #include "Map.h"
-#include <vector.h>
+#include <vector>
 #include <cmath>
 #include <libplayerc++/playerc++.h>
 

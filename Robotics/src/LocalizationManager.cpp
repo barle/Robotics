@@ -1,6 +1,6 @@
 #include "LocalizationManager.h"
 
-SlamManager::SlamManager() {
+LocalizationManager::LocalizationManager() {
 	// Build particles
 	for (int particleIndex = 0; particleIndex < NUM_OF_PARTICLES; particleIndex++)
 	{
@@ -17,7 +17,7 @@ SlamManager::SlamManager() {
 	}
 }
 
-void SlamManager::Update(double xDelta, double yDelta, double yawDelta, double* laserScans)
+void LocalizationManager::Update(double xDelta, double yDelta, double yawDelta, double* laserScans)
 {
 	vector<int> particlesIndexesToErase;
 	vector<int> particlesIndexesToDuplicate;
@@ -77,7 +77,7 @@ void SlamManager::Update(double xDelta, double yDelta, double yawDelta, double* 
 
 }
 
-void SlamManager::PrintParticles()
+void LocalizationManager::PrintParticles()
 {
 	double belief = 0;
 	int index = 0;
@@ -91,5 +91,5 @@ void SlamManager::PrintParticles()
 	this->_particles[index]->Print();
 }
 
-SlamManager::~SlamManager() {
+LocalizationManager::~LocalizationManager() {
 }

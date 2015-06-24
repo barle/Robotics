@@ -1,5 +1,5 @@
-#ifndef SLAMMANAGER_H_
-#define SLAMMANAGER_H_
+#ifndef LOCALIZATIONMANAGER_H_
+#define LOCALIZATIONMANAGER_H_
 
 #define NUM_OF_PARTICLES 20
 #define MAX_X_POS 40
@@ -10,20 +10,20 @@
 #define PARTICLES_TO_PRINT 3
 #define MAX_DEGREES 360
 
-#include<vector.h>
-#include"Particle.h"
-
 using namespace std;
 
-class SlamManager {
+#include <vector>
+#include"Particle.h"
+
+class LocalizationManager {
 private:
 	vector<Particle*> _particles;
 
 public:
-	SlamManager();
+	LocalizationManager();
 	void Update(double xDelta, double yDelta, double yawDelta, double* laserScans);
 	void PrintParticles();
-	virtual ~SlamManager();
+	virtual ~LocalizationManager();
 };
 
-#endif /* SLAMMANAGER_H_ */
+#endif /* LOCALIZATIONMANAGER_H_ */
