@@ -3,4 +3,4 @@
 //org.eclipse.debug.core.PREFERRED_DELEGATES/org.eclipse.cdt.launch.postmortemLaunchType=org.eclipse.cdt.dsf.gdb.launch.coreCLaunch,debug,;
 //org.eclipse.debug.core.PREFERRED_DELEGATES/org.eclipse.cdt.launch.remoteApplicationLaunchType=org.eclipse.rse.remotecdt.dsf.debug,debug,;
 eclipse.preferences.version=1
-prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<watchExpressions>\n<expression enabled\="true" text\="current-&gt;getLocation()-&gt;X()"/>\n<expression enabled\="true" text\="current-&gt;getLocation()-&gt;Y()"/>\n<expression enabled\="true" text\="current-&gt;getAdj()"/>\n<expression enabled\="true" text\="path.size()"/>\n<expression enabled\="true" text\="path[3]"/>\n<expression enabled\="true" text\="totalPath.size()"/>\n</watchExpressions>\n
+prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<watchExpressions>\n<expression enabled\="true" text\="startVertex-&gt;getLocation()"/>\n<expression enabled\="true" text\="*goal"/>\n<expression enabled\="true" text\="path.size()"/>\n</watchExpressions>\n

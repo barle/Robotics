@@ -1,0 +1,138 @@
+/*
+ * PathPlanner.cpp
+ *
+ *  Created on: Jun 23, 2015
+ *      Author: colman
+ */
+
+#include "PathPlanner.h"
+#include <cmath>
+
+using namespace std;
+
+PathPlanner::PathPlanner(Map *map, Position *start, Position *goal)
+{
+	vector<bool> mapGrid = map->GetGrid();
+	int mapHeight = map->GetHeight();
+	int mapWidth = map->GetWidth();
+
+	vector<Vertex*> graph = convertMapToGraph(mapGrid, mapHeight, mapWidth);
+}
+
+
+// A* algorithm
+vector<Vertex*> PathPlanner::AStar(Vertex *start, Vertex *goal)
+{
+	map<Vertex*, Vertex*> cameFrom; // save for each vertex we visit the vertex we came from
+	priority_queue<Vertex*,vector<Vertex*>,AStarComparison> openset;
+
+	// use this maps to simplify the existence check of any vertex
+	map<Vertex*,bool> opensetMap;
+	map<Vertex*,bool> closedsetMap;
+
+	openset.push(start);
+	opensetMap[start] = true;
+
+	start->setG(0);
+	start->setH(distBetween(start,goal));
+
+	while(!openset.empty())
+	{
+		Vertex* current = openset.top();
+		if(current == goal)
+			return reconstructPath(cameFrom, goal);
+
+		// remove the current vertex from the open set
+		openset.pop();
+		opensetMap[current] = false;
+		// add the current vertex to the closed set
+		closedsetMap[current] = true;
+
+		// visit all neighbors
+		for(unsigned int i=0; i < current->getAdj().size(); i++)
+		{
+			Vertex *neighbor = current->getAdj()[i];
+			if(closedsetMap[neighbor])
+				continue;
+			double tentativeGScore = current->getG() + distBetween(current,neighbor);
+			if(!opensetMap[neighbor] || tentativeGScore < neighbor->getG())
+			{
+				cameFrom[neighbor] = current;
+				neighbor->setG(tentativeGScore);
+				neighbor->setH(distBetween(neighbor,goal));
+				if(!opensetMap[neighbor])
+				{
+					openset.push(neighbor);
+					opensetMap[neighbor] = true;
+				}
+			}
+		}
+	}
+	return vector<Vertex*>(); // no path found...
+}
+
+// this is the heuristic function for the A* algorithm
+double PathPlanner::distBetween(Vertex *start, Vertex *goal)
+{
+	Position *startLocation = start->getLocation();
+	Position *goalLocation = goal->getLocation();
+
+	double a2 = pow(goalLocation->X() - startLocation->X(),2);
+	double b2 = pow(goalLocation->Y() - startLocation->Y(),2);
+	double dist = sqrt(a2 + b2);
+	return dist;
+}
+
+vector<Vertex*> PathPlanner::reconstructPath(map<Vertex*,Vertex*> cameFrom, Vertex *current)
+{
+	vector<Vertex*> totalPath;
+	while(current)
+	{
+		totalPath.push_back(current);
+		current = cameFrom[current];
+	}
+	return totalPath;
+}
+
+vector<Vertex*> PathPlanner::convertMapToGraph(vector<bool> mapGrid, int height, int width)
+{
+	vector<Vertex*> graph(height*width);
+	for(unsigned i = 0; i < height ; i++)
+	{
+		for(unsigned j = 0; j < width; j++)
+		{
+			Vertex v(new Position(i,j));
+			graph.push_back(&v);
+		}
+	}
+
+	int size = (height*width);
+	//fill neighbors
+	for(unsigned int i = 0; i< height; i++)
+	{
+		for (unsigned int j = 0; j < width; j++)
+		{
+			int currentIndex = (width * i) + j;
+			int neighborIndex = (width * (i-1)) + j;
+			addNeighborIfPossible(currentIndex, neighborIndex, size, mapGrid, graph);
+
+		}
+	}
+
+	return graph;
+}
+
+void PathPlanner::addNeighborIfPossible(int currentIndex, int neighborIndex, int size, vector<bool> mapGrid, vector<Vertex*> graph)
+{
+	if(neighborIndex > 0 &&
+		neighborIndex < size &&
+		!mapGrid[neighborIndex])
+	{
+		graph[currentIndex]->addNeighbor(graph[neighborIndex]);
+	}
+}
+
+
+PathPlanner::~PathPlanner() {
+	// TODO Auto-generated destructor stub
+}

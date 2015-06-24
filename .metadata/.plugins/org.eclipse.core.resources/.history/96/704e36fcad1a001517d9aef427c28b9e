@@ -1,0 +1,32 @@
+/*
+ * PathPlanner.h
+ *
+ *  Created on: Jun 23, 2015
+ *      Author: colman
+ */
+
+#ifndef PATHPLANNER_H_
+#define PATHPLANNER_H_
+
+#include <vector>
+#include <map>
+#include <queue>
+#include "../Models/Vertex.h"
+#include "../Models/Position.h"
+#include "AStarComparison.h"
+#include "../Map.h"
+
+using namespace std;
+
+class PathPlanner {
+private:
+	vector<Vertex*> reconstructPath(map<Vertex*,Vertex*> cameFrom, Vertex *current);
+		double distBetween(Vertex *start, Vertex *goal);
+public:
+	PathPlanner(Map *map, Position *start, Position *goal);
+	virtual ~PathPlanner();
+
+	vector<Vertex*> AStar(Vertex* start, Vertex* goal);
+};
+
+#endif /* PATHPLANNER_H_ */
