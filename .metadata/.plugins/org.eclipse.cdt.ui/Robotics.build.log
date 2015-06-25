@@ -1,10 +1,9 @@
-16:03:31 **** Incremental Build of configuration Debug for project Robotics ****
+09:56:37 **** Incremental Build of configuration Debug for project Robotics ****
 make all 
-Building file: ../src/Models/Particle.cpp
+Building file: ../src/Map.cpp
 Invoking: Cross G++ Compiler
-g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Models/Particle.d" -MT"src/Models/Particle.d" -o "src/Models/Particle.o" "../src/Models/Particle.cpp"
-In file included from ../src/Models/Particle.h:37:0,
-                 from ../src/Models/Particle.cpp:1:
+g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Map.d" -MT"src/Map.d" -o "src/Map.o" "../src/Map.cpp"
+In file included from ../src/Map.cpp:9:0:
 /usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position2dProxy::GoTo(double, double, double)’:
 /usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
 /usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aY’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
@@ -16,46 +15,13 @@ In file included from ../src/Models/Particle.h:37:0,
 /usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aRoll’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
 /usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aPitch’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
 /usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aYaw’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
-../src/Models/Particle.cpp: In constructor ‘Particle::Particle(int, int, double)’:
-../src/Models/Particle.cpp:9:23: error: no matching function for call to ‘Map::Map()’
-../src/Models/Particle.cpp:9:23: note: candidates are:
-In file included from ../src/Models/Particle.h:34:0,
-                 from ../src/Models/Particle.cpp:1:
-../src/Models/../Map.h:22:2: note: Map::Map(const char*)
-../src/Models/../Map.h:22:2: note:   candidate expects 1 argument, 0 provided
-../src/Models/../Map.h:15:7: note: Map::Map(const Map&)
-../src/Models/../Map.h:15:7: note:   candidate expects 1 argument, 0 provided
-../src/Models/Particle.cpp: In constructor ‘Particle::Particle(int, int, double, Map*, double)’:
-../src/Models/Particle.cpp:18:26: error: no matching function for call to ‘Map::Map(Map*&)’
-../src/Models/Particle.cpp:18:26: note: candidates are:
-In file included from ../src/Models/Particle.h:34:0,
-                 from ../src/Models/Particle.cpp:1:
-../src/Models/../Map.h:22:2: note: Map::Map(const char*)
-../src/Models/../Map.h:22:2: note:   no known conversion for argument 1 from ‘Map*’ to ‘const char*’
-../src/Models/../Map.h:15:7: note: Map::Map(const Map&)
-../src/Models/../Map.h:15:7: note:   no known conversion for argument 1 from ‘Map*’ to ‘const Map&’
-../src/Models/Particle.cpp: In member function ‘double Particle::GetMovingProbability(double, double, double)’:
-../src/Models/Particle.cpp:24:41: error: ‘RESOLUTION’ was not declared in this scope
-../src/Models/Particle.cpp: In member function ‘double Particle::UpdateMapAndCheckProbability(double*)’:
-../src/Models/Particle.cpp:69:88: error: ‘RESOLUTION’ was not declared in this scope
-../src/Models/Particle.cpp:77:22: error: ‘class Map’ has no member named ‘GetOccupancyStatus’
-../src/Models/Particle.cpp:81:27: error: ‘class Map’ has no member named ‘GetOccupancyStatus’
-../src/Models/Particle.cpp:87:18: error: ‘class Map’ has no member named ‘UpdateCell’
-../src/Models/Particle.cpp:92:152: error: ‘RESOLUTION’ was not declared in this scope
-../src/Models/Particle.cpp:98:21: error: ‘class Map’ has no member named ‘GetOccupancyStatus’
-../src/Models/Particle.cpp:102:26: error: ‘class Map’ has no member named ‘GetOccupancyStatus’
-../src/Models/Particle.cpp:108:17: error: ‘class Map’ has no member named ‘UpdateCell’
-../src/Models/Particle.cpp:114:88: error: ‘RESOLUTION’ was not declared in this scope
-../src/Models/Particle.cpp:122:22: error: ‘class Map’ has no member named ‘GetOccupancyStatus’
-../src/Models/Particle.cpp:126:27: error: ‘class Map’ has no member named ‘GetOccupancyStatus’
-../src/Models/Particle.cpp:131:18: error: ‘class Map’ has no member named ‘UpdateCell’
-../src/Models/Particle.cpp: In member function ‘void Particle::Update(double, double, double, double*)’:
-../src/Models/Particle.cpp:156:26: error: ‘RESOLUTION’ was not declared in this scope
-../src/Models/Particle.cpp: In member function ‘void Particle::Print()’:
-../src/Models/Particle.cpp:200:14: error: ‘class Map’ has no member named ‘PrintMap’
-../src/Models/Particle.cpp: In member function ‘double Particle::GetMovingProbability(double, double, double)’:
-../src/Models/Particle.cpp:56:1: warning: control reaches end of non-void function [-Wreturn-type]
-make: *** [src/Models/Particle.o] Error 1
+Finished building: ../src/Map.cpp
+ 
+Building target: Robotics
+Invoking: Cross G++ Linker
+g++  -o "Robotics"  ./src/Plans/ObstacleAvoidPln.o ./src/Plans/Plan.o  ./src/Models/Particle.o ./src/Models/Position.o ./src/Models/Size.o ./src/Models/Vertex.o  ./src/Managers/AStarComparison.o ./src/Managers/ConfigurationManager.o ./src/Managers/LocalizationManager.o ./src/Managers/Manager.o ./src/Managers/PathPlanner.o  ./src/Behaviors/Behavior.o ./src/Behaviors/MoveForward.o ./src/Behaviors/Movement.o ./src/Behaviors/TurnLeft.o ./src/Behaviors/TurnRight.o  ./src/Map.o ./src/Robot.o ./src/Robotics.o ./src/lodepng.o   -lplayerc++
+Finished building target: Robotics
+ 
 
-16:03:31 Build Finished (took 408ms)
+09:56:37 Build Finished (took 923ms)
 

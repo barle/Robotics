@@ -45,7 +45,7 @@ void testPathPlanner(ConfigurationManager *config)
 	Vertex v4(new Position(1,4));
 	Vertex v5(new Position(2,1));
 
-	/*v1.addNeighbor(&v2);
+	v1.addNeighbor(&v2);
 	v2.addNeighbor(&v3);
 	v4.addNeighbor(&v2);
 	//v2.addNeighbor(&v5);
@@ -54,7 +54,6 @@ void testPathPlanner(ConfigurationManager *config)
 	v3.addNeighbor(&v4);
 	v4.addNeighbor(&v5);
 	//v1.addNeighbor(&v5);
-	 */
 
 	Position *start = config->getStartLocation();
 	Position *goal = config->getGoal();

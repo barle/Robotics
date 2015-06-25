@@ -18,7 +18,7 @@ vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height);
 
 Map::Map(const char* filePath) {
 	this->grid = loadMap(filePath, this->width, this->height);
-/* Todo: remove this.. this is only test printing the map
+
 	for (int i=0;i<this->height;i++)
 	{
 		for (int j=0; j<this->width; j++)
@@ -27,7 +27,6 @@ Map::Map(const char* filePath) {
 		}
 		cout <<endl;
 	}
-	*/
 }
 
 Map::~Map() {
@@ -143,11 +142,11 @@ vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height)
         {
             if (newImage[(width * 4 * i) + j] == 255)
             {
-                grid[(width * i) + j/4] = 0; // Free to move
+                grid[(width * i) + j/4] = 0; // Wall
             }
             else
             {
-                grid[(width * i) + j/4] = 1; // Wall
+                grid[(width * i) + j/4] = 1; // Free to move
             }
         }
     }

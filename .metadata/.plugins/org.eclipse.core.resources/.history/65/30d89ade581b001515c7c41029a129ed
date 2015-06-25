@@ -6,7 +6,7 @@ Particle::Particle(int xPos, int yPos, double yawPos)
 	this->_xVal = xPos;
 	this->_yVal = yPos;
 	this->_yawVal = yawPos;
-	//this->_map = new Map();
+	this->_map = new Map();
 }
 
 Particle::Particle(int xPos, int yPos, double yawPos, Map* map, double belief)
@@ -52,9 +52,9 @@ double Particle::GetMovingProbability(double xDelta, double yDelta, double yawDe
 		}
 
 		return probYaw * probMoving;
+		*/
+		return 0;
 	}
-	*/
-	return 0;
 }
 
 double Particle::UpdateMapAndCheckProbability(double* laserScans)
@@ -135,7 +135,7 @@ double Particle::UpdateMapAndCheckProbability(double* laserScans)
 				}
 			}
 		}
-
+*/
 	}
 
 	// Calculate hits/total value
@@ -147,8 +147,6 @@ double Particle::UpdateMapAndCheckProbability(double* laserScans)
 	{
 		return 1;
 	}
-	*/
-	return 0;
 }
 
 double Particle::AngleOfIndex(int index)
@@ -159,7 +157,6 @@ double Particle::AngleOfIndex(int index)
 
 void Particle::Update(double xDelta, double yDelta, double yawDelta, double* laserScans)
 {
-	/*
 	this->_xVal += xDelta / RESOLUTION;
 	this->_yVal += yDelta / RESOLUTION;
 	this->_yawVal += yawDelta;
@@ -172,7 +169,6 @@ void Particle::Update(double xDelta, double yDelta, double yawDelta, double* las
 		// Calculate belief by map relevance probability
 		this->_belief = this->_belief * Particle::UpdateMapAndCheckProbability(laserScans);
 	}
-	*/
 }
 
 int Particle::GetX()
@@ -205,7 +201,7 @@ void Particle::Print()
 	// Print robot position and map
 	cout << "Robot position: " << this->_xVal << ", " << this->_yVal << ", yaw: " << this->_yawVal << endl;
 	cout << "Map: " << endl;
-	//this->_map->PrintMap();
+	this->_map->PrintMap();
 }
 
 Particle::~Particle() {

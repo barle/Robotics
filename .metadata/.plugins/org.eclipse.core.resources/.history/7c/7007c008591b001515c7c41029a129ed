@@ -205,7 +205,7 @@ void Particle::Print()
 	// Print robot position and map
 	cout << "Robot position: " << this->_xVal << ", " << this->_yVal << ", yaw: " << this->_yawVal << endl;
 	cout << "Map: " << endl;
-	//this->_map->PrintMap();
+	this->_map->PrintMap();
 }
 
 Particle::~Particle() {
