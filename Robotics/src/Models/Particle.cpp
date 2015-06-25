@@ -1,27 +1,23 @@
 #include "Particle.h"
 
-Particle::Particle(int xPos, int yPos, double yawPos)
+Particle::Particle(int xPos, int yPos, double yawPos, Map* map)
 {
-	this->_belief = 1;
-	this->_xVal = xPos;
-	this->_yVal = yPos;
-	this->_yawVal = yawPos;
-	//this->_map = new Map();
+	this->_belief = 0;
+	this->_position = new Position(xPos, yPos, yawPos);
+	this->_map = map;
 }
 
-Particle::Particle(int xPos, int yPos, double yawPos, Map* map, double belief)
+Particle::Particle(int xPos, int yPos, double yawPos, double belief, Map* map)
 {
 	this->_belief = belief;
-	this->_xVal = xPos;
-	this->_yVal = yPos;
-	this->_yawVal = yawPos;
-	//this->_map = new Map(map);
+	this->_position = new Position(xPos, yPos, yawPos);
+	this->_map = map;
 }
 
 double Particle::GetMovingProbability(double xDelta, double yDelta, double yawDelta)
 {
 	// Check if we didn't bypass the map's gridlines
-	/*if (xDelta + this->_xVal > MAP_MAX_X / RESOLUTION || yDelta + this->_yVal > MAP_MAX_Y / RESOLUTION)
+	if (xDelta + this->_position->X() > _map->GetWidth() / _map->GetResolution() || yDelta + this->_position->Y() > _map->GetHeight() / _map->GetResolution())
 	{
 		return 0;
 	}
@@ -53,85 +49,76 @@ double Particle::GetMovingProbability(double xDelta, double yDelta, double yawDe
 
 		return probYaw * probMoving;
 	}
-	*/
 	return 0;
 }
 
-double Particle::UpdateMapAndCheckProbability(double* laserScans)
+double Particle::CheckProbability(float* laserScans)
 {
 	double hits = 0;
 	double misses = 0;
 
 	// Go over the laser's array by a constant jump range
-/*
+
 	for (int index = 0; index < LASER_COUNT; index += LASER_JUMP_INDEX)
 	{
 		if (laserScans[index] < LASER_MAX_RANGE)
 		{
 			// Go over the relevant cells in between the occupied cell and the free cells
-			for(int j = 0; j < (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / RESOLUTION); j++)
+			for(int j = 0; j < (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / _map->GetResolution()); j++)
 			{
-				int XFreePos = this->_xVal + (sin(DTOR(AngleOfIndex(index)) + this->_yawVal) * j);
-				int YFreePos = this->_yVal + (cos(DTOR(AngleOfIndex(index)) + this->_yawVal) * j);
+				int XFreePos = this->_position->X() + (sin(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * j);
+				int YFreePos = this->_position->Y() + (cos(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * j);
 
 				// Make sure we are in safe bounds
-				if (XFreePos >= 0 && XFreePos < MAP_MAX_X / RESOLUTION && YFreePos >= 0 && YFreePos < MAP_MAX_Y / RESOLUTION)
+				if (XFreePos >= 0 && XFreePos < _map->GetWidth() / _map->GetResolution() && YFreePos >= 0 && YFreePos < _map->GetHeight() / _map->GetResolution())
 				{
-					if (this->_map->GetOccupancyStatus(YFreePos, XFreePos) == MAP_FREE)
-					{
-						hits++;
-					}
-					else if (this->_map->GetOccupancyStatus(YFreePos, XFreePos) == MAP_OCCUPIED)
+					if (this->_map->IsOccupied(YFreePos, XFreePos))
 					{
 						misses++;
 					}
-
-					// Update the cell by it's new value
-					this->_map->UpdateCell(YFreePos, XFreePos, MAP_FREE);
+					else
+					{
+						hits++;
+					}
 				}
 			}
 
 			// Calculate the occupied position
-			int XOccupiedPos = this->_xVal + (sin(DTOR(AngleOfIndex(index)) + this->_yawVal) * (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / RESOLUTION));
-			int YOccupiedPos = this->_yVal + (cos(DTOR(AngleOfIndex(index)) + this->_yawVal) * (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / RESOLUTION));
+			int XOccupiedPos = this->_position->X() + (sin(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / _map->GetResolution()));
+			int YOccupiedPos = this->_position->Y() + (cos(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / _map->GetResolution()));
 
 			// Make sure we are in safe array bounds
-			if (XOccupiedPos >= 0 && XOccupiedPos < MAP_MAX_X / RESOLUTION && YOccupiedPos >= 0 && YOccupiedPos < MAP_MAX_Y / RESOLUTION)
+			if (XOccupiedPos >= 0 && XOccupiedPos < _map->GetWidth() / _map->GetResolution() && YOccupiedPos >= 0 && YOccupiedPos < _map->GetHeight() / _map->GetResolution())
 			{
-				if (this->_map->GetOccupancyStatus(YOccupiedPos, XOccupiedPos) == MAP_OCCUPIED)
-				{
-					hits++;
-				}
-				else if (this->_map->GetOccupancyStatus(YOccupiedPos, XOccupiedPos) == MAP_FREE)
+				if (this->_map->IsOccupied(YOccupiedPos, XOccupiedPos))
 				{
 					misses++;
 				}
-
-				// Update the cell
-				this->_map->UpdateCell(YOccupiedPos, XOccupiedPos, MAP_OCCUPIED);
+				else
+				{
+					hits++;
+				}
 			}
 		}
 		else
 		{
 			// Go over all the cells in this angle and make sure we mark them as free
-			for(int j = 0; j < (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / RESOLUTION); j += 1)
+			for(int j = 0; j < (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / _map->GetResolution()); j += 1)
 			{
-				int XFreePos = this->_xVal + (sin(DTOR(AngleOfIndex(index)) + this->_yawVal) * j);
-				int YFreePos = this->_yVal + (cos(DTOR(AngleOfIndex(index)) + this->_yawVal) * j);
+				int XFreePos = this->_position->X() + (sin(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * j);
+				int YFreePos = this->_position->Y() + (cos(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * j);
 
 				// Make sure we are in safe array bounds
-				if (XFreePos >= 0 && XFreePos < MAP_MAX_X / RESOLUTION && YFreePos >= 0 && YFreePos < MAP_MAX_Y / RESOLUTION)
+				if (XFreePos >= 0 && XFreePos < _map->GetWidth() / _map->GetResolution() && YFreePos >= 0 && YFreePos < _map->GetHeight() / _map->GetResolution())
 				{
-					if (this->_map->GetOccupancyStatus(YFreePos, XFreePos) == MAP_FREE)
-					{
-						hits++;
-					}
-					else if (this->_map->GetOccupancyStatus(YFreePos, XFreePos) == MAP_OCCUPIED)
+					if (this->_map->IsOccupied(YFreePos, XFreePos))
 					{
 						misses++;
 					}
-
-					this->_map->UpdateCell(YFreePos, XFreePos, MAP_FREE);
+					else
+					{
+						hits++;
+					}
 				}
 			}
 		}
@@ -143,12 +130,7 @@ double Particle::UpdateMapAndCheckProbability(double* laserScans)
 	{
 		return hits / (hits + misses);
 	}
-	else
-	{
-		return 1;
-	}
-	*/
-	return 0;
+	return 1;
 }
 
 double Particle::AngleOfIndex(int index)
@@ -157,42 +139,27 @@ double Particle::AngleOfIndex(int index)
 	return index * MEASURING_AREA - 360 + ANGULAR_RESOLUTION;
 }
 
-void Particle::Update(double xDelta, double yDelta, double yawDelta, double* laserScans)
+void Particle::Update(double xDelta, double yDelta, double yawDelta, float* laserScans)
 {
-	/*
-	this->_xVal += xDelta / RESOLUTION;
-	this->_yVal += yDelta / RESOLUTION;
-	this->_yawVal += yawDelta;
+	double x = this->_position->X();
+	double y = this->_position->Y();
+	double yaw = this-> _position->Yaw();
+	this->_position->Update(x + (xDelta / _map->GetResolution()), y + (yDelta / _map->GetResolution()), yaw + yawDelta);
 
 	// Calculate belief by moving probability
-	this->_belief = this->_belief * Particle::GetMovingProbability(xDelta, yDelta, yawDelta);
+	this->_belief = this->_belief * GetMovingProbability(xDelta, yDelta, yawDelta);
 
 	if (this->_belief != 0)
 	{
 		// Calculate belief by map relevance probability
-		this->_belief = this->_belief * Particle::UpdateMapAndCheckProbability(laserScans);
+		this->_belief = this->_belief * CheckProbability(laserScans);
 	}
-	*/
+
 }
 
-int Particle::GetX()
+Position* Particle::GetPosition()
 {
-	return this->_xVal;
-}
-
-int Particle::GetY()
-{
-	return this->_yVal;
-}
-
-double Particle::GetYaw()
-{
-	return this->_yawVal;
-}
-
-Map* Particle::GetMap()
-{
-	return this->_map;
+	return this->_position;
 }
 
 double Particle::GetBelief()
@@ -202,10 +169,8 @@ double Particle::GetBelief()
 
 void Particle::Print()
 {
-	// Print robot position and map
-	cout << "Robot position: " << this->_xVal << ", " << this->_yVal << ", yaw: " << this->_yawVal << endl;
-	cout << "Map: " << endl;
-	//this->_map->PrintMap();
+	// Print robot position
+	cout << "Robot position: " << this->_position->X() << ", " << this->_position->Y() << ", yaw: " << this->_position->Yaw() << endl;
 }
 
 Particle::~Particle() {

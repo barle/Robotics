@@ -1,23 +1,25 @@
 #include "LocalizationManager.h"
 
-LocalizationManager::LocalizationManager() {
+LocalizationManager::LocalizationManager(Map* map) {
+	this->_map = map;
+
 	// Build particles
 	for (int particleIndex = 0; particleIndex < NUM_OF_PARTICLES; particleIndex++)
 	{
 		// Make them with random values from within maps bounds
-		int xPos = rand() % static_cast<int>(MAX_X_POS / RESOLUTION);
-		int yPos = rand() % static_cast<int>(MAX_Y_POS / RESOLUTION);
+		int xPos = rand() % static_cast<int>(_map->GetWidth() / _map->GetResolution());
+		int yPos = rand() % static_cast<int>(_map->GetHeight() / _map->GetResolution());
 
-		double yaw = DTOR(rand() % MAX_DEGREES);
+		double yaw = DTOR(rand() % 360);
 
-		Particle* particle = new Particle(xPos, yPos, yaw);
+		Particle* particle = new Particle(xPos, yPos, yaw, map);
 		this->_particles.push_back(particle);
 
 		cout << "Added particle" << particleIndex + 1 << ": " << xPos << ", " << yPos << ", yaw: " << yaw << endl;
 	}
 }
 
-void LocalizationManager::Update(double xDelta, double yDelta, double yawDelta, double* laserScans)
+void LocalizationManager::Update(double xDelta, double yDelta, double yawDelta, float* laserScans)
 {
 	vector<int> particlesIndexesToErase;
 	vector<int> particlesIndexesToDuplicate;
@@ -58,15 +60,16 @@ void LocalizationManager::Update(double xDelta, double yDelta, double yawDelta, 
 	{
 		for (int duplicateIndex = 0; duplicateIndex < numOfParticlesToDuplicate && !finishedDuplicating; duplicateIndex++)
 		{
-			double newParticleY = this->_particles[duplicateIndex]->GetY() + static_cast<double>((rand() % (MAX_Y_POS / RANDOMIZE_FACTOR)) - (rand() % (MAX_Y_POS / RANDOMIZE_FACTOR)));
-			double newParticleX = this->_particles[duplicateIndex]->GetX() + static_cast<double>((rand() % (MAX_X_POS / RANDOMIZE_FACTOR)) - (rand() % (MAX_X_POS / RANDOMIZE_FACTOR)));
-			double newParticleYaw = this->_particles[duplicateIndex]->GetYaw() + (double(rand() % 10) / 100.0) - (double(rand() % 10) / 100.0);
+			Position *pos = this->_particles[duplicateIndex]->GetPosition();
+			double newParticleY = pos->Y() + static_cast<double>((rand() % (_map->GetHeight() / RANDOMIZE_FACTOR)) - (rand() % (_map->GetHeight() / RANDOMIZE_FACTOR)));
+			double newParticleX = pos->X() + static_cast<double>((rand() % (_map->GetWidth() / RANDOMIZE_FACTOR)) - (rand() % (_map->GetWidth() / RANDOMIZE_FACTOR)));
+			double newParticleYaw = pos->Yaw() + (double(rand() % 10) / 100.0) - (double(rand() % 10) / 100.0);
 
 			// Make sure we are in safe bounds
-			if (!(newParticleX > MAX_X_POS / RESOLUTION || newParticleY > MAX_Y_POS / RESOLUTION || newParticleY < 0 || newParticleX < 0))
+			if (!(newParticleX > _map->GetWidth() / _map->GetResolution() || newParticleY > _map->GetHeight() / _map->GetResolution() || newParticleY < 0 || newParticleX < 0))
 			{
 				Particle* newParticle = new Particle(newParticleX, newParticleY, newParticleYaw,
-						this->_particles[duplicateIndex]->GetMap(), this->_particles[duplicateIndex]->GetBelief());
+						this->_particles[duplicateIndex]->GetBelief(), _map);
 				this->_particles.push_back(newParticle);
 
 				finishedDuplicating = !(this->_particles.size() < NUM_OF_PARTICLES);

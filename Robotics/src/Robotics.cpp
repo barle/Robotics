@@ -8,6 +8,7 @@
 #include <libplayerc++/playerc++.h>
 #include <iostream>
 #include "Managers/ConfigurationManager.h"
+#include "Managers/LocalizationManager.h"
 #include "Robot.h"
 #include "Managers/Manager.h"
 #include "Plans/ObstacleAvoidPln.h"
@@ -36,7 +37,7 @@ void printPath(vector<Vertex*> path)
 
 void testPathPlanner(ConfigurationManager *config)
 {
-	Map map(config->getMapPath().c_str());
+	Map map(config->getMapPath());
 
 	PathPlanner pathPlanner(&map);
 	Vertex v1(new Position(0,0));
@@ -70,7 +71,9 @@ int main()
 
 	Robot robot("localhost", 6665);
 	ObstacleAvoidPln plan(&robot);
-	Manager manager(&plan, &robot);
+	Map map(config.getMapPath());
+	LocalizationManager loc(&map);
+	Manager manager(&plan, &loc, &robot);
 
 	manager.run();
 	return 0;

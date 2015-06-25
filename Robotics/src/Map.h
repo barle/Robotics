@@ -14,9 +14,10 @@ using namespace std;
 
 class Map {
 private:
-	vector<bool> grid;
-	unsigned height;
-	unsigned width;
+	vector<bool> _grid;
+	unsigned _height;
+	unsigned _width;
+	double _resolution;
 
 public:
 	Map(const char* filePath);
@@ -25,6 +26,9 @@ public:
 	vector<bool> GetGrid();
 	unsigned GetHeight();
 	unsigned GetWidth();
+	double GetResolution();
+
+	bool IsOccupied(int x, int y);
 };
 
 #endif /* MAP_H_ */

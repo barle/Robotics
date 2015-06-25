@@ -43,9 +43,9 @@ string ConfigurationManager::_trim(string str)
 }
 
 
-string ConfigurationManager::getMapPath()
+const char* ConfigurationManager::getMapPath()
 {
-	return _params["map"];
+	return _params["map"].c_str();
 }
 
 Position* ConfigurationManager::getStartLocation()

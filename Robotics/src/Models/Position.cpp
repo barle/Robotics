@@ -13,6 +13,13 @@ Position::Position(double x, double y, double yaw) {
 	_yaw = yaw;
 }
 
+void Position::Update(double x, double y, double yaw)
+{
+	_x = x;
+	_y = y;
+	_yaw = yaw;
+}
+
 double Position::X()
 {
 	return _x;

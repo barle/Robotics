@@ -1,27 +1,25 @@
 #ifndef LOCALIZATIONMANAGER_H_
 #define LOCALIZATIONMANAGER_H_
 
-#define NUM_OF_PARTICLES 20
-#define MAX_X_POS 40
-#define MAX_Y_POS 20
-#define RESOLUTION 0.2
+#define NUM_OF_PARTICLES 1000
 #define PARTICLE_MIN_BELIEF 0.5
 #define RANDOMIZE_FACTOR 10
 #define PARTICLES_TO_PRINT 3
-#define MAX_DEGREES 360
 
 using namespace std;
 
 #include <vector>
 #include"../Models/Particle.h"
+#include "../Map.h"
 
 class LocalizationManager {
 private:
+	Map *_map;
 	vector<Particle*> _particles;
 
 public:
-	LocalizationManager();
-	void Update(double xDelta, double yDelta, double yawDelta, double* laserScans);
+	LocalizationManager(Map *map);
+	void Update(double xDelta, double yDelta, double yawDelta, float* laserScans);
 	void PrintParticles();
 	virtual ~LocalizationManager();
 };

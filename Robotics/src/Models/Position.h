@@ -17,6 +17,7 @@ public:
 	double Yaw();
 	double X();
 	double Y();
+	void Update(double x, double y, double yaw = 0);
 	Position(double x, double y, double yaw = 0);
 	virtual ~Position();
 };

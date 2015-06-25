@@ -10,6 +10,7 @@
 
 #include <libplayerc++/playerc++.h>
 #include <string>
+#include "Models/Position.h"
 
 using namespace PlayerCc;
 using namespace std;
@@ -19,12 +20,13 @@ private:
 	PlayerClient _pc;
 	Position2dProxy _pp;
 	LaserProxy _lp;
-	float _lastX, _lastY, _lastYaw;
+	Position *_pos;
 
 public:
 	Robot(string ip, int port);
 	virtual ~Robot();
 
+	void SetDeltaValues(double &deltaX, double &deltaY, double &deltaYaw);
 	void setSpeed(float linear, float angular);
 	float getX();
 	float getY();

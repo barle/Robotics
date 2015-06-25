@@ -1,0 +1,85 @@
+/*
+ * Robot.cpp
+ *
+ *  Created on: May 26, 2015
+ *      Author: colman
+ */
+
+#include "Robot.h"
+
+Robot::Robot(string ip, int port) : _pc(ip, port), _pp(&_pc), _lp(&_pc) {
+	// TODO Auto-generated constructor stub
+	_lastX = _pp.GetXPos();
+	_lastY = _pp.GetYPos();
+	_lastYaw = _pp.GetYaw();
+}
+
+Robot::~Robot() {
+	// TODO Auto-generated destructor stub
+}
+
+void Robot::setSpeed(float linear, float angular)
+{
+	_pp.SetSpeed(linear, angular);
+}
+
+float Robot::getX()
+{
+	return _pp.GetXPos();
+}
+
+float Robot::getY()
+{
+	return _pp.GetYPos();
+}
+
+float Robot::getYaw()
+{
+	return _pp.GetYaw();
+}
+
+float* Robot::getLaserScan()
+{
+	unsigned int samplesCount = _lp.GetCount();
+	float *scan = new float[samplesCount];
+	for (unsigned int i = 0; i < samplesCount; i++)
+	{
+		scan[i] = _lp[i];
+	}
+	return scan;
+}
+
+void Robot::SetDeltaValues(double &deltaX, double &deltaY, double &deltaYaw)
+{
+	double newX = _pp->GetXPos();
+	double newY = _pp->GetYPos();
+	double newYaw = _pp->GetYaw();
+
+	// Put deltas by odometry
+	if (this->_xPos != 0 || this->_yPos != 0 || this->_yawPos != 0)
+	{
+		deltaX = newX - this->_xPos;
+		deltaY = newY - this->_yPos;
+		deltaYaw = newYaw - this->_yawPos;
+	}
+	else
+	{
+		deltaX = 0;
+		deltaY = 0;
+		deltaYaw = 0;
+	}
+
+	this->_xPos = newX;
+	this->_yPos = newY;
+	this->_yawPos = newYaw;
+}
+
+int Robot::deg_to_index(double deg)
+{
+	return (deg + 120) / 0.36;
+}
+
+void Robot::read()
+{
+	_pc.Read();
+}

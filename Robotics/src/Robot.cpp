@@ -8,10 +8,11 @@
 #include "Robot.h"
 
 Robot::Robot(string ip, int port) : _pc(ip, port), _pp(&_pc), _lp(&_pc) {
-	// TODO Auto-generated constructor stub
-	_lastX = _pp.GetXPos();
-	_lastY = _pp.GetYPos();
-	_lastYaw = _pp.GetYaw();
+	double x = _pp.GetXPos();
+	double y = _pp.GetYPos();
+	double yaw = _pp.GetYaw();
+
+	_pos = new Position(x, y, yaw);
 }
 
 Robot::~Robot() {
@@ -47,6 +48,29 @@ float* Robot::getLaserScan()
 		scan[i] = _lp[i];
 	}
 	return scan;
+}
+
+void Robot::SetDeltaValues(double &deltaX, double &deltaY, double &deltaYaw)
+{
+	double newX = _pp.GetXPos();
+	double newY = _pp.GetYPos();
+	double newYaw = _pp.GetYaw();
+
+	// Put deltas by odometry
+	if (this->_pos->X() != 0 || this->_pos->Y() != 0 || this->_pos->Yaw() != 0)
+	{
+		deltaX = newX - this->_pos->X();
+		deltaY = newY - this->_pos->Y();
+		deltaYaw = newYaw - this->_pos->Yaw();
+	}
+	else
+	{
+		deltaX = 0;
+		deltaY = 0;
+		deltaYaw = 0;
+	}
+
+	this->_pos->Update(newX, newY, newYaw);
 }
 
 int Robot::deg_to_index(double deg)

@@ -1,0 +1,53 @@
+#ifndef PARTICLE_H_
+#define PARTICLE_H_
+
+#define NORMAL_MOVING 10
+#define MAX_MOVING 20
+
+#define NORMAL_YAW_DEGREES 180
+#define MAX_YAW_DEGREES 360
+
+#define YAW_HIGH_PROB 1
+#define YAW_OK_PROB 0.85
+#define YAW_LOW_PROB 0.7
+
+#define MOVING_HIGH_PROB 1
+#define MOVING_OK_PROB 0.85
+#define MOVING_LOW_PROB 0.7
+
+#define MAP_MAX_CELLS_LASER 5
+#define LASER_MAX_RANGE 4
+#define LASER_JUMP_INDEX 1
+
+#define MEASURING_AREA 0.36
+#define ANGULAR_RESOLUTION 240
+
+#include "../Map.h"
+#include "Position.h"
+#include <vector>
+#include <cmath>
+#include <libplayerc++/playerc++.h>
+
+using namespace std;
+
+class Particle {
+private:
+	Position *_position;
+	double _belief;
+	Map* _map;
+	double GetMovingProbability(double xDelta, double yDelta, double yawDelta);
+	double CheckProbability(double* laserScans);
+	double AngleOfIndex(int index);
+
+public:
+	Particle(int xPos, int yPos, double yawPos, Map* map);
+	Particle(int xPos, int yPos, double yawPos, double belief, Map* map);
+	Position* GetPosition();
+	void Update(double xDelta, double yDelta, double yawDelta, double* laserScans);
+	vector<Particle*> CreateNewParticles();
+	double GetBelief();
+	void Print();
+	virtual ~Particle();
+};
+
+#endif /* PARTICLE_H_ */

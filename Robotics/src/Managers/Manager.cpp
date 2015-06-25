@@ -1,8 +1,9 @@
 #include "Manager.h"
 
-Manager::Manager(Plan *plan, Robot *robot) {
+Manager::Manager(Plan *plan, LocalizationManager *loc, Robot *robot) {
 	this->_robot = robot;
 	this->_plan = plan;
+	this->_loc = loc;
 }
 
 void Manager::run() {
@@ -27,7 +28,10 @@ void Manager::run() {
 			double deltaYaw;
 			float *laserScans = this->_robot->getLaserScan();
 
-			//Todo: update all the things we want on the robot: for example localization manager(?)
+			// Set robot delta values by its odometry
+			this->_robot->SetDeltaValues(deltaX, deltaY, deltaYaw);
+
+			_loc->Update(deltaX,deltaY, deltaYaw, laserScans);
 
 			readsCounter = 1;
 		}

@@ -17,7 +17,7 @@ vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height);
 
 
 Map::Map(const char* filePath) {
-	this->grid = loadMap(filePath, this->width, this->height);
+	this->_grid = loadMap(filePath, this->_width, this->_height);
 /* Todo: remove this.. this is only test printing the map
 	for (int i=0;i<this->height;i++)
 	{
@@ -35,15 +35,20 @@ Map::~Map() {
 }
 
 vector<bool> Map::GetGrid() {
-	return this->grid;
+	return this->_grid;
 }
 
 unsigned Map::GetHeight() {
-	return this->height;
+	return this->_height;
 }
 
 unsigned Map::GetWidth() {
-	return this->width;
+	return this->_width;
+}
+
+double Map::GetResolution()
+{
+	return this->_resolution;
 }
 
 vector<unsigned char> image; //the raw pixels
@@ -153,4 +158,10 @@ vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height)
     }
 
     return grid;
+}
+
+
+bool Map::IsOccupied(int x, int y)
+{
+	return _grid[(_width*y)+x] == 0;
 }

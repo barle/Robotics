@@ -16,7 +16,7 @@ private:
 	map<string, string> _params;
 	string  _trim(string str);
 public:
-	string getMapPath();
+	const char* getMapPath();
 	Position* getStartLocation();
 	Position* getGoal();
 	Size* getRobotSize();
