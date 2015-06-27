@@ -1,0 +1,118 @@
+/*
+ * Robot.cpp
+ *
+ *  Created on: May 26, 2015
+ *      Author: colman
+ */
+
+#include "Robot.h"
+
+Robot::Robot(string ip, int port, Position *start, int mapHeight, int mapWidth, double mapResolutionInMeters) : _pc(ip, port), _pp(&_pc), _lp(&_pc) {
+	_mapHeightInPixel = mapHeight;
+	_mapWidthInPixel = mapWidth;
+	_mapResolutionInMeters = mapResolutionInMeters;
+
+	double x = denormalizeX(start->X());
+	double y = denormalizeY(start->Y());
+	double yaw = start->Yaw();
+
+	_pp.SetOdometry(x,y,yaw);
+	_pos = new Position(x, y, yaw);
+}
+
+Robot::~Robot() {
+	// TODO Auto-generated destructor stub
+}
+
+void Robot::setSpeed(float linear, float angular)
+{
+	_pp.SetSpeed(linear, angular);
+}
+
+
+float Robot::convertDegreeToRadian(float degree)
+{
+	return DTOR(degree);
+}
+float Robot::convertRadianToDegree(float radian)
+{
+	return RTOD(radian);
+}
+
+float Robot::convertXInPixelToMeter(float xInPixel)
+{
+	return (_mapWidthInPixel/(float)MAP_X_SIZE)*(xInPixel + (MAP_X_SIZE/2))/_mapResolutionInMeters;
+}
+float Robot::convertXInMeterToPixel(float xInMeter)
+{
+	return ((xInMeter/(_mapWidthInPixel/(float)MAP_X_SIZE))*_mapResolutionInMeters - (MAP_X_SIZE/2));
+}
+
+float Robot::convertYInPixelToMeter(float yInPixel)
+{
+	return -(_mapHeightInPixel/(float)MAP_Y_SIZE)*(yInPixel + (MAP_Y_SIZE/2))/_mapResolutionInMeters;
+}
+float Robot::convertYInMeterToPixel(float yInMeter)
+{
+	return (-yInMeter/(_mapHeightInPixel/(float)MAP_Y_SIZE))*_mapResolutionInMeters - (MAP_Y_SIZE/2);
+}
+
+
+float Robot::getX()
+{
+	return convertXInMeterToPixel(_posInMeter->X());
+}
+
+float Robot::getY()
+{
+	return convertYInMeterToPixel(_posInMeter->Y());
+}
+
+float Robot::getYaw()
+{
+	return convertRadianToDegree(_posInMeter->Yaw());
+}
+
+float* Robot::getLaserScan()
+{
+	unsigned int samplesCount = _lp.GetCount();
+	float *scan = new float[samplesCount];
+	for (unsigned int i = 0; i < samplesCount; i++)
+	{
+		scan[i] = _lp[i];
+	}
+	return scan;
+}
+
+void Robot::SetDeltaValues(double &deltaX, double &deltaY, double &deltaYaw)
+{
+	double newX = _pp.GetXPos();
+	double newY = _pp.GetYPos();
+	double newYaw = _pp.GetYaw();
+
+	// Put deltas
+	if (this->_pos->X() != 0 || this->_pos->Y() != 0 || this->_pos->Yaw() != 0)
+	{
+		deltaX = newX - this->_pos->X();
+		deltaY = newY - this->_pos->Y();
+		deltaYaw = newYaw - this->_pos->Yaw();
+	}
+	else
+	{
+		deltaX = 0;
+		deltaY = 0;
+		deltaYaw = 0;
+	}
+
+	this->_pos->Update(newX, newY, newYaw);
+}
+
+int Robot::deg_to_index(double deg)
+{
+	return (deg + 120) / 0.36;
+}
+
+void Robot::read()
+{
+	_pc.Read();
+}

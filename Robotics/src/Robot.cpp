@@ -7,12 +7,23 @@
 
 #include "Robot.h"
 
-Robot::Robot(string ip, int port) : _pc(ip, port), _pp(&_pc), _lp(&_pc) {
-	double x = _pp.GetXPos();
-	double y = _pp.GetYPos();
-	double yaw = _pp.GetYaw();
+Robot::Robot(string ip, int port, Position *startInPixel, int mapHeightInPixel, int mapWidthInPixel, double mapResolutionInMeters) : _pc(ip, port), _pp(&_pc), _lp(&_pc) {
+	_mapHeightInPixel = mapHeightInPixel;
+	_mapWidthInPixel = mapWidthInPixel;
+	_mapResolutionInMeters = mapResolutionInMeters;
 
-	_pos = new Position(x, y, yaw);
+	float yaw = convertDegreeToRadian(startInPixel->Yaw());
+
+	_pp.SetOdometry(0,0,yaw); // do this to intialize the yaw in the robot's odometry
+	_startInPixel = startInPixel;
+	_lastPosInPixel = new Position(
+			startInPixel->X(),
+			startInPixel->Y(),
+			startInPixel->Yaw());
+
+	//init dummy painter:
+	_dummyPainter = new PlayerClient("localhost",6666);
+	_gp = new Graphics2dProxy(_dummyPainter);
 }
 
 Robot::~Robot() {
@@ -24,19 +35,38 @@ void Robot::setSpeed(float linear, float angular)
 	_pp.SetSpeed(linear, angular);
 }
 
+
+float Robot::convertDegreeToRadian(float degree)
+{
+	return DTOR(degree);
+}
+float Robot::convertRadianToDegree(float radian)
+{
+	return RTOD(radian);
+}
+
+float Robot::convertPixelToMeter(float inPixel)
+{
+	return inPixel*_mapResolutionInMeters;
+}
+float Robot::convertMeterToPixel(float inMeter)
+{
+	return inMeter/_mapResolutionInMeters;
+}
+
 float Robot::getX()
 {
-	return _pp.GetXPos();
+	return _startInPixel->X() + convertMeterToPixel(_pp.GetXPos());
 }
 
 float Robot::getY()
 {
-	return _pp.GetYPos();
+	return _startInPixel->Y() - convertMeterToPixel(_pp.GetYPos());
 }
 
 float Robot::getYaw()
 {
-	return _pp.GetYaw();
+	return _startInPixel->Yaw() + convertRadianToDegree(_pp.GetYaw());
 }
 
 float* Robot::getLaserScan()
@@ -50,27 +80,17 @@ float* Robot::getLaserScan()
 	return scan;
 }
 
-void Robot::SetDeltaValues(double &deltaX, double &deltaY, double &deltaYaw)
+void Robot::SetDeltaValues(double &deltaXInPixel, double &deltaYInPixel, double &deltaYawInDegree)
 {
-	double newX = _pp.GetXPos();
-	double newY = _pp.GetYPos();
-	double newYaw = _pp.GetYaw();
+	double newXInPixel = this->getX();
+	double newYInPixel = this->getY();
+	double newYawInDegree = this->getYaw();
 
-	// Put deltas by odometry
-	if (this->_pos->X() != 0 || this->_pos->Y() != 0 || this->_pos->Yaw() != 0)
-	{
-		deltaX = newX - this->_pos->X();
-		deltaY = newY - this->_pos->Y();
-		deltaYaw = newYaw - this->_pos->Yaw();
-	}
-	else
-	{
-		deltaX = 0;
-		deltaY = 0;
-		deltaYaw = 0;
-	}
+	deltaXInPixel = newXInPixel - _lastPosInPixel->X();
+	deltaYInPixel = newYInPixel - _lastPosInPixel->Y();
+	deltaYawInDegree = newYawInDegree - _lastPosInPixel->Yaw();
 
-	this->_pos->Update(newX, newY, newYaw);
+	this->_lastPosInPixel->Update(newXInPixel, newYInPixel, newYawInDegree);
 }
 
 int Robot::deg_to_index(double deg)
@@ -81,4 +101,30 @@ int Robot::deg_to_index(double deg)
 void Robot::read()
 {
 	_pc.Read();
+}
+
+void Robot::drawPoint(float x, float y, float size, int red, int blue, int green)
+{
+	float boxSize = convertPixelToMeter(size);
+	player_point_2d_t points[5];
+	points[0].px = convertPixelToMeter(x) - boxSize;
+	points[0].py = -convertPixelToMeter(y) + boxSize;
+
+	points[1].px = convertPixelToMeter(x) + boxSize;
+	points[1].py = -convertPixelToMeter(y) + boxSize;
+
+	points[2].px = convertPixelToMeter(x) + boxSize;
+	points[2].py = -convertPixelToMeter(y) - boxSize;
+
+	points[3].px = convertPixelToMeter(x) - boxSize;
+	points[3].py = -convertPixelToMeter(y) - boxSize;
+
+	points[4].px = convertPixelToMeter(x) - boxSize;
+	points[4].py = -convertPixelToMeter(y) + boxSize;
+
+	player_color_t color;
+	color.red = red;
+	color.blue = blue;
+	color.green = green;
+	_gp->DrawPolygon(points, 5, true, color);
 }

@@ -1,0 +1,58 @@
+/*
+ * GoTo.cpp
+ *
+ *  Created on: Jun 26, 2015
+ *      Author: colman
+ */
+
+#include "GoTo.h"
+#include <cmath>
+
+#define MAX_DIFF_YAW 10
+#define MAX_DIFF_RADIUS 10  //centimeter
+
+GoTo::GoTo(Robot *robot, Position *goal) : Behavior(robot) {
+	this->_goal = goal;
+	this->_achieved = false;
+}
+
+void GoTo::action()
+{
+	float curX = this->_robot->getX();
+	float curY = this->_robot->getY();
+	float curYaw = this->_robot->getYaw();
+
+	float deltaX = _goal->X() - curX;
+	float deltaY = _goal->Y() - curY;
+
+	// check if we achieved the goal within the tolerance radius
+	float distance = sqrt(pow(deltaX,2) + pow(deltaY,2));
+	if(distance < MAX_DIFF_RADIUS)
+	{
+		this->_achieved = true;
+		// we achieved the goal.. stop the robot
+		this->_robot->setSpeed(0,0);
+		return;
+	}
+
+	// check if the goal is in front of us
+
+	float topY =  deltaX / cos(curYaw + MAX_DIFF_YAW);
+	float bottomY = deltaX / cos(curYaw - MAX_DIFF_YAW);
+
+}
+
+bool GoTo::startCond()
+{
+	return !this->_achieved;
+}
+
+bool GoTo::stopCond()
+{
+	return this->_achieved;
+}
+
+GoTo::~GoTo() {
+	// TODO Auto-generated destructor stub
+}
+

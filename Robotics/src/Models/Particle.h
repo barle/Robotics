@@ -17,7 +17,6 @@
 
 #define MAP_MAX_CELLS_LASER 5
 #define LASER_MAX_RANGE 4
-#define LASER_JUMP_INDEX 1
 #define LASER_COUNT 666
 
 #define MEASURING_AREA 0.36

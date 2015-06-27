@@ -1,0 +1,17 @@
+/*
+ * StraightToRight.h
+ *
+ *  Created on: Jun 27, 2015
+ *      Author: colman
+ */
+
+#ifndef STRAIGHTTORIGHT_H_
+#define STRAIGHTTORIGHT_H_
+
+class StraightToRight {
+public:
+	StraightToRight();
+	virtual ~StraightToRight();
+};
+
+#endif /* STRAIGHTTORIGHT_H_ */

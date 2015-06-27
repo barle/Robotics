@@ -57,17 +57,16 @@ double Particle::CheckProbability(float* laserScans)
 	double hits = 0;
 	double misses = 0;
 
-	// Go over the laser's array by a constant jump range
-
-	for (int index = 0; index < LASER_COUNT; index += LASER_JUMP_INDEX)
+	// Go over the laser's array
+	for (int index = 0; index < LASER_COUNT; index++)
 	{
 		if (laserScans[index] < LASER_MAX_RANGE)
 		{
 			// Go over the relevant cells in between the occupied cell and the free cells
 			for(int j = 0; j < (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / _map->GetResolution()); j++)
 			{
-				int XFreePos = this->_position->X() + (sin(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * j);
-				int YFreePos = this->_position->Y() + (cos(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * j);
+				int XFreePos = this->_position->X() + (cos(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * j);
+				int YFreePos = this->_position->Y() + (sin(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * j);
 
 				// Make sure we are in safe bounds
 				if (XFreePos >= 0 && XFreePos < _map->GetWidth() / _map->GetResolution() && YFreePos >= 0 && YFreePos < _map->GetHeight() / _map->GetResolution())
@@ -84,8 +83,8 @@ double Particle::CheckProbability(float* laserScans)
 			}
 
 			// Calculate the occupied position
-			int XOccupiedPos = this->_position->X() + (sin(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / _map->GetResolution()));
-			int YOccupiedPos = this->_position->Y() + (cos(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / _map->GetResolution()));
+			int XOccupiedPos = this->_position->X() + (cos(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / _map->GetResolution()));
+			int YOccupiedPos = this->_position->Y() + (sin(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / _map->GetResolution()));
 
 			// Make sure we are in safe array bounds
 			if (XOccupiedPos >= 0 && XOccupiedPos < _map->GetWidth() / _map->GetResolution() && YOccupiedPos >= 0 && YOccupiedPos < _map->GetHeight() / _map->GetResolution())
@@ -103,10 +102,10 @@ double Particle::CheckProbability(float* laserScans)
 		else
 		{
 			// Go over all the cells in this angle and make sure we mark them as free
-			for(int j = 0; j < (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / _map->GetResolution()); j += 1)
+			for(int j = 0; j < (((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER) / _map->GetResolution()); j++)
 			{
-				int XFreePos = this->_position->X() + (sin(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * j);
-				int YFreePos = this->_position->Y() + (cos(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * j);
+				int XFreePos = this->_position->X() + (cos(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * j);
+				int YFreePos = this->_position->Y() + (sin(DTOR(AngleOfIndex(index)) + this->_position->Yaw()) * j);
 
 				// Make sure we are in safe array bounds
 				if (XFreePos >= 0 && XFreePos < _map->GetWidth() / _map->GetResolution() && YFreePos >= 0 && YFreePos < _map->GetHeight() / _map->GetResolution())

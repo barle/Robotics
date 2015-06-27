@@ -1,0 +1,140 @@
+/*
+ * GoTo.cpp
+ *
+ *  Created on: Jun 26, 2015
+ *      Author: colman
+ */
+
+#include "GoTo.h"
+#include <cmath>
+
+#define MAX_DIFF_YAW 20 // Degree
+#define MAX_DIFF_RADIUS 0.05  // Meter
+
+#define ANGULAR_SPEED 0.8
+#define FORWARD_SPEED 1
+#define TURN_SPEED 0
+
+GoTo::GoTo(Robot *robot, Position *goal) : Behavior(robot) {
+	this->_goal = goal;
+}
+
+void GoTo::setNextGoal(GoTo *goalBehavior)
+{
+	this->_nextGoalBehavior = goalBehavior;
+}
+
+void GoTo::action()
+{
+	float curXInPixel = this->_robot->getX();
+	float curYInPixel = this->_robot->getY();
+	float curYawInDegree = this->_robot->getYaw();
+	while(curYawInDegree < 0)
+		curYawInDegree += 360;
+
+	float deltaXInPixel = _goal->X() - curXInPixel;
+	float deltaYInPixel = curYInPixel - _goal->Y(); // the Y axis are reversed
+
+	float deltaXInMeter = this->_robot->convertPixelToMeter(deltaXInPixel);
+	float deltaYInMeter = this->_robot->convertPixelToMeter(deltaYInPixel);
+
+	// check if the goal is in front of us with MAX_DIFF_YAW tolerance
+	double goalYawInDegree = getDegree(deltaXInMeter, deltaYInMeter);
+
+	double difYawInDegree = curYawInDegree - goalYawInDegree;
+	if(difYawInDegree < MAX_DIFF_YAW && difYawInDegree > -MAX_DIFF_YAW)
+	{
+		this->_robot->setSpeed(FORWARD_SPEED, 0);
+	}
+	else if((difYawInDegree <= 0 && difYawInDegree >= -180) || (difYawInDegree <= 360 && difYawInDegree >= 180)) // turn right
+	{
+		this->_robot->setSpeed(TURN_SPEED, ANGULAR_SPEED); //turn left
+	}
+	else // turn right
+	{
+		this->_robot->setSpeed(TURN_SPEED, -ANGULAR_SPEED);
+	}
+
+}
+
+double GoTo::getDegree(double x, double y)
+{
+	double radian;
+	if(x == 0 && y >= 0)
+		radian = M_PI_2;
+	else if(x == 0 && y < 0)
+		radian = -M_PI_2;
+	else
+		radian = atan(y/x);
+
+	double degree = this->_robot->convertRadianToDegree(radian);
+
+	if(x >= 0 && y >=0) // I
+	{
+		while(!(degree >= 0 && degree <= 90))
+		{
+			degree += 180;
+			if(degree > 360)
+				degree -= 360;
+		}
+	}
+	else if(x < 0 && y >=0) // II
+	{
+		while(!(degree >= 90 && degree <= 180))
+		{
+			degree += 180;
+			if(degree > 360)
+				degree -= 360;
+		}
+	}
+	else if(x < 0 && y < 0) // III
+	{
+		while(!(degree >= 180 && degree <= 270))
+		{
+			degree += 180;
+			if(degree > 360)
+				degree -= 360;
+		}
+	}
+	else
+	{
+		while(!(degree >= 270 && degree <= 360)) // IV
+		{
+			degree += 180;
+			if(degree > 360)
+				degree -= 360;
+		}
+	}
+	return degree;
+}
+
+bool GoTo::startCond()
+{
+	return !this->stopCond();
+}
+
+bool GoTo::stopCond()
+{
+	float curXInPixel = this->_robot->getX();
+	float curYInPixel = this->_robot->getY();
+
+	float deltaXInPixel = _goal->X() - curXInPixel;
+	float deltaYInPixel = curYInPixel - _goal->Y(); // the Y axis are reversed
+
+	float deltaXInMeter = this->_robot->convertPixelToMeter(deltaXInPixel);
+	float deltaYInMeter = this->_robot->convertPixelToMeter(deltaYInPixel);
+
+	// check if we achieved the goal within the tolerance radius
+	float distance = sqrt(pow(deltaXInMeter,2) + pow(deltaYInMeter,2));
+	if(distance < MAX_DIFF_RADIUS)
+	{
+		// we achieved the goal.. stop the robot
+		this->_robot->setSpeed(0,0);
+		return true;
+	}
+	return false;
+}
+
+GoTo::~GoTo() {
+	// TODO Auto-generated destructor stub
+}

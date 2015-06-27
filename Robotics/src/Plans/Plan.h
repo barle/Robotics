@@ -6,10 +6,8 @@
 #include "../Behaviors/Behavior.h"
 
 class Plan {
-private:
-	Robot *_robot;
-
 protected:
+	Robot *_robot;
 	vector<Behavior *> _behaviors;
 
 public:

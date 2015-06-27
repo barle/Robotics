@@ -1,0 +1,38 @@
+/*
+ * Map.h
+ *
+ *  Created on: Jun 22, 2015
+ *      Author: colman
+ */
+
+#ifndef MAP_H_
+#define MAP_H_
+
+using namespace std;
+
+#include <vector>
+#include <libplayerc++/playerc++.h>
+#include <iostream>
+#include <fstream>
+#include"lodepng.h"
+
+class Map {
+private:
+	vector<bool> _grid;
+	unsigned _height;
+	unsigned _width;
+	double _resolution;
+
+public:
+	Map(const char* filePath);
+	virtual ~Map();
+
+	vector<bool> GetGrid();
+	unsigned GetHeight();
+	unsigned GetWidth();
+	double GetResolution();
+
+	bool IsOccupied(int x, int y);
+};
+
+#endif /* MAP_H_ */

@@ -1,0 +1,117 @@
+/*
+ * GoToBase.cpp
+ *
+ *  Created on: Jun 27, 2015
+ *      Author: colman
+ */
+
+#include "GoToBase.h"
+
+GoToBase::GoToBase(Robot *robot, Position *goal) : Behavior(robot) {
+	this->_robot = robot;
+	this->_goal = goal;
+	this->_nextGoalBehavior = NULL;
+}
+
+float GoToBase::getDistanceInMeter(float &deltaXInMeter, float &deltaYInMeter)
+{
+	setDeltaXYInMeter(deltaXInMeter, deltaYInMeter);
+
+	float distance = sqrt(pow(deltaXInMeter,2) + pow(deltaYInMeter,2));
+	return distance;
+}
+
+float GoToBase::getDiffYawInDegree(float deltaXInMeter, float deltaYInMeter)
+{
+	float curYawInDegree = this->_robot->getYaw();
+	while(curYawInDegree < 0)
+		curYawInDegree += 360;
+
+	// check if the goal is in front of us with MAX_DIFF_YAW tolerance
+	float goalYawInDegree = getDegree(deltaXInMeter, deltaYInMeter);
+
+	float difYawInDegree = curYawInDegree - goalYawInDegree;
+	return difYawInDegree;
+}
+
+void GoToBase::setDeltaXYInMeter(float &deltaXInMeter, float &deltaYInMeter)
+{
+	float curXInPixel = this->_robot->getX();
+	float curYInPixel = this->_robot->getY();
+
+	float deltaXInPixel = _goal->X() - curXInPixel;
+	float deltaYInPixel = curYInPixel - _goal->Y(); // the Y axis are reversed
+
+	deltaXInMeter = this->_robot->convertPixelToMeter(deltaXInPixel);
+	deltaYInMeter = this->_robot->convertPixelToMeter(deltaYInPixel);
+}
+
+float GoToBase::getDegree(float x, float y)
+{
+	double radian;
+	if(x == 0 && y >= 0)
+		radian = M_PI_2;
+	else if(x == 0 && y < 0)
+		radian = -M_PI_2;
+	else
+		radian = atan(y/x);
+
+	double degree = this->_robot->convertRadianToDegree(radian);
+
+	if(x >= 0 && y >=0) // I
+	{
+		while(!(degree >= 0 && degree <= 90))
+		{
+			degree += 180;
+			if(degree > 360)
+				degree -= 360;
+		}
+	}
+	else if(x < 0 && y >=0) // II
+	{
+		while(!(degree >= 90 && degree <= 180))
+		{
+			degree += 180;
+			if(degree > 360)
+				degree -= 360;
+		}
+	}
+	else if(x < 0 && y < 0) // III
+	{
+		while(!(degree >= 180 && degree <= 270))
+		{
+			degree += 180;
+			if(degree > 360)
+				degree -= 360;
+		}
+	}
+	else
+	{
+		while(!(degree >= 270 && degree <= 360)) // IV
+		{
+			degree += 180;
+			if(degree > 360)
+				degree -= 360;
+		}
+	}
+	return degree;
+}
+
+Behavior* GoToBase::selectNext()
+{
+	Behavior *baseBehavior = Behavior::selectNext();
+	if(baseBehavior)
+		return baseBehavior;
+	return this->_nextGoalBehavior;
+}
+
+void GoToBase::setNextGoal(GoToBase *goalBehavior)
+{
+	this->_nextGoalBehavior = goalBehavior;
+}
+
+
+GoToBase::~GoToBase() {
+	// TODO Auto-generated destructor stub
+}
+

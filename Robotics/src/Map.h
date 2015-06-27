@@ -11,16 +11,25 @@
 using namespace std;
 
 #include <vector>
+#include <libplayerc++/playerc++.h>
+#include <iostream>
+#include <fstream>
+#include"lodepng.h"
+#include "Managers/ConfigurationManager.h"
 
 class Map {
 private:
+	vector<unsigned char> _image; // the raw pixels
 	vector<bool> _grid;
 	unsigned _height;
 	unsigned _width;
-	double _resolution;
+	double _gridResolution;
+	double _mapResolution;
+
+	vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height);
 
 public:
-	Map(const char* filePath);
+	Map(ConfigurationManager *config);
 	virtual ~Map();
 
 	vector<bool> GetGrid();

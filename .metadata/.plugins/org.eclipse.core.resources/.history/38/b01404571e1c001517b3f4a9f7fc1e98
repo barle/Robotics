@@ -1,0 +1,62 @@
+/*
+ * Robot.h
+ *
+ *  Created on: May 26, 2015
+ *      Author: colman
+ */
+
+#ifndef ROBOT_H_
+#define ROBOT_H_
+
+#include <libplayerc++/playerc++.h>
+#include <string>
+#include "Models/Position.h"
+
+using namespace PlayerCc;
+using namespace std;
+
+#define MAP_X_SIZE 40
+#define MAP_Y_SIZE 20
+
+class Robot {
+private:
+	PlayerClient _pc;
+	Position2dProxy _pp;
+	LaserProxy _lp;
+
+	Position *_pos;
+	int _mapHeight;
+	int _mapWidth;
+	double _mapResolutionInMeters;
+
+	float normalizeX(float x);
+	float normalizeY(float y);
+	float denormalizeX(float x);
+	float denormalizeY(float y);
+
+	float convertDegreeToRadian(float degree);
+	float convertRadianToDegree(float radian);
+
+	float convertXInPixelToMeter(float x);
+	float convertXInMeterToPixel(float x);
+
+	float convertYInPixelToMeter(float y);
+	float convertYInMeterToPixel(float y);
+
+public:
+	Robot(string ip, int port, Position *start, int mapHeight, int mapWidth, double mapResolutionInMeters);
+	virtual ~Robot();
+
+	void SetDeltaValues(double &deltaX, double &deltaY, double &deltaYaw);
+	void setSpeed(float linear, float angular);
+	float getX();
+	float getY();
+	float getYaw();
+
+	float* getLaserScan();
+	int deg_to_index(double deg);
+
+	void read();
+};
+
+#endif /* ROBOT_H_ */

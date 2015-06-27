@@ -1,0 +1,17 @@
+/*
+ * StraightToLeft.h
+ *
+ *  Created on: Jun 27, 2015
+ *      Author: colman
+ */
+
+#ifndef STRAIGHTTOLEFT_H_
+#define STRAIGHTTOLEFT_H_
+
+class StraightToLeft {
+public:
+	StraightToLeft();
+	virtual ~StraightToLeft();
+};
+
+#endif /* STRAIGHTTOLEFT_H_ */

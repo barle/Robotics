@@ -1,0 +1,70 @@
+/*
+ * GoToBase.cpp
+ *
+ *  Created on: Jun 27, 2015
+ *      Author: colman
+ */
+
+#include "GoToBase.h"
+
+GoToBase::GoToBase(Robot *robot, Position *goal) {
+	this->_robot = robot;
+	this->_goal = goal;
+}
+
+double GoToBase::getDegree(double x, double y)
+{
+	double radian;
+	if(x == 0 && y >= 0)
+		radian = M_PI_2;
+	else if(x == 0 && y < 0)
+		radian = -M_PI_2;
+	else
+		radian = atan(y/x);
+
+	double degree = this->_robot->convertRadianToDegree(radian);
+
+	if(x >= 0 && y >=0) // I
+	{
+		while(!(degree >= 0 && degree <= 90))
+		{
+			degree += 180;
+			if(degree > 360)
+				degree -= 360;
+		}
+	}
+	else if(x < 0 && y >=0) // II
+	{
+		while(!(degree >= 90 && degree <= 180))
+		{
+			degree += 180;
+			if(degree > 360)
+				degree -= 360;
+		}
+	}
+	else if(x < 0 && y < 0) // III
+	{
+		while(!(degree >= 180 && degree <= 270))
+		{
+			degree += 180;
+			if(degree > 360)
+				degree -= 360;
+		}
+	}
+	else
+	{
+		while(!(degree >= 270 && degree <= 360)) // IV
+		{
+			degree += 180;
+			if(degree > 360)
+				degree -= 360;
+		}
+	}
+	return degree;
+}
+
+
+GoToBase::~GoToBase() {
+	// TODO Auto-generated destructor stub
+}
+

@@ -1,0 +1,47 @@
+/*
+ * Main.cpp
+ *
+ *  Created on: May 26, 2015
+ *      Author: colman
+ */
+
+#include <libplayerc++/playerc++.h>
+#include <iostream>
+#include "Managers/ConfigurationManager.h"
+#include "Managers/LocalizationManager.h"
+#include "Robot.h"
+#include "Managers/Manager.h"
+
+#include "Plans/PathPlanner.h"
+#include "Models/Vertex.h"
+#include "Models/Position.h"
+#include <cmath>
+
+using namespace PlayerCc;
+
+int main()
+{
+	ConfigurationManager config("/home/colman/Desktop/parameters.txt");
+	Map map(config.getMapPath());
+	Robot robot("localhost", 6665, config.getStartLocation(), map.GetHeight(), map.GetWidth(), config.getMapResolutionCM()/100.0);
+
+	robot.setSpeed(0,0.5);
+	for(int i=0;i<1000; i++)
+		robot.read();
+
+	robot.setSpeed(0.3,0);
+	for(int i=0;i<1000; i++)
+		robot.read();
+	robot.setSpeed(0,0);
+
+	cout << robot.getX() << ", " << robot.getY();
+	PathPlanner plan(&robot, &map, config.getStartLocation(), config.getGoal());
+	LocalizationManager loc(&map);
+	Manager manager(&plan, &loc, &robot);
+
+	manager.run();
+	return 0;
+}
+
+
+

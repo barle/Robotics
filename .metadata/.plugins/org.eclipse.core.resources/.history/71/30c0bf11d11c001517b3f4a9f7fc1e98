@@ -1,0 +1,17 @@
+/*
+ * GoToBase.h
+ *
+ *  Created on: Jun 27, 2015
+ *      Author: colman
+ */
+
+#ifndef GOTOBASE_H_
+#define GOTOBASE_H_
+
+class GoToBase {
+public:
+	GoToBase();
+	virtual ~GoToBase();
+};
+
+#endif /* GOTOBASE_H_ */

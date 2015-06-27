@@ -1,0 +1,30 @@
+/*
+ * GoToBase.h
+ *
+ *  Created on: Jun 27, 2015
+ *      Author: colman
+ */
+
+#ifndef GOTOBASE_H_
+#define GOTOBASE_H_
+
+#include "Behavior.h"
+#include "../Models/Position.h"
+#include "../Robot.h"
+#include <cmath>
+
+class GoToBase : public Behavior{
+protected:
+	Robot *_robot;
+	Position *_goal;
+	double getDegree(double x, double y);
+public:
+	virtual bool startCond();
+	virtual bool stopCond();
+	virtual void action();
+
+	GoToBase(Robot *robot, Position *goal);
+	virtual ~GoToBase();
+};
+
+#endif /* GOTOBASE_H_ */

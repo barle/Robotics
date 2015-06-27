@@ -1,0 +1,24 @@
+/*
+ * StraightToLeft.h
+ *
+ *  Created on: Jun 27, 2015
+ *      Author: colman
+ */
+
+#ifndef STRAIGHTTOLEFT_H_
+#define STRAIGHTTOLEFT_H_
+
+#include "Behavior.h"
+
+class StraightToLeft : public GoToBase{
+	private GoTo *_goalBehavior;
+public:
+	virtual bool startCond();
+	virtual bool stopCond();
+	virtual void action();
+
+	StraightToLeft(Robot *robot, Position *goal, GoTo *goalBehavior);
+	virtual ~StraightToLeft();
+};
+
+#endif /* STRAIGHTTOLEFT_H_ */

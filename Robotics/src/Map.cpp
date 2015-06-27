@@ -6,28 +6,15 @@
  */
 
 #include "Map.h"
-#include <libplayerc++/playerc++.h>
-#include <iostream>
-#include <fstream>
-#include"lodepng.h"
 
 using namespace std;
 
-vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height);
+Map::Map(ConfigurationManager *config) {
+	const char* filePath = config->getMapPath();
+	this->_gridResolution = config->getGridResolutionCM()/100.0;
+	this->_mapResolution = config->getMapResolutionCM()/100.0;
 
-
-Map::Map(const char* filePath) {
 	this->_grid = loadMap(filePath, this->_width, this->_height);
-/* Todo: remove this.. this is only test printing the map
-	for (int i=0;i<this->height;i++)
-	{
-		for (int j=0; j<this->width; j++)
-		{
-			cout<< this->grid[(this->width * i) + j];
-		}
-		cout <<endl;
-	}
-	*/
 }
 
 Map::~Map() {
@@ -48,15 +35,13 @@ unsigned Map::GetWidth() {
 
 double Map::GetResolution()
 {
-	return this->_resolution;
+	return this->_gridResolution;
 }
 
-vector<unsigned char> image; //the raw pixels
-unsigned pixlesToAdd = 3;
-
-vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height)
+vector<bool> Map::loadMap(const char* fileName, unsigned& width, unsigned& height)
 {
-	unsigned error = lodepng::decode(image, width, height, (const char*)fileName);
+	unsigned int pixelsToAdd = 15;
+	unsigned error = lodepng::decode(_image, width, height, fileName);
 
 	// If there's an error, display it
 	if(error) cout << "decoder error " << error << ": " << lodepng_error_text(error) << endl;
@@ -69,9 +54,9 @@ vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height)
     {
         for(unsigned j = 0; j < width * 4; j+=4)
         {
-            newImage[(width * 4* i) + j] = (int)image[(width * 4* i) + j];
-            newImage[(width * 4* i) + j + 1] = (int)image[(width * 4* i) + j + 1];
-            newImage[(width * 4* i) + j + 2] = (int)image[(width * 4* i) + j + 2];
+            newImage[(width * 4* i) + j] = (int)_image[(width * 4* i) + j];
+            newImage[(width * 4* i) + j + 1] = (int)_image[(width * 4* i) + j + 1];
+            newImage[(width * 4* i) + j + 2] = (int)_image[(width * 4* i) + j + 2];
 
             newImage[(width * 4* i) + j + 3] = 255;
         }
@@ -82,7 +67,7 @@ vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height)
         for(unsigned j = 0; j < width * 4; j+=4)
         {
             // Black
-            if((unsigned)image[(width * 4* i) + j] == 0)
+            if((unsigned)_image[(width * 4* i) + j] == 0)
             {
                 // Color the cell
                 newImage[(width * 4* i) + j] = 0;
@@ -90,7 +75,7 @@ vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height)
                 newImage[(width * 4* i) + j + 2] = 0;
 
                 // Up cell
-                for(unsigned k = 0; k < pixlesToAdd; k++)
+                for(unsigned k = 0; k < pixelsToAdd; k++)
                 {
                     if((width * 4* (i - k)) + j > 0 &&
                       (width * 4* (i - k)) + j < size)
@@ -102,7 +87,7 @@ vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height)
                 }
 
                 // Down cell
-                for(unsigned k = 0; k < pixlesToAdd; k++)
+                for(unsigned k = 0; k < pixelsToAdd; k++)
                 {
                     if((width * 4* (i + k)) + j > 0 &&
                       (width * 4* (i + k)) + j < size)
@@ -114,7 +99,7 @@ vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height)
                 }
 
                 // Right cell
-                for(unsigned k = 0; k < pixlesToAdd; k++)
+                for(unsigned k = 0; k < pixelsToAdd; k++)
                 {
                     if((width * 4* i) + j + k*4 < (width * 4* (i + 1)) &&
                       (width * 4* i) + j + k*4 > (width * 4* (i - 1)))
@@ -126,7 +111,7 @@ vector<bool> loadMap(const char* fileName, unsigned& width, unsigned& height)
                 }
 
                 // Left cell
-                for(unsigned k = 0; k < pixlesToAdd; k++)
+                for(unsigned k = 0; k < pixelsToAdd; k++)
                 {
                     if((width * 4* i) + j - k*4 < (width * 4* (i + 1)) &&
                       (width * 4* i) + j - k*4 > (width * 4* (i - 1)))

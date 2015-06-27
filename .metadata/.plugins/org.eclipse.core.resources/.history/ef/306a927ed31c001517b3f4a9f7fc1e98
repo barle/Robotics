@@ -1,0 +1,20 @@
+/*
+ * StraightToLeft.cpp
+ *
+ *  Created on: Jun 27, 2015
+ *      Author: colman
+ */
+
+#include "StraightToLeft.h"
+
+StraightToLeft::StraightToLeft(Robot *robot, Position *goal, GoTo *goalBehavior)
+	: GoToBase(robot, goal)
+{
+	// TODO Auto-generated constructor stub
+
+}
+
+StraightToLeft::~StraightToLeft() {
+	// TODO Auto-generated destructor stub
+}
+

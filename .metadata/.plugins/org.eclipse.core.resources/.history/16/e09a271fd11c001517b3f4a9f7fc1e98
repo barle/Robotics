@@ -1,0 +1,19 @@
+/*
+ * GoToBase.h
+ *
+ *  Created on: Jun 27, 2015
+ *      Author: colman
+ */
+
+#ifndef GOTOBASE_H_
+#define GOTOBASE_H_
+
+#include "Behavior.h"
+
+class GoToBase : public Behavior{
+public:
+	GoToBase();
+	virtual ~GoToBase();
+};
+
+#endif /* GOTOBASE_H_ */

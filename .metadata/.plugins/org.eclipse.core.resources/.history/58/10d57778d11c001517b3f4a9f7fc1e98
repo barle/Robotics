@@ -1,0 +1,19 @@
+/*
+ * GoToBase.cpp
+ *
+ *  Created on: Jun 27, 2015
+ *      Author: colman
+ */
+
+#include "GoToBase.h"
+
+GoToBase::GoToBase(Robot *robot, Position *goal) {
+	this->_robot = robot;
+	this->_goal = goal;
+
+}
+
+GoToBase::~GoToBase() {
+	// TODO Auto-generated destructor stub
+}
+

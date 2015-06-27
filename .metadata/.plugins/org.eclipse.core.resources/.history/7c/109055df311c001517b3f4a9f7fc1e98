@@ -1,0 +1,90 @@
+/*
+ * GoTo.cpp
+ *
+ *  Created on: Jun 26, 2015
+ *      Author: colman
+ */
+
+#include "GoTo.h"
+#include <cmath>
+
+#define MAX_DIFF_YAW 20 // Degree
+#define MAX_DIFF_RADIUS 0.05  // Meter
+
+#define FORWARD_SPEED 0.5
+#define TURN_SPEED 0.1
+
+GoTo::GoTo(Robot *robot, Position *goal) : Behavior(robot) {
+	this->_goal = goal;
+	this->_achieved = false;
+}
+
+void GoTo::action()
+{
+	float curXInPixel = this->_robot->getX();
+	float curYInPixel = this->_robot->getY();
+	float curYawInDegree = this->_robot->getYaw();
+	float curYawInRadian = this->_robot->convertDegreeToRadian(curYawInDegree);
+
+	float deltaXInPixel = _goal->X() - curXInPixel;
+	float deltaYInPixel = _goal->Y() - curYInPixel;
+
+	float deltaXInMeter = this->_robot->convertXInPixelToMeter(deltaXInPixel);
+	float deltaYInMeter = this->_robot->convertYInPixelToMeter(deltaYInPixel);
+
+	// check if we achieved the goal within the tolerance radius
+	float distance = sqrt(pow(deltaXInMeter,2) + pow(deltaYInMeter,2));
+	if(distance < MAX_DIFF_RADIUS)
+	{
+		this->_achieved = true;
+		// we achieved the goal.. stop the robot
+		this->_robot->setSpeed(0,0);
+		return;
+	}
+
+
+	// check if the goal is in front of us with MAX_DIFF_YAW tolerance
+	float topYawInRadian = 0;
+	float bottomYawInRadian = 0;
+	if(curYawInDegree > 90 && curYawInDegree < 270)
+	{
+		topYawInRadian = this->_robot->convertDegreeToRadian(curYawInDegree - MAX_DIFF_YAW);
+		bottomYawInRadian = this->_robot->convertDegreeToRadian(curYawInDegree + MAX_DIFF_YAW);
+	}
+	else
+	{
+		topYawInRadian = this->_robot->convertDegreeToRadian(curYawInDegree + MAX_DIFF_YAW);
+		bottomYawInRadian = this->_robot->convertDegreeToRadian(curYawInDegree - MAX_DIFF_YAW);
+	}
+	float topY =  deltaXInMeter * tan(topYawInRadian);
+	float bottomY = deltaXInMeter * tan(bottomYawInRadian);
+
+
+	if(deltaYInMeter < topY && deltaYInMeter > bottomY)
+	{
+		this->_robot->setSpeed(FORWARD_SPEED, 0);
+	}
+	else if(deltaYInMeter < bottomY) // turn right
+	{
+		this->_robot->setSpeed(0, 0.2);
+	}
+	else // turn left
+	{
+		this->_robot->setSpeed(0, -0.2);
+	}
+
+}
+
+bool GoTo::startCond()
+{
+	return !this->_achieved;
+}
+
+bool GoTo::stopCond()
+{
+	return this->_achieved;
+}
+
+GoTo::~GoTo() {
+	// TODO Auto-generated destructor stub
+}

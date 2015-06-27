@@ -1,0 +1,44 @@
+/*
+ * StraightToLeft.cpp
+ *
+ *  Created on: Jun 27, 2015
+ *      Author: colman
+ */
+
+#include "StraightToLeft.h"
+
+StraightToLeft::StraightToLeft(Robot *robot, Position *goal, GoTo *goalBehavior)
+	: GoToBase(robot, goal)
+{
+	this->_goalBehavior = goalBehavior;
+}
+
+bool StraightToLeft::stopCond()
+{
+	if((difYawInDegree <= 0 && difYawInDegree >= -180) || (difYawInDegree <= 360 && difYawInDegree >= 180)) // turn right
+	{
+		this->_robot->setSpeed(0,0);
+		//this->_robot->setSpeed(TURN_SPEED, ANGULAR_SPEED); //turn left
+		this->_nextBehaviors.clear();
+		this->addNext(new StraightToLeft(this));
+		return true;
+	}
+	else // turn right
+	{
+		this->_robot->setSpeed(0,0);
+		this->_nextBehaviors.clear();
+		this->addNext(new StraightToRight(this));
+		return true;
+		//this->_robot->setSpeed(TURN_SPEED, -ANGULAR_SPEED);
+	}
+}
+
+bool StraightToLeft::startCond()
+{
+	return !this->stopCond();
+}
+
+StraightToLeft::~StraightToLeft() {
+	// TODO Auto-generated destructor stub
+}
+

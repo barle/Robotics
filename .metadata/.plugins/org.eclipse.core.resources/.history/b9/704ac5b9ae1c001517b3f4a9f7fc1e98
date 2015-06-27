@@ -1,0 +1,99 @@
+/*
+ * Robot.cpp
+ *
+ *  Created on: May 26, 2015
+ *      Author: colman
+ */
+
+#include "Robot.h"
+
+Robot::Robot(string ip, int port, Position *startInPixel, int mapHeightInPixel, int mapWidthInPixel, double mapResolutionInMeters) : _pc(ip, port), _pp(&_pc), _lp(&_pc) {
+	_mapHeightInPixel = mapHeightInPixel;
+	_mapWidthInPixel = mapWidthInPixel;
+	_mapResolutionInMeters = mapResolutionInMeters;
+
+	double x = convertPixelToMeter(startInPixel->X());
+	double y = convertPixelToMeter(startInPixel->Y());
+	double yaw = convertDegreeToRadian(startInPixel->Yaw());
+
+	_pp.ResetOdometry();
+	_startInPixel = startInPixel;
+	_posInMeter = new Position(x, y, yaw);
+}
+
+Robot::~Robot() {
+	// TODO Auto-generated destructor stub
+}
+
+void Robot::setSpeed(float linear, float angular)
+{
+	_pp.SetSpeed(linear, angular);
+}
+
+
+float Robot::convertDegreeToRadian(float degree)
+{
+	return DTOR(degree);
+}
+float Robot::convertRadianToDegree(float radian)
+{
+	return RTOD(radian);
+}
+
+float Robot::convertPixelToMeter(float inPixel)
+{
+	return inPixel*_mapResolutionInMeters;
+}
+float Robot::convertMeterToPixel(float inMeter)
+{
+	return inMeter/_mapResolutionInMeters;
+}
+
+float Robot::getX()
+{
+	return _startInPixel->X() + convertMeterToPixel(_pp.GetXPos());
+}
+
+float Robot::getY()
+{
+	return _startInPixel->Y() - convertMeterToPixel(_pp.GetYPos());
+}
+
+float Robot::getYaw()
+{
+	return _startInPixel->Yaw() + convertRadianToDegree(_pp.GetYaw());
+}
+
+float* Robot::getLaserScan()
+{
+	unsigned int samplesCount = _lp.GetCount();
+	float *scan = new float[samplesCount];
+	for (unsigned int i = 0; i < samplesCount; i++)
+	{
+		scan[i] = _lp[i];
+	}
+	return scan;
+}
+
+void Robot::SetDeltaValues(double &deltaXInPixel, double &deltaYInPixel, double &deltaYawInDegree)
+{
+	double newXInPixel = this->getX();
+	double newYInPixel = this->getY();
+	double newYawInDegree = this->getYaw();
+
+	deltaXInPixel = newXInPixel - _posInMeter->X();
+	deltaYInPixel = newYInPixel - _posInMeter->Y();
+	deltaYawInDegree = newYawInDegree - _posInMeter->Yaw();
+
+	this->_posInMeter->Update(newXInPixel, newYInPixel, newYawInDegree);
+}
+
+int Robot::deg_to_index(double deg)
+{
+	return (deg + 120) / 0.36;
+}
+
+void Robot::read()
+{
+	_pc.Read();
+}
