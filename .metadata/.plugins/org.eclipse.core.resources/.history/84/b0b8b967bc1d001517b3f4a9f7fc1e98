@@ -1,0 +1,168 @@
+/*
+ * Map.cpp
+ *
+ *  Created on: Jun 22, 2015
+ *      Author: colman
+ */
+
+#include "Map.h"
+
+using namespace std;
+
+Map::Map(ConfigurationManager *config) {
+	const char* filePath = config->getMapPath();
+	this->_gridResolution = config->getGridResolutionCM()/100.0;
+	this->_mapResolution = config->getMapResolutionCM()/100.0;
+
+	this->_grid = loadMap(filePath, this->_width, this->_height);
+}
+
+Map::~Map() {
+	// TODO Auto-generated destructor stub
+}
+
+vector<bool> Map::GetGrid() {
+	return this->_grid;
+}
+
+unsigned Map::GetHeight() {
+	return this->_height;
+}
+
+unsigned Map::GetWidth() {
+	return this->_width;
+}
+
+double Map::GetResolution()
+{
+	return this->_gridResolution;
+}
+
+vector<bool> Map::loadMap(const char* fileName, unsigned& width, unsigned& height)
+{
+	unsigned int pixelsToAdd = 15;
+	unsigned error = lodepng::decode(_image, width, height, fileName);
+
+	// If there's an error, display it
+	if(error) cout << "decoder error " << error << ": " << lodepng_error_text(error) << endl;
+
+	unsigned size = height * width * 4;
+    vector<unsigned char> newImage(size);
+    vector<bool> grid(height * width);
+
+    for(unsigned i = 0; i < height ; i++)
+    {
+        for(unsigned j = 0; j < width * 4; j+=4)
+        {
+            newImage[(width * 4* i) + j] = (int)_image[(width * 4* i) + j];
+            newImage[(width * 4* i) + j + 1] = (int)_image[(width * 4* i) + j + 1];
+            newImage[(width * 4* i) + j + 2] = (int)_image[(width * 4* i) + j + 2];
+
+            newImage[(width * 4* i) + j + 3] = 255;
+        }
+    }
+
+    for(unsigned i = 0; i < height ; i++)
+    {
+        for(unsigned j = 0; j < width * 4; j+=4)
+        {
+            // Black
+            if((unsigned)_image[(width * 4* i) + j] == 0)
+            {
+                // Color the cell
+                newImage[(width * 4* i) + j] = 0;
+                newImage[(width * 4* i) + j + 1] = 0;
+                newImage[(width * 4* i) + j + 2] = 0;
+
+                //draw rectangle around the current pixel with size of 2*pixelsToAdd(so the "radius" is pixelsToAdd)
+                for(unsigned int k = 0; k <= (pixelsToAdd*2)+1; k++)
+                {
+                	for(unsigned int l = 0; l <= pixelsToAdd*2; l++)
+                	{
+                		unsigned int index = (width*4*(i-pixelsToAdd+k)) + (l - pixelsToAdd);
+                		if(index > 0 && index < size)
+                		{
+                			// set the color of the cell to black
+                			newImage[index] = 0;
+                			newImage[index+1] = 0;
+                			newImage[index+2] = 0;
+                		}
+                	}
+                }
+
+                // Up cell
+                for(unsigned k = 1; k <= pixelsToAdd; k++)
+                {
+                    if((width * 4* (i - k)) + j > 0 &&
+                      (width * 4* (i - k)) + j < size)
+                    {
+                        newImage[(width * 4* (i - k)) + j] = 0;
+                        newImage[(width * 4* (i - k)) + j + 1] = 0;
+                        newImage[(width * 4* (i - k)) + j + 2] = 0;
+                    }
+                }
+
+                // Down cell
+                for(unsigned k = 1; k <= pixelsToAdd; k++)
+                {
+                    if((width * 4* (i + k)) + j > 0 &&
+                      (width * 4* (i + k)) + j < size)
+                    {
+                        newImage[(width * 4* (i + k)) + j] = 0;
+                        newImage[(width * 4* (i + k)) + j + 1] = 0;
+                        newImage[(width * 4* (i + k)) + j + 2] = 0;
+                    }
+                }
+
+                // Right cell
+                for(unsigned k = 1; k <= pixelsToAdd; k++)
+                {
+                    if((width * 4* i) + j + k*4 < (width * 4* (i + 1)) &&
+                      (width * 4* i) + j + k*4 > (width * 4* (i - 1)))
+                    {
+                        newImage[(width * 4* i) + j + k*4] = 0;
+                        newImage[(width * 4* i) + j + k*4 + 1] = 0;
+                        newImage[(width * 4* i) + j + k*4 + 2] = 0;
+                    }
+                }
+
+                // Left cell
+                for(unsigned k = 1; k <= pixelsToAdd; k++)
+                {
+                    if((width * 4* i) + j - k*4 < (width * 4* (i + 1)) &&
+                      (width * 4* i) + j - k*4 > (width * 4* (i - 1)))
+                    {
+                        newImage[(width * 4* i) + j - k*4] = 0;
+                        newImage[(width * 4* i) + j - k*4 + 1] = 0;
+                        newImage[(width * 4* i) + j - k*4 + 2] = 0;
+                    }
+                }
+
+            }
+        }
+    }
+
+    // generate the grid bitmap from the new image
+    for(unsigned i = 0; i < height ;i++)
+    {
+        for(unsigned j = 0; j < width * 4 ;j += 4)
+        {
+            if (newImage[(width * 4 * i) + j] == 255)
+            {
+                grid[(width * i) + j/4] = 0; // Free to move
+            }
+            else
+            {
+                grid[(width * i) + j/4] = 1; // Wall
+            }
+        }
+    }
+
+    return grid;
+}
+
+
+bool Map::IsOccupied(int x, int y)
+{
+	return _grid[(_width*y)+x] == 0;
+}

@@ -40,7 +40,7 @@ double Map::GetResolution()
 
 vector<bool> Map::loadMap(const char* fileName, unsigned& width, unsigned& height)
 {
-	unsigned int pixelsToAdd = 12;
+	unsigned int pixelsToAdd = 20;
 	unsigned error = lodepng::decode(_image, width, height, fileName);
 
 	// If there's an error, display it
@@ -64,17 +64,17 @@ vector<bool> Map::loadMap(const char* fileName, unsigned& width, unsigned& heigh
 
     for(unsigned i = 0; i < height ; i++)
     {
-        for(unsigned j = 0; j < width; j++)
+        for(unsigned j = 0; j < width * 4; j+=4)
         {
             // Black
-            if((unsigned)_image[(width * 4* i) + (j*4)] == 0)
+            if((unsigned)_image[(width * 4* i) + j] == 0)
             {
                 //draw and fill rectangle around the current pixel with size of 2*pixelsToAdd(so the "radius" is pixelsToAdd)
-                for(unsigned int k = 0; k <= (pixelsToAdd*2) + 1; k++)
+                for(unsigned int k = 0; k <= (pixelsToAdd*2)+1; k++)
                 {
-                	for(unsigned int l = 0; l <= (pixelsToAdd*2) + 1; l++)
+                	for(unsigned int l = 0; l <= pixelsToAdd*2; l++)
                 	{
-                		unsigned int index = (width*4*(i-pixelsToAdd+k)) + (4*(j - pixelsToAdd + l));
+                		unsigned int index = (width*4*(i-pixelsToAdd+k)) + (j - pixelsToAdd + l);
                 		if(index > 0 && index < size)
                 		{
                 			// set the color of the cell to black
@@ -91,18 +91,21 @@ vector<bool> Map::loadMap(const char* fileName, unsigned& width, unsigned& heigh
     // generate the grid bitmap from the new image
     for(unsigned i = 0; i < height ;i++)
     {
-        for(unsigned j = 0; j < width ;j++)
+        for(unsigned j = 0; j < width * 4 ;j += 4)
         {
-            if (newImage[(width * 4 * i) + (j*4)] == 255)
+            if (newImage[(width * 4 * i) + j] == 255)
             {
-                grid[(width * i) + j] = 0; // Free to move
+                grid[(width * i) + j/4] = 0; // Free to move
             }
             else
             {
-                grid[(width * i) + j] = 1; // Wall
+                grid[(width * i) + j/4] = 1; // Wall
             }
         }
     }
+
+
+    lodepng::encode("~/Desktop/roboticLabMap_new.png", newImage, width,height);
 
     return grid;
 }

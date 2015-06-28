@@ -104,6 +104,9 @@ vector<bool> Map::loadMap(const char* fileName, unsigned& width, unsigned& heigh
         }
     }
 
+
+    lodepng::encode("/home/colman/Desktop/roboticLabMap_new.png", newImage, width,height);
+
     return grid;
 }
 

@@ -40,7 +40,7 @@ double Map::GetResolution()
 
 vector<bool> Map::loadMap(const char* fileName, unsigned& width, unsigned& height)
 {
-	unsigned int pixelsToAdd = 12;
+	unsigned int pixelsToAdd = 10;
 	unsigned error = lodepng::decode(_image, width, height, fileName);
 
 	// If there's an error, display it
@@ -103,6 +103,9 @@ vector<bool> Map::loadMap(const char* fileName, unsigned& width, unsigned& heigh
             }
         }
     }
+
+
+    lodepng::encode("/home/colman/Desktop/roboticLabMap_new.png", newImage, width,height);
 
     return grid;
 }
