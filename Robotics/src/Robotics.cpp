@@ -25,7 +25,7 @@ int main()
 	Map map(&config);
 	Robot robot("localhost", 6665, config.getStartLocation(), map.GetHeight(), map.GetWidth(), config.getMapResolutionCM()/100.0);
 	PathPlanner plan(&robot, &map, config.getStartLocation(), config.getGoal());
-	LocalizationManager loc(&map);
+	LocalizationManager loc(&map, &robot);
 	Manager manager(&plan, &loc, &robot);
 
 	manager.run();

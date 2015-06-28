@@ -1,17 +1,19 @@
 #include "Particle.h"
 
-Particle::Particle(int xPos, int yPos, double yawPos, Map* map)
+Particle::Particle(int xPos, int yPos, double yawPos, Map* map, Robot* robot)
 {
 	this->_belief = 0;
 	this->_position = new Position(xPos, yPos, yawPos);
 	this->_map = map;
+	this->_robot = robot;
 }
 
-Particle::Particle(int xPos, int yPos, double yawPos, double belief, Map* map)
+Particle::Particle(int xPos, int yPos, double yawPos, double belief, Map* map, Robot* robot)
 {
 	this->_belief = belief;
 	this->_position = new Position(xPos, yPos, yawPos);
 	this->_map = map;
+	this->_robot = robot;
 }
 
 double Particle::GetMovingProbability(double xDelta, double yDelta, double yawDelta)
@@ -169,7 +171,7 @@ double Particle::GetBelief()
 void Particle::Print()
 {
 	// Print robot position
-	cout << "Robot position: " << this->_position->X() << ", " << this->_position->Y() << ", yaw: " << this->_position->Yaw() << endl;
+	_robot->drawPoint(this->_position->X(), this->_position->Y(), 0.5, 255, 255, 255);
 }
 
 Particle::~Particle() {

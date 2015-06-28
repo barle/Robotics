@@ -31,8 +31,8 @@ void Manager::run() {
 			// Set robot delta values
 			this->_robot->SetDeltaValues(deltaX, deltaY, deltaYaw);
 
-			// TODO: enable this for particles :(
-			//_loc->Update(deltaX,deltaY, deltaYaw, laserScans);
+			_loc->Update(deltaX,deltaY, deltaYaw, laserScans);
+			//_loc->PrintParticles();
 
 			readsCounter = 1;
 		}

@@ -38,6 +38,7 @@ public:
 
 	void SetDeltaValues(double &deltaXInPixel, double &deltaYInPixel, double &deltaYawInDegree);
 	void setSpeed(float linear, float angular);
+	void ClearParticles();
 	float getX();
 	float getY();
 	float getYaw();

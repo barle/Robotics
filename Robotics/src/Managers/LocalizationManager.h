@@ -11,14 +11,16 @@ using namespace std;
 #include <vector>
 #include"../Models/Particle.h"
 #include "../Map.h"
+#include "../Robot.h"
 
 class LocalizationManager {
 private:
 	Map *_map;
+	Robot* _robot;
 	vector<Particle*> _particles;
 
 public:
-	LocalizationManager(Map *map);
+	LocalizationManager(Map *map, Robot* robot);
 	void Update(double xDelta, double yDelta, double yawDelta, float* laserScans);
 	void PrintParticles();
 	virtual ~LocalizationManager();

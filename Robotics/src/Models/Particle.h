@@ -23,6 +23,7 @@
 #define ANGULAR_RESOLUTION 240
 
 #include "../Map.h"
+#include "../Robot.h"
 #include "Position.h"
 #include <vector>
 #include <cmath>
@@ -35,13 +36,14 @@ private:
 	Position *_position;
 	double _belief;
 	Map* _map;
+	Robot* _robot;
 	double GetMovingProbability(double xDelta, double yDelta, double yawDelta);
 	double CheckProbability(float* laserScans);
 	double AngleOfIndex(int index);
 
 public:
-	Particle(int xPos, int yPos, double yawPos, Map* map);
-	Particle(int xPos, int yPos, double yawPos, double belief, Map* map);
+	Particle(int xPos, int yPos, double yawPos, Map* map, Robot* robot);
+	Particle(int xPos, int yPos, double yawPos, double belief, Map* map, Robot* robot);
 	Position* GetPosition();
 	void Update(double xDelta, double yDelta, double yawDelta, float* laserScans);
 	vector<Particle*> CreateNewParticles();

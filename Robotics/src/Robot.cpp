@@ -128,3 +128,8 @@ void Robot::drawPoint(float x, float y, float size, int red, int blue, int green
 	color.green = green;
 	_gp->DrawPolygon(points, 5, true, color);
 }
+
+void Robot::ClearParticles()
+{
+	_gp->Clear();
+}
