@@ -19,9 +19,13 @@ private:
 	Robot* _robot;
 	vector<Particle*> _particles;
 
+	void createAllParticles();
+	void filterParticles(double xDeltaInMeter, double yDeltaInMeter, double yawDeltaRadian, float* laserScans);
+	void resampleParticles(double xDeltaInMeter, double yDeltaInMeter, double yawDeltaRadian, float* laserScans);
+
 public:
 	LocalizationManager(Map *map, Robot* robot);
-	void Update(double xDelta, double yDelta, double yawDelta, float* laserScans);
+	void Update(double xDeltaInMeter, double yDeltaInMeter, double yawDeltaRadian, float* laserScans);
 	void PrintParticles();
 	virtual ~LocalizationManager();
 };

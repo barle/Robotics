@@ -33,9 +33,32 @@ unsigned Map::GetWidth() {
 	return this->_width;
 }
 
-double Map::GetResolution()
+double Map::GetGridResolution()
 {
 	return this->_gridResolution;
+}
+
+double Map::GetMapResolution()
+{
+	return this->_mapResolution;
+}
+
+float Map::convertDegreeToRadian(float degree)
+{
+	return DTOR(degree);
+}
+float Map::convertRadianToDegree(float radian)
+{
+	return RTOD(radian);
+}
+
+float Map::convertPixelToMeter(float inPixel)
+{
+	return inPixel*_mapResolution;
+}
+float Map::convertMeterToPixel(float inMeter)
+{
+	return inMeter/_mapResolution;
 }
 
 vector<bool> Map::loadMap(const char* fileName, unsigned& width, unsigned& height)

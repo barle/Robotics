@@ -11,12 +11,10 @@
 #include <libplayerc++/playerc++.h>
 #include <string>
 #include "Models/Position.h"
+#include "Map.h"
 
 using namespace PlayerCc;
 using namespace std;
-
-#define MAP_X_SIZE 40
-#define MAP_Y_SIZE 20
 
 class Robot {
 private:
@@ -26,14 +24,12 @@ private:
 	PlayerClient *_dummyPainter; //this is a dummy client for drawing
 	Graphics2dProxy *_gp;
 
+	Map *_map;
 	Position *_lastPosInPixel;
 	Position *_startInPixel;
-	int _mapHeightInPixel;
-	int _mapWidthInPixel;
-	double _mapResolutionInMeters;
 
 public:
-	Robot(string ip, int port, Position *startInPixel, int mapHeightInPixel, int mapWidthInPixel, double mapResolutionInMeters);
+	Robot(string ip, int port, Position *startInPixel, Map *map);
 	virtual ~Robot();
 
 	void SetDeltaValues(double &deltaXInPixel, double &deltaYInPixel, double &deltaYawInDegree);
@@ -42,13 +38,6 @@ public:
 	float getX();
 	float getY();
 	float getYaw();
-
-	// Converters:
-	float convertDegreeToRadian(float degree);
-	float convertRadianToDegree(float radian);
-
-	float convertPixelToMeter(float inPixel);
-	float convertMeterToPixel(float inMeter);
 
 	float* getLaserScan();
 	int deg_to_index(double deg);

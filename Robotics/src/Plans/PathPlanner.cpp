@@ -33,10 +33,10 @@ PathPlanner::PathPlanner(Robot *robot, Map *map, Position *start, Position *goal
 
 	print(shortestPath);
 
-	GoTo *lastWayPoint = new GoTo(robot,start);
+	GoTo *lastWayPoint = new GoTo(robot, map, start);
 	for(unsigned int i = 1; i < shortestPath.size(); i++)
 	{
-		GoTo *currentWayPoint = new GoTo(robot, shortestPath[i]->getLocation());
+		GoTo *currentWayPoint = new GoTo(robot, map, shortestPath[i]->getLocation());
 		_behaviors.push_back(currentWayPoint);
 		lastWayPoint->setNextGoal(currentWayPoint);
 		lastWayPoint = currentWayPoint;

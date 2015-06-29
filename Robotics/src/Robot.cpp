@@ -7,12 +7,11 @@
 
 #include "Robot.h"
 
-Robot::Robot(string ip, int port, Position *startInPixel, int mapHeightInPixel, int mapWidthInPixel, double mapResolutionInMeters) : _pc(ip, port), _pp(&_pc), _lp(&_pc) {
-	_mapHeightInPixel = mapHeightInPixel;
-	_mapWidthInPixel = mapWidthInPixel;
-	_mapResolutionInMeters = mapResolutionInMeters;
+Robot::Robot(string ip, int port, Position *startInPixel, Map *map)
+	: _pc(ip, port), _pp(&_pc), _lp(&_pc) {
+	_map = map;
 
-	float yaw = convertDegreeToRadian(startInPixel->Yaw());
+	float yaw = _map->convertDegreeToRadian(startInPixel->Yaw());
 
 	_pp.SetOdometry(0,0,yaw); // do this to intialize the yaw in the robot's odometry
 	_startInPixel = startInPixel;
@@ -35,38 +34,19 @@ void Robot::setSpeed(float linear, float angular)
 	_pp.SetSpeed(linear, angular);
 }
 
-
-float Robot::convertDegreeToRadian(float degree)
-{
-	return DTOR(degree);
-}
-float Robot::convertRadianToDegree(float radian)
-{
-	return RTOD(radian);
-}
-
-float Robot::convertPixelToMeter(float inPixel)
-{
-	return inPixel*_mapResolutionInMeters;
-}
-float Robot::convertMeterToPixel(float inMeter)
-{
-	return inMeter/_mapResolutionInMeters;
-}
-
 float Robot::getX()
 {
-	return _startInPixel->X() + convertMeterToPixel(_pp.GetXPos());
+	return _startInPixel->X() + _map->convertMeterToPixel(_pp.GetXPos());
 }
 
 float Robot::getY()
 {
-	return _startInPixel->Y() - convertMeterToPixel(_pp.GetYPos());
+	return _startInPixel->Y() - _map->convertMeterToPixel(_pp.GetYPos());
 }
 
 float Robot::getYaw()
 {
-	return _startInPixel->Yaw() + convertRadianToDegree(_pp.GetYaw());
+	return _startInPixel->Yaw() + _map->convertRadianToDegree(_pp.GetYaw());
 }
 
 float* Robot::getLaserScan()
@@ -105,22 +85,22 @@ void Robot::read()
 
 void Robot::drawPoint(float x, float y, float size, int red, int blue, int green)
 {
-	float boxSize = convertPixelToMeter(size);
+	float boxSize = _map->convertPixelToMeter(size);
 	player_point_2d_t points[5];
-	points[0].px = convertPixelToMeter(x) - boxSize;
-	points[0].py = -convertPixelToMeter(y) + boxSize;
+	points[0].px = _map->convertPixelToMeter(x) - boxSize;
+	points[0].py = -_map->convertPixelToMeter(y) + boxSize;
 
-	points[1].px = convertPixelToMeter(x) + boxSize;
-	points[1].py = -convertPixelToMeter(y) + boxSize;
+	points[1].px = _map->convertPixelToMeter(x) + boxSize;
+	points[1].py = -_map->convertPixelToMeter(y) + boxSize;
 
-	points[2].px = convertPixelToMeter(x) + boxSize;
-	points[2].py = -convertPixelToMeter(y) - boxSize;
+	points[2].px = _map->convertPixelToMeter(x) + boxSize;
+	points[2].py = -_map->convertPixelToMeter(y) - boxSize;
 
-	points[3].px = convertPixelToMeter(x) - boxSize;
-	points[3].py = -convertPixelToMeter(y) - boxSize;
+	points[3].px = _map->convertPixelToMeter(x) - boxSize;
+	points[3].py = -_map->convertPixelToMeter(y) - boxSize;
 
-	points[4].px = convertPixelToMeter(x) - boxSize;
-	points[4].py = -convertPixelToMeter(y) + boxSize;
+	points[4].px = _map->convertPixelToMeter(x) - boxSize;
+	points[4].py = -_map->convertPixelToMeter(y) + boxSize;
 
 	player_color_t color;
 	color.red = red;

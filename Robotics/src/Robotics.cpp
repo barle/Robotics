@@ -23,10 +23,10 @@ int main()
 {
 	ConfigurationManager config("/home/colman/Desktop/parameters.txt");
 	Map map(&config);
-	Robot robot("localhost", 6665, config.getStartLocation(), map.GetHeight(), map.GetWidth(), config.getMapResolutionCM()/100.0);
+	Robot robot("localhost", 6665, config.getStartLocation(), &map);
 	PathPlanner plan(&robot, &map, config.getStartLocation(), config.getGoal());
 	LocalizationManager loc(&map, &robot);
-	Manager manager(&plan, &loc, &robot);
+	Manager manager(&plan, &loc, &robot, &map);
 
 	manager.run();
 	return 0;

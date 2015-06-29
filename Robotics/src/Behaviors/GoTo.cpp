@@ -8,8 +8,8 @@
 #include "GoTo.h"
 #include <cmath>
 
-GoTo::GoTo(Robot *robot, Position *goal)
-	: GoToBase(robot,goal) {
+GoTo::GoTo(Robot *robot, Map *map, Position *goal)
+	: GoToBase(robot, map, goal) {
 	this->_nextGoalBehavior = NULL;
 }
 
@@ -44,9 +44,9 @@ bool GoTo::stopCond()
 	//we need to change our angle...we are not in the correct direction
 	this->_robot->setSpeed(0, 0);
 	this->_nextBehaviors.clear();
-	StraightToRight *right = new StraightToRight(this->_robot, _goal, this);
+	StraightToRight *right = new StraightToRight(this->_robot, _map, _goal, this);
 	right->setNextGoal(_nextGoalBehavior);
-	StraightToLeft *left = new StraightToLeft(this->_robot, _goal, this);
+	StraightToLeft *left = new StraightToLeft(this->_robot, _map, _goal, this);
 	left->setNextGoal(_nextGoalBehavior);
 	this->addNext(right);
 	this->addNext(left);

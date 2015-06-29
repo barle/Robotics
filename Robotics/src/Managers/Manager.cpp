@@ -1,9 +1,10 @@
 #include "Manager.h"
 
-Manager::Manager(Plan *plan, LocalizationManager *loc, Robot *robot) {
+Manager::Manager(Plan *plan, LocalizationManager *loc, Robot *robot, Map *map) {
 	this->_robot = robot;
 	this->_plan = plan;
 	this->_loc = loc;
+	this->_map = map;
 }
 
 void Manager::run() {
@@ -23,16 +24,18 @@ void Manager::run() {
 		if (readsCounter == 20)
 		{
 			//draw current location:
-			double deltaX;
-			double deltaY;
-			double deltaYaw;
+			double deltaXInPixel;
+			double deltaYInPixel;
+			double deltaYawInDegree;
 			float *laserScans = this->_robot->getLaserScan();
 
 			// Set robot delta values
-			this->_robot->SetDeltaValues(deltaX, deltaY, deltaYaw);
+			this->_robot->SetDeltaValues(deltaXInPixel, deltaYInPixel, deltaYawInDegree);
 
-			_loc->Update(deltaX,deltaY, deltaYaw, laserScans);
-			//_loc->PrintParticles();
+			double deltaXInMeter = _map->convertPixelToMeter(deltaXInPixel);
+			double deltaYInMeter = _map->convertPixelToMeter(deltaYInPixel);
+			double deltaYawInRadian = _map->convertDegreeToRadian(deltaYawInDegree);
+			_loc->Update(deltaXInMeter,deltaYInMeter, deltaYawInRadian, laserScans);
 
 			readsCounter = 1;
 		}

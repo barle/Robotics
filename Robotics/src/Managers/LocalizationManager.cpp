@@ -4,40 +4,42 @@ LocalizationManager::LocalizationManager(Map* map, Robot* robot) {
 	this->_map = map;
 	this->_robot = robot;
 
+	createAllParticles();
+}
+
+void LocalizationManager::createAllParticles()
+{
+	_particles.clear();
 	// Build particles
 	for (int particleIndex = 0; particleIndex < NUM_OF_PARTICLES; particleIndex++)
 	{
 		// Make them with random values from within maps bounds
-		int xPos = rand() % static_cast<int>(_map->GetWidth() / _map->GetResolution());
-		int yPos = rand() % static_cast<int>(_map->GetHeight() / _map->GetResolution());
+		double xPosInPixels = rand() % static_cast<int>(_map->GetWidth());
+		double yPosInPixels = rand() % static_cast<int>(_map->GetHeight());
+
+		double xPosInMeters = _map->convertPixelToMeter(xPosInPixels);
+		double yPosInMeters = _map->convertPixelToMeter(yPosInPixels);
 
 		double yaw = DTOR(rand() % 360);
 
-		Particle* particle = new Particle(xPos, yPos, yaw, map, robot);
+		Particle* particle = new Particle(xPosInMeters, yPosInMeters, yaw, _map, _robot);
 		this->_particles.push_back(particle);
-
-		cout << "Added particle" << particleIndex + 1 << ": " << xPos << ", " << yPos << ", yaw: " << yaw << endl;
 	}
+	PrintParticles();
 }
 
-void LocalizationManager::Update(double xDelta, double yDelta, double yawDelta, float* laserScans)
+void LocalizationManager::filterParticles(double xDelta, double yDelta, double yawDelta, float* laserScans)
 {
 	vector<unsigned> particlesToEraseIndexes;
-	vector<unsigned> particlesToDuplicateIndexes;
 
 	// Go over all particles
 	for (unsigned particleIndex = 0; particleIndex < this->_particles.size(); particleIndex++)
 	{
 		this->_particles[particleIndex]->Update(xDelta, yDelta, yawDelta, laserScans);
-
-		// Check if we need to erase the current particle or we can duplicate it later
+		// Check if we need to erase the current particle
 		if (this->_particles[particleIndex]->GetBelief() < PARTICLE_MIN_BELIEF)
 		{
 			particlesToEraseIndexes.push_back(particleIndex);
-		}
-		else
-		{
-			particlesToDuplicateIndexes.push_back(particleIndex);
 		}
 	}
 
@@ -49,26 +51,54 @@ void LocalizationManager::Update(double xDelta, double yDelta, double yawDelta, 
 		if (it != _particles.end()) {
 		  // swap the one to be removed with the last element
 		  // and remove the item at the end of the container
-		  // to prevent moving all items after '5' by one
+		  // to prevent moving all items after the removed item by one
 		  swap(*it, _particles.back());
 		  _particles.pop_back();
 		}
 	}
 
-	bool finishedDuplicating = !(this->_particles.size() < NUM_OF_PARTICLES);
+}
 
+void LocalizationManager::resampleParticles(double xDelta, double yDelta, double yawDelta, float* laserScans)
+{
+	vector<unsigned> particlesToDuplicateIndexes;
+
+	for (unsigned particleIndex = 0; particleIndex < this->_particles.size(); particleIndex++)
+	{
+		// Check if we need to duplicate the current particle
+		if (this->_particles[particleIndex]->GetBelief() >= PARTICLE_MIN_BELIEF)
+		{
+			particlesToDuplicateIndexes.push_back(particleIndex);
+		}
+	}
+
+	// no good particles... recreate all particles
+	if(particlesToDuplicateIndexes.size() == 0)
+	{
+		createAllParticles();
+		return;
+	}
+
+	bool finishedDuplicating = !(this->_particles.size() < NUM_OF_PARTICLES);
 	// Start creating similar particles
 	while (!finishedDuplicating)
 	{
 		for (unsigned duplicateIndex = 0; duplicateIndex < particlesToDuplicateIndexes.size() && !finishedDuplicating; duplicateIndex++)
 		{
 			Position *pos = this->_particles[particlesToDuplicateIndexes[duplicateIndex]]->GetPosition();
-			double newParticleY = pos->Y() + static_cast<double>((rand() % (_map->GetHeight() / RANDOMIZE_FACTOR)) - (rand() % (_map->GetHeight() / RANDOMIZE_FACTOR)));
-			double newParticleX = pos->X() + static_cast<double>((rand() % (_map->GetWidth() / RANDOMIZE_FACTOR)) - (rand() % (_map->GetWidth() / RANDOMIZE_FACTOR)));
-			double newParticleYaw = pos->Yaw() + (double(rand() % 10) / 100.0) - (double(rand() % 10) / 100.0);
+			double xPosInPixels = static_cast<double>((rand() % _map->GetWidth() / RANDOMIZE_FACTOR)) - (rand() % (_map->GetWidth() / RANDOMIZE_FACTOR));
+			double yPosInPixels = static_cast<double>((rand() % _map->GetHeight() / RANDOMIZE_FACTOR)) - (rand() % (_map->GetHeight() / RANDOMIZE_FACTOR));
+			double yawInDegree = static_cast<double>((rand() % 10 - (rand() % 10)));
+
+
+			double newParticleX = pos->X() + _map->convertPixelToMeter(xPosInPixels);
+			double newParticleY = pos->Y() + _map->convertPixelToMeter(yPosInPixels);
+			double newParticleYaw = pos->Yaw() + _map->convertDegreeToRadian(yawInDegree);
 
 			// Make sure we are in safe bounds
-			if (!(newParticleX > _map->GetWidth() / _map->GetResolution() || newParticleY > _map->GetHeight() / _map->GetResolution() || newParticleY < 0 || newParticleX < 0))
+			if (!(newParticleX > _map->convertPixelToMeter(_map->GetWidth()) ||
+					newParticleY > _map->convertPixelToMeter(_map->GetHeight()) ||
+					newParticleY < 0 || newParticleX < 0))
 			{
 				Particle* newParticle = new Particle(newParticleX, newParticleY, newParticleYaw,
 						this->_particles[duplicateIndex]->GetBelief(), _map, _robot);
@@ -79,23 +109,30 @@ void LocalizationManager::Update(double xDelta, double yDelta, double yawDelta, 
 			}
 		}
 	}
+}
 
+void LocalizationManager::Update(double xDelta, double yDelta, double yawDelta, float* laserScans)
+{
+	//update all particles
+	for (unsigned particleIndex = 0; particleIndex < this->_particles.size(); particleIndex++)
+	{
+		this->_particles[particleIndex]->Update(xDelta, yDelta, yawDelta, laserScans);
+	}
+
+	filterParticles(xDelta, yDelta, yawDelta, laserScans);
+	resampleParticles(xDelta, yDelta, yawDelta, laserScans);
+
+	PrintParticles();
 }
 
 void LocalizationManager::PrintParticles()
 {
 	_robot->ClearParticles();
 
-	double belief = 0;
-	int index = 0;
-
-	for(vector<int>::size_type i = 0; i != _particles.size(); i++) {
-		if(belief < _particles[i]->GetBelief()){
-			belief = _particles[i]->GetBelief();
-			index = i;
-		}
+	for(int i = 0; i < _particles.size(); i++)
+	{
+		this->_particles[i]->Print();
 	}
-	this->_particles[index]->Print();
 }
 
 LocalizationManager::~LocalizationManager() {

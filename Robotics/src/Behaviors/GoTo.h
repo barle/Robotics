@@ -18,7 +18,7 @@ public:
 	virtual bool stopCond();
 	virtual void action();
 
-	GoTo(Robot *robot, Position *goal);
+	GoTo(Robot *robot, Map *map, Position *goal);
 	virtual ~GoTo();
 };
 

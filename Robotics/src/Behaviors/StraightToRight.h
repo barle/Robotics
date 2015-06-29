@@ -18,7 +18,7 @@ public:
 	virtual bool stopCond();
 	virtual void action();
 
-	StraightToRight(Robot *robot, Position *goal, GoToBase *goalBehavior);
+	StraightToRight(Robot *robot, Map *map, Position *goal, GoToBase *goalBehavior);
 	virtual ~StraightToRight();
 };
 

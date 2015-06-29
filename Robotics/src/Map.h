@@ -35,7 +35,15 @@ public:
 	vector<bool> GetGrid();
 	unsigned GetHeight();
 	unsigned GetWidth();
-	double GetResolution();
+	double GetGridResolution();
+	double GetMapResolution();
+
+	// Converters:
+	float convertDegreeToRadian(float degree);
+	float convertRadianToDegree(float radian);
+
+	float convertPixelToMeter(float inPixel);
+	float convertMeterToPixel(float inMeter);
 
 	bool IsOccupied(int x, int y);
 };

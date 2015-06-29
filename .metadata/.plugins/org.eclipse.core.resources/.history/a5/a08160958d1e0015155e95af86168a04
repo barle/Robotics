@@ -1,0 +1,107 @@
+#include "LocalizationManager.h"
+
+LocalizationManager::LocalizationManager(Map* map, Robot* robot) {
+	this->_map = map;
+	this->_robot = robot;
+
+	// Build particles
+	for (int particleIndex = 0; particleIndex < NUM_OF_PARTICLES; particleIndex++)
+	{
+		// Make them with random values from within maps bounds
+		int xPosInPixels = rand() % static_cast<int>(_map->GetWidth());
+		int yPosInPixels = rand() % static_cast<int>(_map->GetHeight());
+
+		double xPosInMeters = _map->convertPixelToMeter(xPosInPixels);
+		double yPosInMeters = _map->convertPixelToMeter(yPosInPixels);
+
+		double yaw = DTOR(rand() % 360);
+
+		Particle* particle = new Particle(xPos, yPos, yaw, map, robot);
+		this->_particles.push_back(particle);
+
+		cout << "Added particle" << particleIndex + 1 << ": " << xPos << ", " << yPos << ", yaw: " << yaw << endl;
+	}
+}
+
+void LocalizationManager::Update(double xDelta, double yDelta, double yawDelta, float* laserScans)
+{
+	vector<unsigned> particlesToEraseIndexes;
+	vector<unsigned> particlesToDuplicateIndexes;
+
+	// Go over all particles
+	for (unsigned particleIndex = 0; particleIndex < this->_particles.size(); particleIndex++)
+	{
+		this->_particles[particleIndex]->Update(xDelta, yDelta, yawDelta, laserScans);
+
+		// Check if we need to erase the current particle or we can duplicate it later
+		if (this->_particles[particleIndex]->GetBelief() < PARTICLE_MIN_BELIEF)
+		{
+			particlesToEraseIndexes.push_back(particleIndex);
+		}
+		else
+		{
+			particlesToDuplicateIndexes.push_back(particleIndex);
+		}
+	}
+
+	// Erase all less accurate particles
+	for (int particleEraseIndex = particlesToEraseIndexes.size()-1; particleEraseIndex >= 0; particleEraseIndex--)
+	{
+		vector<Particle*>::iterator it = _particles.begin() + particleEraseIndex;
+
+		if (it != _particles.end()) {
+		  // swap the one to be removed with the last element
+		  // and remove the item at the end of the container
+		  // to prevent moving all items after '5' by one
+		  swap(*it, _particles.back());
+		  _particles.pop_back();
+		}
+	}
+
+	bool finishedDuplicating = !(this->_particles.size() < NUM_OF_PARTICLES);
+
+	// Start creating similar particles
+	while (!finishedDuplicating)
+	{
+		for (unsigned duplicateIndex = 0; duplicateIndex < particlesToDuplicateIndexes.size() && !finishedDuplicating; duplicateIndex++)
+		{
+			Position *pos = this->_particles[particlesToDuplicateIndexes[duplicateIndex]]->GetPosition();
+			double newParticleY = pos->Y() + static_cast<double>((rand() % (_map->GetHeight() / RANDOMIZE_FACTOR)) - (rand() % (_map->GetHeight() / RANDOMIZE_FACTOR)));
+			double newParticleX = pos->X() + static_cast<double>((rand() % (_map->GetWidth() / RANDOMIZE_FACTOR)) - (rand() % (_map->GetWidth() / RANDOMIZE_FACTOR)));
+			double newParticleYaw = pos->Yaw() + (double(rand() % 10) / 100.0) - (double(rand() % 10) / 100.0);
+
+			// Make sure we are in safe bounds
+			if (!(newParticleX > _map->convertPixelToMeter(_map->GetWidth()) ||
+					newParticleY > _map->convertPixelToMeter(_map->GetHeight()) ||
+					newParticleY < 0 || newParticleX < 0))
+			{
+				Particle* newParticle = new Particle(newParticleX, newParticleY, newParticleYaw,
+						this->_particles[duplicateIndex]->GetBelief(), _map, _robot);
+				this->_particles.push_back(newParticle);
+
+				finishedDuplicating = !(this->_particles.size() < NUM_OF_PARTICLES);
+				cout << "Created new particle: " << newParticleX << ", " << newParticleY << ", yaw: " << newParticleYaw << endl;
+			}
+		}
+	}
+
+}
+
+void LocalizationManager::PrintParticles()
+{
+	_robot->ClearParticles();
+
+	double belief = 0;
+	int index = 0;
+
+	for(vector<int>::size_type i = 0; i != _particles.size(); i++) {
+		if(belief < _particles[i]->GetBelief()){
+			belief = _particles[i]->GetBelief();
+			index = i;
+		}
+	}
+	this->_particles[index]->Print();
+}
+
+LocalizationManager::~LocalizationManager() {
+}

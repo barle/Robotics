@@ -7,8 +7,9 @@
 
 #include "GoToBase.h"
 
-GoToBase::GoToBase(Robot *robot, Position *goal) : Behavior(robot) {
+GoToBase::GoToBase(Robot *robot, Map *map, Position *goal) : Behavior(robot) {
 	this->_robot = robot;
+	this->_map = map;
 	this->_goal = goal;
 	this->_nextGoalBehavior = NULL;
 }
@@ -42,8 +43,8 @@ void GoToBase::setDeltaXYInMeter(float &deltaXInMeter, float &deltaYInMeter)
 	float deltaXInPixel = _goal->X() - curXInPixel;
 	float deltaYInPixel = curYInPixel - _goal->Y(); // the Y axis are reversed
 
-	deltaXInMeter = this->_robot->convertPixelToMeter(deltaXInPixel);
-	deltaYInMeter = this->_robot->convertPixelToMeter(deltaYInPixel);
+	deltaXInMeter = this->_map->convertPixelToMeter(deltaXInPixel);
+	deltaYInMeter = this->_map->convertPixelToMeter(deltaYInPixel);
 }
 
 float GoToBase::getDegree(float x, float y)
@@ -56,7 +57,7 @@ float GoToBase::getDegree(float x, float y)
 	else
 		radian = atan(y/x);
 
-	double degree = this->_robot->convertRadianToDegree(radian);
+	double degree = this->_map->convertRadianToDegree(radian);
 
 	if(x >= 0 && y >=0) // I
 	{

@@ -7,8 +7,8 @@
 
 #include "StraightToRight.h"
 
-StraightToRight::StraightToRight(Robot *robot, Position *goal, GoToBase *goalBehavior)
-	: GoToBase(robot, goal)
+StraightToRight::StraightToRight(Robot *robot, Map *map, Position *goal, GoToBase *goalBehavior)
+	: GoToBase(robot, map, goal)
 {
 	this->_goalBehavior = goalBehavior;
 }

@@ -42,8 +42,8 @@ private:
 	double AngleOfIndex(int index);
 
 public:
-	Particle(int xPos, int yPos, double yawPos, Map* map, Robot* robot);
-	Particle(int xPos, int yPos, double yawPos, double belief, Map* map, Robot* robot);
+	Particle(double xPos, double yPos, double yawPos, Map* map, Robot* robot);
+	Particle(double xPos, double yPos, double yawPos, double belief, Map* map, Robot* robot);
 	Position* GetPosition();
 	void Update(double xDelta, double yDelta, double yawDelta, float* laserScans);
 	vector<Particle*> CreateNewParticles();

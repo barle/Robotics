@@ -11,6 +11,7 @@
 #include "Behavior.h"
 #include "../Models/Position.h"
 #include "../Robot.h"
+#include "../Map.h"
 #include <cmath>
 
 #define MAX_DIFF_YAW 10 // Degree
@@ -23,6 +24,7 @@
 class GoToBase : public Behavior{
 protected:
 	Robot *_robot;
+	Map *_map;
 	Position *_goal;
 	GoToBase *_nextGoalBehavior;
 
@@ -38,7 +40,7 @@ public:
 
 	void setNextGoal(GoToBase *goalBehavior);
 
-	GoToBase(Robot *robot, Position *goal);
+	GoToBase(Robot *robot, Map *map, Position *goal);
 	virtual ~GoToBase();
 };
 
