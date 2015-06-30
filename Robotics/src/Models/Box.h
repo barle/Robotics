@@ -11,6 +11,7 @@
 #define MAX_POINTS 2
 #define MID_POINT_DELTA 15
 
+#include <cmath>
 #include "Vertex.h"
 #include "Line.h"
 #include "Position.h"

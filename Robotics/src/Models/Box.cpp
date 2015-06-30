@@ -82,10 +82,10 @@ bool Box::isValid(Map *map)
 		}
 	}
 
-	if(this->startPnt->getLocation()->X() - this->midPnt->getLocation()->X() > MID_POINT_DELTA ||
-			this->endPnt->getLocation()->X() - this->midPnt->getLocation()->X() > MID_POINT_DELTA ||
-			this->startPnt->getLocation()->Y() - this->midPnt->getLocation()->Y() > MID_POINT_DELTA ||
-			this->startPnt->getLocation()->Y() - this->midPnt->getLocation()->Y() > MID_POINT_DELTA)
+	if(abs(this->startPnt->getLocation()->X() - this->midPnt->getLocation()->X() > MID_POINT_DELTA) ||
+		abs(this->endPnt->getLocation()->X() - this->midPnt->getLocation()->X() > MID_POINT_DELTA) ||
+		abs(this->startPnt->getLocation()->Y() - this->midPnt->getLocation()->Y() > MID_POINT_DELTA) ||
+		abs(this->startPnt->getLocation()->Y() - this->midPnt->getLocation()->Y() > MID_POINT_DELTA))
 	{
 		isValid = false;
 	}
