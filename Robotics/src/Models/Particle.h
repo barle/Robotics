@@ -18,6 +18,7 @@
 #define MAP_MAX_CELLS_LASER 5
 #define LASER_MAX_RANGE 4
 #define LASER_COUNT 666
+#define LASER_SCAN_STEP 25
 #define MEASURING_AREA 240
 
 #include "../Map.h"
@@ -31,19 +32,19 @@ using namespace std;
 
 class Particle {
 private:
-	Position *_positionInMeter;
+	Position *_positionInPixel;
 	double _belief;
 	Map* _map;
 	Robot* _robot;
-	double GetMovingProbability(double xDeltaInMeter, double yDeltaInMeter, double yawDeltaRadian);
+	double GetMovingProbability(double xDeltaInPixel, double yDeltaInPixel, double yawDeltaDegree);
 	double CheckProbability(float* laserScans);
 	double AngleOfIndex(int index);
 
 public:
-	Particle(double xPosInMeter, double yPosInMeter, double yawPosInRadian, Map* map, Robot* robot);
-	Particle(double xPosInMeter, double yPosInMeter, double yawPosInRadian, double belief, Map* map, Robot* robot);
+	Particle(double xPosInPixel, double yPosInPixel, double yawPosInDegree, Map* map, Robot* robot);
+	Particle(double xPosInPixel, double yPosInPixel, double yawPosInDegree, double belief, Map* map, Robot* robot);
 	Position* GetPosition();
-	void Update(double xDeltaInMeter, double yDeltaInMeter, double yawDeltaInRadian, float* laserScans);
+	void Update(double xDeltaInPixel, double yDeltaInPixel, double yawDeltaInDegree, float* laserScans);
 	vector<Particle*> CreateNewParticles();
 	double GetBelief();
 	void Print();

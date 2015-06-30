@@ -13,6 +13,7 @@ Robot::Robot(string ip, int port, Position *startInPixel, Map *map)
 
 	float yaw = _map->convertDegreeToRadian(startInPixel->Yaw());
 
+	_pp.SetMotorEnable(true);
 	_pp.SetOdometry(0,0,yaw); // do this to intialize the yaw in the robot's odometry
 	_startInPixel = startInPixel;
 	_lastPosInPixel = new Position(

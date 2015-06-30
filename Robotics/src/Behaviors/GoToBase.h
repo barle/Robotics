@@ -14,11 +14,11 @@
 #include "../Map.h"
 #include <cmath>
 
-#define MAX_DIFF_YAW 10 // Degree
-#define MAX_DIFF_RADIUS 0.25  // Meter
+#define MAX_DIFF_YAW 4 // Degree
+#define MAX_DIFF_RADIUS 0.1  // Meter
 
-#define ANGULAR_SPEED 0.4
-#define FORWARD_SPEED 0.8
+#define ANGULAR_SPEED 0.1
+#define FORWARD_SPEED 0.2
 #define TURN_SPEED 0
 
 class GoToBase : public Behavior{
