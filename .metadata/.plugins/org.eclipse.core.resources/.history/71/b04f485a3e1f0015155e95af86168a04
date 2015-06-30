@@ -31,7 +31,7 @@ using namespace std;
 
 class Particle {
 private:
-	Position *_positionInMeter;
+	Position *_position;
 	double _belief;
 	Map* _map;
 	Robot* _robot;
