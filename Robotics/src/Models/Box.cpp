@@ -82,6 +82,14 @@ bool Box::isValid(Map *map)
 		}
 	}
 
+	if(this->startPnt->getLocation()->X() - this->midPnt->getLocation()->X() > MID_POINT_DELTA ||
+			this->endPnt->getLocation()->X() - this->midPnt->getLocation()->X() > MID_POINT_DELTA ||
+			this->startPnt->getLocation()->Y() - this->midPnt->getLocation()->Y() > MID_POINT_DELTA ||
+			this->startPnt->getLocation()->Y() - this->midPnt->getLocation()->Y() > MID_POINT_DELTA)
+	{
+		isValid = false;
+	}
+
 	return isValid;
 }
 

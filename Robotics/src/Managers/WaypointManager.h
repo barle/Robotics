@@ -12,7 +12,7 @@
 #define HORIZONTAL 1
 #define VERTICAL 2
 #define NONE 3
-#define MAX_OPTIMIZE_LOOP 10000
+#define MAX_OPTIMIZE_LOOP 100
 
 #include <vector>
 #include <queue>

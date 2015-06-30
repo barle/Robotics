@@ -9,6 +9,7 @@
 #define BOX_H_
 
 #define MAX_POINTS 2
+#define MID_POINT_DELTA 15
 
 #include "Vertex.h"
 #include "Line.h"
