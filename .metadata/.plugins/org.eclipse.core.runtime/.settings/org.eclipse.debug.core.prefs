@@ -3,4 +3,4 @@
 //org.eclipse.debug.core.PREFERRED_DELEGATES/org.eclipse.cdt.launch.postmortemLaunchType=org.eclipse.cdt.dsf.gdb.launch.coreCLaunch,debug,;
 //org.eclipse.debug.core.PREFERRED_DELEGATES/org.eclipse.cdt.launch.remoteApplicationLaunchType=org.eclipse.rse.remotecdt.dsf.debug,debug,;
 eclipse.preferences.version=1
-prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<watchExpressions>\n<expression enabled\="true" text\="_particles[20]-&gt;GetBelief()"/>\n<expression enabled\="true" text\="_particles.size()"/>\n<expression enabled\="true" text\="particlesToDuplicateIndexes.size()"/>\n<expression enabled\="true" text\="_map-&gt;convertPixelToMeter(_map-&gt;GetWidth())"/>\n</watchExpressions>\n
+prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<watchExpressions>\n<expression enabled\="true" text\="(laserScans[index]/LASER_MAX_RANGE)*MAP_MAX_CELLS_LASER"/>\n</watchExpressions>\n

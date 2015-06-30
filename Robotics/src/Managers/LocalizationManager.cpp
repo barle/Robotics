@@ -7,17 +7,25 @@ LocalizationManager::LocalizationManager(Map* map, Robot* robot) {
 	createAllParticles();
 }
 
-Particle* LocalizationManager::GetBestParticle()
+Position* LocalizationManager::GetBestPosition()
 {
-	Particle* bestParticle = _particles[0];
+	float xSum = 0;
+	float ySum = 0;
+	float yawSum = 0;
+	int count = 0;
 	for(int i=0; i < _particles.size(); i++)
 	{
-		if(_particles[i]->GetBelief() > bestParticle->GetBelief())
+		if(_particles[i]->GetBelief() >= 0.95)
 		{
-			bestParticle = _particles[i];
+			xSum += _particles[i]->GetPosition()->X();
+			ySum += _particles[i]->GetPosition()->Y();
+			yawSum += _particles[i]->GetPosition()->Yaw();
+			count++;
 		}
 	}
-	return bestParticle;
+	if(count == 0)
+		return NULL;
+	return new Position(xSum/count, ySum/count,yawSum/count);
 }
 
 void LocalizationManager::createAllParticles()
@@ -132,10 +140,6 @@ void LocalizationManager::Update(double xDeltaInPixel, double yDeltaInPixel, dou
 	{
 		this->_particles[particleIndex]->Update(xDeltaInPixel, yDeltaInPixel, yawDeltaInDegree, laserScans);
 	}
-
-	Particle* bestParticle = GetBestParticle();
-	bestParticle->Print();
-	cout << bestParticle->GetBelief() << endl;
 
 	filterParticles();
 	resampleParticles();

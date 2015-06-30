@@ -1,0 +1,161 @@
+#include "LocalizationManager.h"
+
+LocalizationManager::LocalizationManager(Map* map, Robot* robot) {
+	this->_map = map;
+	this->_robot = robot;
+
+	createAllParticles();
+}
+
+Position* LocalizationManager::GetBestPosition()
+{
+	float xSum = 0;
+	float ySum = 0;
+	float yawSum = 0;
+	int count = 0;
+	for(int i=0; i < _particles.size(); i++)
+	{
+		if(_particles[i]->GetBelief() > 0.95)
+		{
+			xSum += _particles[i]->GetPosition()->X();
+			ySum += _particles[i]->GetPosition()->Y();
+			yawSum += _particles[i]->GetPosition()->Yaw();
+			count++;
+		}
+	}
+	if(count == 0)
+		return NULL;
+	return new Position(xSum/count, ySum/count,yawSum/count);
+}
+
+void LocalizationManager::createAllParticles()
+{
+	_particles.clear();
+	// Build particles
+	for (int particleIndex = 0; particleIndex < NUM_OF_PARTICLES; particleIndex++)
+	{
+		// Make them with random values from within maps bounds
+		double xPosInPixels =this->_robot->getX() + rand() % (RANDOMIZE_FACTOR*2) - (RANDOMIZE_FACTOR); // we take double factor in the start so it will sure contains the robot
+		double yPosInPixels =this->_robot->getY() + rand() % (RANDOMIZE_FACTOR*2) - (RANDOMIZE_FACTOR);
+
+		double yawInDegree = this->_robot->getYaw() + (rand() % 60) - 60;
+
+		if(xPosInPixels < 0 || yPosInPixels < 0 ||
+			xPosInPixels >= _map->GetWidth() ||
+			yPosInPixels >= _map->GetHeight())
+		{
+			continue;
+		}
+
+		Particle* particle = new Particle(xPosInPixels, yPosInPixels, yawInDegree, _map, _robot);
+		this->_particles.push_back(particle);
+	}
+	//PrintParticles();
+}
+
+void LocalizationManager::filterParticles()
+{
+	vector<unsigned> particlesToEraseIndexes;
+
+	// Go over all particles
+	for (unsigned particleIndex = 0; particleIndex < this->_particles.size(); particleIndex++)
+	{
+		// Check if we need to erase the current particle
+		if (this->_particles[particleIndex]->GetBelief() < PARTICLE_MIN_BELIEF)
+		{
+			particlesToEraseIndexes.push_back(particleIndex);
+		}
+	}
+
+	// Erase all less accurate particles
+	for (int particleEraseIndex = particlesToEraseIndexes.size()-1; particleEraseIndex >= 0; particleEraseIndex--)
+	{
+		vector<Particle*>::iterator it = _particles.begin() + particleEraseIndex;
+
+		if (it != _particles.end()) {
+		  // swap the one to be removed with the last element
+		  // and remove the item at the end of the container
+		  // to prevent moving all items after the removed item by one
+		  swap(*it, _particles.back());
+		  _particles.pop_back();
+		}
+	}
+}
+
+void LocalizationManager::resampleParticles()
+{
+	vector<unsigned> particlesToDuplicateIndexes;
+
+	for (unsigned particleIndex = 0; particleIndex < this->_particles.size(); particleIndex++)
+	{
+		// Check if we need to duplicate the current particle
+		if (this->_particles[particleIndex]->GetBelief() >= PARTICLE_MIN_BELIEF)
+		{
+			particlesToDuplicateIndexes.push_back(particleIndex);
+		}
+	}
+
+	// no good particles... recreate all particles
+	if(particlesToDuplicateIndexes.size() == 0)
+	{
+		createAllParticles();
+		return;
+	}
+
+	srand(time(NULL));
+	// Start creating similar particles
+	int particlesToDuplicateSize = particlesToDuplicateIndexes.size();
+	for (unsigned int duplicateIndex = 0; duplicateIndex <  particlesToDuplicateSize && _particles.size() < MAX_NUM_OF_PARTICLES; duplicateIndex++)
+	{
+		for(int i = 0; i < NUM_OF_DUPLICATIONS && _particles.size() < MAX_NUM_OF_PARTICLES; i++)
+		{
+			Position *pos = this->_particles[particlesToDuplicateIndexes[duplicateIndex]]->GetPosition();
+			double xPosInPixels = static_cast<double>(rand() % RANDOMIZE_FACTOR) - RANDOMIZE_FACTOR/2;
+			double yPosInPixels = static_cast<double>(rand() % RANDOMIZE_FACTOR) - RANDOMIZE_FACTOR/2;
+			double yawInDegree = static_cast<double>(rand() % RANDOMIZE_FACTOR) - RANDOMIZE_FACTOR/2;
+
+
+			double newParticleXInPixel = pos->X() + xPosInPixels;
+			double newParticleYInPixel = pos->Y() + yPosInPixels;
+			double newParticleYawInDegree = pos->Yaw() + yawInDegree;
+
+			// Make sure we are in safe bounds
+			if (newParticleXInPixel > _map->GetWidth() ||
+					newParticleYInPixel > _map->GetHeight() ||
+					newParticleYInPixel < 0 || newParticleXInPixel < 0)
+			{
+				continue;
+			}
+			Particle* newParticle = new Particle(newParticleXInPixel, newParticleYInPixel, newParticleYawInDegree,
+					this->_particles[duplicateIndex]->GetBelief(), _map, _robot);
+			this->_particles.push_back(newParticle);
+		}
+	}
+}
+
+void LocalizationManager::Update(double xDeltaInPixel, double yDeltaInPixel, double yawDeltaInDegree, float* laserScans)
+{
+	//update all particles
+	for (unsigned particleIndex = 0; particleIndex < this->_particles.size(); particleIndex++)
+	{
+		this->_particles[particleIndex]->Update(xDeltaInPixel, yDeltaInPixel, yawDeltaInDegree, laserScans);
+	}
+
+	filterParticles();
+	resampleParticles();
+
+	//PrintParticles();
+}
+
+void LocalizationManager::PrintParticles()
+{
+	_robot->ClearParticles();
+
+	for(int i = 0; i < _particles.size(); i++)
+	{
+		this->_particles[i]->Print();
+	}
+}
+
+LocalizationManager::~LocalizationManager() {
+}

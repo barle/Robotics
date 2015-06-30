@@ -64,7 +64,7 @@ double Particle::CheckProbability(float* laserScans)
 		if (laserScans[index] < LASER_MAX_RANGE)
 		{
 			// Go over the relevant cells in between the occupied cell and the free cells
-			int occupiedCellIndex = (laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER;
+			int occupiedCellIndex = (laserScans[index] / LASER_MAX_RANGE) / _map->GetMapResolution();
 			for(int j = 0; j < occupiedCellIndex; j++)
 			{
 				int XFreePosInPixel = this->_positionInPixel->X() + (cos(DTOR(AngleOfIndex(index) + this->_positionInPixel->Yaw())) * j);
@@ -85,7 +85,7 @@ double Particle::CheckProbability(float* laserScans)
 				}
 			}
 
-			float occupiedDistInPixel = ((laserScans[index] / LASER_MAX_RANGE) / _map->GetMapResolution());
+			float occupiedDistInPixel = (laserScans[index] / LASER_MAX_RANGE) / _map->GetMapResolution();
 			float angelInRadian = DTOR(AngleOfIndex(index) + this->_positionInPixel->Yaw());
 			// Calculate the occupied position
 			float deltaXInPixels = cos(angelInRadian) * occupiedDistInPixel;
@@ -156,8 +156,13 @@ void Particle::Update(double xDeltaInPixel, double yDeltaInPixel, double yawDelt
 	double yaw = this-> _positionInPixel->Yaw();
 	this->_positionInPixel->Update(x + xDeltaInPixel, y + yDeltaInPixel, yaw + yawDeltaInDegree);
 
+
+	double xDeltaBetweenRobot = _positionInPixel->X() - _robot->getX();
+	double yDeltaBetweenRobot = _positionInPixel->Y() - _robot->getY();
+	double yawDeltaBetweenRobot = _positionInPixel->Yaw() - _robot->getYaw();
+
 	// Calculate belief by moving probability
-	this->_belief = this->_belief * GetMovingProbability(xDeltaInPixel, yDeltaInPixel, yawDeltaInDegree);
+	this->_belief = this->_belief * GetMovingProbability(xDeltaBetweenRobot, yDeltaBetweenRobot, yawDeltaBetweenRobot);
 
 	if (this->_belief != 0)
 	{

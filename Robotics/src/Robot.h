@@ -32,6 +32,7 @@ public:
 	Robot(string ip, int port, Position *startInPixel, Map *map);
 	virtual ~Robot();
 
+	void setOdometry(Position *posInPixel);
 	void SetDeltaValues(double &deltaXInPixel, double &deltaYInPixel, double &deltaYawInDegree);
 	void setSpeed(float linear, float angular);
 	void ClearParticles();

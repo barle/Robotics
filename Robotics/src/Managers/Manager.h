@@ -13,6 +13,7 @@
 #include "../Behaviors/Behavior.h"
 #include "LocalizationManager.h"
 #include "../Map.h"
+#include "../Models/Particle.h"
 
 class Manager{
 	private:

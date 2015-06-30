@@ -4,8 +4,8 @@
 #define NORMAL_MOVING_PIXELS 10
 #define MAX_MOVING_PIXELS 20
 
-#define NORMAL_YAW_DEGREES 180
-#define MAX_YAW_DEGREES 360
+#define NORMAL_YAW_DEGREES 45
+#define MAX_YAW_DEGREES 90
 
 #define YAW_HIGH_PROB 1
 #define YAW_OK_PROB 0.85
@@ -18,7 +18,7 @@
 #define MAP_MAX_CELLS_LASER 5
 #define LASER_MAX_RANGE 4
 #define LASER_COUNT 666
-#define LASER_SCAN_STEP 25
+#define LASER_SCAN_STEP 15
 #define MEASURING_AREA 240
 
 #include "../Map.h"
