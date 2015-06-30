@@ -90,6 +90,12 @@ bool Box::isValid(Map *map)
 		isValid = false;
 	}
 
+	if(abs(this->startPnt->getLocation()->X() - this->endPnt->getLocation()->X()) > MAX_LEN||
+		abs(this->startPnt->getLocation()->Y() - this->endPnt->getLocation()->Y()) > MAX_LEN)
+	{
+		isValid = false;
+	}
+
 	return isValid;
 }
 

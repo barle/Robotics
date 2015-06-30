@@ -10,6 +10,7 @@
 
 #define MAX_POINTS 2
 #define MID_POINT_DELTA 15
+#define MAX_LEN 6
 
 #include <cmath>
 #include "Vertex.h"
