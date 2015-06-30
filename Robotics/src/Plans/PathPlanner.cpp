@@ -30,7 +30,10 @@ PathPlanner::PathPlanner(Robot *robot, Map *map, Position *start, Position *goal
 	_graph = convertMapToGraph(mapGrid, _graphHeight, _graphWidth);
 
 	vector<Vertex*> shortestPath = AStar(start, goal);
-
+	print(shortestPath);
+	_robot->ClearParticles();
+	WaypointManager waypointManager(map);
+	shortestPath = waypointManager.optimizePath(shortestPath);
 	print(shortestPath);
 
 	GoTo *lastWayPoint = new GoTo(robot, map, start);
@@ -157,7 +160,7 @@ vector<Vertex*> PathPlanner::convertMapToGraph(vector<bool> mapGrid, int height,
 			addNeighborIfPossible(currentIndex, neighborIndex, size, &mapGrid, &graph);
 			neighborIndex = (width * i) + j + 1; // right cell
 			addNeighborIfPossible(currentIndex, neighborIndex, size, &mapGrid, &graph);
-			neighborIndex = (width * (i-1)) + j - 1; // left cell
+			neighborIndex = (width * (i)) + j - 1; // left cell
 			addNeighborIfPossible(currentIndex, neighborIndex, size, &mapGrid, &graph);
 		}
 	}

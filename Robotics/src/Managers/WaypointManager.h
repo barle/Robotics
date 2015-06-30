@@ -1,0 +1,44 @@
+/*
+ * WaypointManager.h
+ *
+ *  Created on: Jun 25, 2015
+ *      Author: colman
+ */
+
+#ifndef WAYPOINTMANAGER_H_
+#define WAYPOINTMANAGER_H_
+
+// Define consts
+#define HORIZONTAL 1
+#define VERTICAL 2
+#define NONE 3
+#define MAX_OPTIMIZE_LOOP 10000
+
+#include <vector>
+#include <queue>
+#include "../Models/Vertex.h"
+#include "../Models/Position.h"
+#include "../Models/Line.h"
+#include "../Models/Box.h"
+#include "../Map.h"
+
+using namespace std;
+
+class WaypointManager {
+
+private:
+	vector<Vertex*> mergeStraightPoints(vector<Vertex*> path);
+	int areOnSameLine(Vertex *first, Vertex *second);
+	vector<Line*> getLinesVector(vector<Vertex*> path);
+	vector<Box*> getBoxesVector(vector<Vertex*> path);
+	vector<Vertex*> getRemainingVertexes(vector<Vertex*> path);
+	Map *_map;
+
+public:
+	WaypointManager(Map *map);
+	virtual ~WaypointManager();
+	vector<Vertex*> optimizePath(vector<Vertex*> path);
+};
+
+
+#endif /* WAYPOINTMANAGER_H_ */
