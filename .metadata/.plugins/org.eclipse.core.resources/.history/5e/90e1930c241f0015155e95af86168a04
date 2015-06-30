@@ -71,7 +71,6 @@ vector<bool> Map::loadMap(const char* fileName, unsigned& width, unsigned& heigh
 
 	unsigned size = height * width * 4;
     vector<unsigned char> newImage(size);
-    vector<bool> mapGrid(height * width);
     vector<bool> grid(height * width);
 
     for(unsigned i = 0; i < height ; i++)
@@ -85,18 +84,12 @@ vector<bool> Map::loadMap(const char* fileName, unsigned& width, unsigned& heigh
 
             newImage[index + 3] = 100; // alpha
 
-            if((int)_image[index] == 255)
+            if((int)_image[index] == 0)
             {
-            	mapGrid[(width*i) + j] = 0;
-            }
-            else
-            {
-            	mapGrid[(width*i) + j] = 1;
+            	_mapGrid[(width*i) + j] = true;
             }
         }
     }
-
-    this->_mapGrid = mapGrid;
 
     for(unsigned i = 0; i < height ; i++)
     {

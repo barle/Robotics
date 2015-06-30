@@ -95,17 +95,17 @@ void LocalizationManager::resampleParticles(double xDeltaInMeter, double yDeltaI
 			double newParticleYaw = pos->Yaw() + _map->convertDegreeToRadian(yawInDegree);
 
 			// Make sure we are in safe bounds
-			if (newParticleX > _map->convertPixelToMeter(_map->GetWidth()) ||
+			if (!(newParticleX > _map->convertPixelToMeter(_map->GetWidth()) ||
 					newParticleY > _map->convertPixelToMeter(_map->GetHeight()) ||
-					newParticleY < 0 || newParticleX < 0)
+					newParticleY < 0 || newParticleX < 0))
 			{
-				continue;
-			}
-			Particle* newParticle = new Particle(newParticleX, newParticleY, newParticleYaw,
-					this->_particles[duplicateIndex]->GetBelief(), _map, _robot);
-			this->_particles.push_back(newParticle);
+				Particle* newParticle = new Particle(newParticleX, newParticleY, newParticleYaw,
+						this->_particles[duplicateIndex]->GetBelief(), _map, _robot);
+				this->_particles.push_back(newParticle);
 
-			finishedDuplicating = !(this->_particles.size() < NUM_OF_PARTICLES);
+				finishedDuplicating = !(this->_particles.size() < NUM_OF_PARTICLES);
+				cout << "Created new particle: " << newParticleX << ", " << newParticleY << ", yaw: " << newParticleYaw << endl;
+			}
 		}
 	}
 }

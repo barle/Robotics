@@ -20,8 +20,7 @@ using namespace std;
 class Map {
 private:
 	vector<unsigned char> _image; // the raw pixels
-	vector<bool> _enlargedGrid;
-	vector<bool> _mapGrid;
+	vector<bool> _grid;
 	unsigned _height;
 	unsigned _width;
 	double _gridResolution;
@@ -47,7 +46,6 @@ public:
 	float convertMeterToPixel(float inMeter);
 
 	bool IsOccupied(int x, int y);
-	bool IsOccupiedInOriginalMap(int x, int y);
 };
 
 #endif /* MAP_H_ */

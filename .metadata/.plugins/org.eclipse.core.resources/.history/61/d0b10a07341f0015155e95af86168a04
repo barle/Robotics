@@ -106,6 +106,7 @@ void LocalizationManager::resampleParticles(double xDeltaInMeter, double yDeltaI
 			this->_particles.push_back(newParticle);
 
 			finishedDuplicating = !(this->_particles.size() < NUM_OF_PARTICLES);
+
 		}
 	}
 }

@@ -71,32 +71,19 @@ vector<bool> Map::loadMap(const char* fileName, unsigned& width, unsigned& heigh
 
 	unsigned size = height * width * 4;
     vector<unsigned char> newImage(size);
-    vector<bool> mapGrid(height * width);
     vector<bool> grid(height * width);
 
     for(unsigned i = 0; i < height ; i++)
     {
-        for(unsigned j = 0; j < width; j++)
+        for(unsigned j = 0; j < width * 4; j+=4)
         {
-        	int index = (width * 4* i) + (j*4);
-            newImage[index] = (int)_image[index]; // red
-            newImage[index + 1] = (int)_image[index + 1]; // blue
-            newImage[index + 2] = (int)_image[index + 2]; // green
+            newImage[(width * 4* i) + j] = (int)_image[(width * 4* i) + j];
+            newImage[(width * 4* i) + j + 1] = (int)_image[(width * 4* i) + j + 1];
+            newImage[(width * 4* i) + j + 2] = (int)_image[(width * 4* i) + j + 2];
 
-            newImage[index + 3] = 100; // alpha
-
-            if((int)_image[index] == 255)
-            {
-            	mapGrid[(width*i) + j] = 0;
-            }
-            else
-            {
-            	mapGrid[(width*i) + j] = 1;
-            }
+            newImage[(width * 4* i) + j + 3] = 100;
         }
     }
-
-    this->_mapGrid = mapGrid;
 
     for(unsigned i = 0; i < height ; i++)
     {
@@ -146,10 +133,10 @@ vector<bool> Map::loadMap(const char* fileName, unsigned& width, unsigned& heigh
 
 bool Map::IsOccupied(int x, int y)
 {
-	return _enlargedGrid[(_width*y)+x] == 1;
+	return _enlargedGrid[(_width*y)+x] == 0;
 }
 
 bool Map::IsOccupiedInOriginalMap(int x, int y)
 {
-	return _mapGrid[(_width*y)+x] == 1;
+	return _mapGrid[(_width*y)+x] == 0;
 }

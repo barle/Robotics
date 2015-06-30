@@ -35,6 +35,7 @@ void LocalizationManager::filterParticles(double xDeltaInMeter, double yDeltaInM
 	// Go over all particles
 	for (unsigned particleIndex = 0; particleIndex < this->_particles.size(); particleIndex++)
 	{
+		this->_particles[particleIndex]->Update(xDeltaInMeter, yDeltaInMeter, yawDeltaInRadian, laserScans);
 		// Check if we need to erase the current particle
 		if (this->_particles[particleIndex]->GetBelief() < PARTICLE_MIN_BELIEF)
 		{
@@ -58,7 +59,7 @@ void LocalizationManager::filterParticles(double xDeltaInMeter, double yDeltaInM
 
 }
 
-void LocalizationManager::resampleParticles(double xDeltaInMeter, double yDeltaInMeter, double yawDeltaInRadian, float* laserScans)
+void LocalizationManager::resampleParticles(double xDeltaInMeter, double yDelta, double yawDelta, float* laserScans)
 {
 	vector<unsigned> particlesToDuplicateIndexes;
 
@@ -95,31 +96,31 @@ void LocalizationManager::resampleParticles(double xDeltaInMeter, double yDeltaI
 			double newParticleYaw = pos->Yaw() + _map->convertDegreeToRadian(yawInDegree);
 
 			// Make sure we are in safe bounds
-			if (newParticleX > _map->convertPixelToMeter(_map->GetWidth()) ||
+			if (!(newParticleX > _map->convertPixelToMeter(_map->GetWidth()) ||
 					newParticleY > _map->convertPixelToMeter(_map->GetHeight()) ||
-					newParticleY < 0 || newParticleX < 0)
+					newParticleY < 0 || newParticleX < 0))
 			{
-				continue;
-			}
-			Particle* newParticle = new Particle(newParticleX, newParticleY, newParticleYaw,
-					this->_particles[duplicateIndex]->GetBelief(), _map, _robot);
-			this->_particles.push_back(newParticle);
+				Particle* newParticle = new Particle(newParticleX, newParticleY, newParticleYaw,
+						this->_particles[duplicateIndex]->GetBelief(), _map, _robot);
+				this->_particles.push_back(newParticle);
 
-			finishedDuplicating = !(this->_particles.size() < NUM_OF_PARTICLES);
+				finishedDuplicating = !(this->_particles.size() < NUM_OF_PARTICLES);
+				cout << "Created new particle: " << newParticleX << ", " << newParticleY << ", yaw: " << newParticleYaw << endl;
+			}
 		}
 	}
 }
 
-void LocalizationManager::Update(double xDeltaInMeter, double yDeltaInMeter, double yawDeltaInRadian, float* laserScans)
+void LocalizationManager::Update(double xDelta, double yDelta, double yawDelta, float* laserScans)
 {
 	//update all particles
 	for (unsigned particleIndex = 0; particleIndex < this->_particles.size(); particleIndex++)
 	{
-		this->_particles[particleIndex]->Update(xDeltaInMeter, yDeltaInMeter, yawDeltaInRadian, laserScans);
+		this->_particles[particleIndex]->Update(xDelta, yDelta, yawDelta, laserScans);
 	}
 
-	filterParticles(xDeltaInMeter, yDeltaInMeter, yawDeltaInRadian, laserScans);
-	resampleParticles(xDeltaInMeter, yDeltaInMeter, yawDeltaInRadian, laserScans);
+	filterParticles(xDelta, yDelta, yawDelta, laserScans);
+	resampleParticles(xDelta, yDelta, yawDelta, laserScans);
 
 	PrintParticles();
 }

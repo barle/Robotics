@@ -2,7 +2,7 @@
 
 Particle::Particle(double xPos, double yPos, double yawPos, Map* map, Robot* robot)
 {
-	this->_belief = 1;
+	this->_belief = 0;
 	this->_position = new Position(xPos, yPos, yawPos);
 	this->_map = map;
 	this->_robot = robot;
@@ -19,37 +19,40 @@ Particle::Particle(double xPos, double yPos, double yawPos, double belief, Map* 
 double Particle::GetMovingProbability(double xDelta, double yDelta, double yawDelta)
 {
 	// Check if we didn't bypass the map's gridlines
-	if (this->_position->X() > _map->convertPixelToMeter(_map->GetWidth()) ||
-			this->_position->Y() > _map->convertPixelToMeter(_map->GetHeight()) ||
-			this->_position->X() < 0 || this->_position->Y() < 0)
+	if (xDelta + this->_position->X() > _map->convertPixelToMeter(_map->GetWidth()) ||
+			yDelta + this->_position->Y() > _map->convertPixelToMeter(_map->GetHeight()))
 	{
 		return 0;
 	}
-	double distanceMoved = sqrt(pow(xDelta, 2) + pow(yDelta, 2));
-	double probYaw = YAW_LOW_PROB;
-	double probMoving = MOVING_LOW_PROB;
+	else
+	{
+		double distanceMoved = sqrt(pow(xDelta, 2) + pow(yDelta, 2));
+		double probYaw = YAW_LOW_PROB;
+		double probMoving = MOVING_LOW_PROB;
 
-	// Make sure we didn't rotate to much
-	if (yawDelta < DTOR(NORMAL_YAW_DEGREES) && yawDelta > (-1) * DTOR(NORMAL_YAW_DEGREES))
-	{
-		probYaw = YAW_HIGH_PROB;
-	}
-	else if (yawDelta < DTOR(MAX_YAW_DEGREES) && yawDelta > (-1) * DTOR(MAX_YAW_DEGREES))
-	{
-		probYaw = YAW_OK_PROB;
-	}
+		// Make sure we didn't rotate to much
+		if (yawDelta < DTOR(NORMAL_YAW_DEGREES) && yawDelta > (-1) * DTOR(NORMAL_YAW_DEGREES))
+		{
+			probYaw = YAW_HIGH_PROB;
+		}
+		else if (yawDelta < DTOR(MAX_YAW_DEGREES) && yawDelta > (-1) * DTOR(MAX_YAW_DEGREES))
+		{
+			probYaw = YAW_OK_PROB;
+		}
 
-	// Make sure we moved by a logical distance
-	if (distanceMoved < _map->convertPixelToMeter(NORMAL_MOVING_PIXELS) && distanceMoved > (-1) * _map->convertPixelToMeter(NORMAL_MOVING_PIXELS))
-	{
-		probMoving = MOVING_HIGH_PROB;
-	}
-	else if (distanceMoved < _map->convertPixelToMeter(MAX_MOVING_PIXELS) && distanceMoved > (-1) * _map->convertPixelToMeter(MAX_MOVING_PIXELS))
-	{
-		probMoving = MOVING_OK_PROB;
-	}
+		// Make sure we moved by a logical distance
+		if (distanceMoved < NORMAL_MOVING && distanceMoved > (-1) * NORMAL_MOVING)
+		{
+			probMoving = MOVING_HIGH_PROB;
+		}
+		else if (distanceMoved < MAX_MOVING && distanceMoved > (-1) * MAX_MOVING)
+		{
+			probMoving = MOVING_OK_PROB;
+		}
 
-	return probYaw * probMoving;
+		return probYaw * probMoving;
+	}
+	return 0;
 }
 
 double Particle::CheckProbability(float* laserScans)
@@ -134,7 +137,7 @@ double Particle::CheckProbability(float* laserScans)
 	}
 
 	// Calculate hits/total value
-	if (misses != 0 || hits != 0)
+	if (hits != 0 || misses != 0)
 	{
 		return hits / (hits + misses);
 	}
