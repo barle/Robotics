@@ -63,7 +63,7 @@ float Map::convertMeterToPixel(float inMeter)
 
 vector<bool> Map::loadMap(const char* fileName, unsigned& width, unsigned& height)
 {
-	unsigned int pixelsToAdd = 12;
+	unsigned int pixelsToAdd = 15;
 	unsigned error = lodepng::decode(_image, width, height, fileName);
 
 	// If there's an error, display it

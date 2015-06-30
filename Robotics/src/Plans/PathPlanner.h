@@ -14,6 +14,7 @@
 #include "../Models/Vertex.h"
 #include "../Models/Position.h"
 #include "../Map.h"
+#include "../Managers/WaypointManager.h"
 
 #include "../Behaviors/GoTo.h"
 #include "AStarComparison.h"
