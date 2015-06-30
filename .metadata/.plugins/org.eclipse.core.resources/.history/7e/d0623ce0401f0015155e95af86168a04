@@ -16,7 +16,7 @@ Particle::Particle(double xPos, double yPos, double yawPos, double belief, Map* 
 	this->_robot = robot;
 }
 
-double Particle::GetMovingProbability(double xDeltaInMeter, double yDeltaInMeter, double yawDeltaInRadian)
+double Particle::GetMovingProbability(double xDelta, double yDelta, double yawDelta)
 {
 	// Check if we didn't bypass the map's gridlines
 	if (this->_positionInMeter->X() > _map->convertPixelToMeter(_map->GetWidth()) ||
@@ -26,26 +26,26 @@ double Particle::GetMovingProbability(double xDeltaInMeter, double yDeltaInMeter
 		return 0;
 	}
 
-	double distanceMovedInMeter = sqrt(pow(xDeltaInMeter, 2) + pow(yDeltaInMeter, 2));
+	double distanceMoved = sqrt(pow(xDelta, 2) + pow(yDelta, 2));
 	double probYaw = YAW_LOW_PROB;
 	double probMoving = MOVING_LOW_PROB;
 
 	// Make sure we didn't rotate to much
-	if (yawDeltaInRadian < DTOR(NORMAL_YAW_DEGREES) && yawDeltaInRadian > (-1) * DTOR(NORMAL_YAW_DEGREES))
+	if (yawDelta < DTOR(NORMAL_YAW_DEGREES) && yawDelta > (-1) * DTOR(NORMAL_YAW_DEGREES))
 	{
 		probYaw = YAW_HIGH_PROB;
 	}
-	else if (yawDeltaInRadian < DTOR(MAX_YAW_DEGREES) && yawDeltaInRadian > (-1) * DTOR(MAX_YAW_DEGREES))
+	else if (yawDelta < DTOR(MAX_YAW_DEGREES) && yawDelta > (-1) * DTOR(MAX_YAW_DEGREES))
 	{
 		probYaw = YAW_OK_PROB;
 	}
 
 	// Make sure we moved by a logical distance
-	if (distanceMovedInMeter < _map->convertPixelToMeter(NORMAL_MOVING_PIXELS) && distanceMovedInMeter > (-1) * _map->convertPixelToMeter(NORMAL_MOVING_PIXELS))
+	if (distanceMoved < _map->convertPixelToMeter(NORMAL_MOVING_PIXELS) && distanceMoved > (-1) * _map->convertPixelToMeter(NORMAL_MOVING_PIXELS))
 	{
 		probMoving = MOVING_HIGH_PROB;
 	}
-	else if (distanceMovedInMeter < _map->convertPixelToMeter(MAX_MOVING_PIXELS) && distanceMovedInMeter > (-1) * _map->convertPixelToMeter(MAX_MOVING_PIXELS))
+	else if (distanceMoved < _map->convertPixelToMeter(MAX_MOVING_PIXELS) && distanceMoved > (-1) * _map->convertPixelToMeter(MAX_MOVING_PIXELS))
 	{
 		probMoving = MOVING_OK_PROB;
 	}
@@ -58,9 +58,6 @@ double Particle::CheckProbability(float* laserScans)
 	double hits = 0;
 	double misses = 0;
 
-	float xPosInPixel = _map->convertMeterToPixel(this->_positionInMeter->X());
-	float yPosInPixel = _map->convertMeterToPixel(this->_positionInMeter->Y());
-
 	// Go over the laser's array
 	for (int index = 0; index < LASER_COUNT; index++)
 	{
@@ -70,14 +67,14 @@ double Particle::CheckProbability(float* laserScans)
 			int occupiedCellIndex = (laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER;
 			for(int j = 0; j < occupiedCellIndex; j++)
 			{
-				int XFreePosInPixel = xPosInPixel + (cos(DTOR(AngleOfIndex(index)) + this->_positionInMeter->Yaw()) * j);
-				int YFreePosInPixel = yPosInPixel + (sin(DTOR(AngleOfIndex(index)) + this->_positionInMeter->Yaw()) * j);
+				int XFreePos = this->_positionInMeter->X() + (cos(DTOR(AngleOfIndex(index)) + this->_positionInMeter->Yaw()) * j);
+				int YFreePos = this->_positionInMeter->Y() + (sin(DTOR(AngleOfIndex(index)) + this->_positionInMeter->Yaw()) * j);
 
 				// Make sure we are in safe bounds
-				if (XFreePosInPixel >= 0 && XFreePosInPixel < _map->GetWidth() &&
-						YFreePosInPixel >= 0 && YFreePosInPixel < _map->GetHeight())
+				if (XFreePos >= 0 && XFreePos < _map->convertPixelToMeter(_map->GetWidth()) &&
+						YFreePos >= 0 && YFreePos < _map->convertPixelToMeter(_map->GetHeight()))
 				{
-					if (this->_map->IsOccupiedInOriginalMap(XFreePosInPixel, YFreePosInPixel))
+					if (this->_map->IsOccupiedInOriginalMap(YFreePos, XFreePos))
 					{
 						misses++;
 					}
@@ -94,6 +91,8 @@ double Particle::CheckProbability(float* laserScans)
 			float deltaYInPixels = sin(DTOR(AngleOfIndex(index)) + this->_positionInMeter->Yaw()) *
 					((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER);
 
+			float xPosInPixel = _map->convertMeterToPixel(this->_positionInMeter->X());
+			float yPosInPixel = _map->convertMeterToPixel(this->_positionInMeter->Y());
 			int XOccupiedPosInPixel = xPosInPixel + deltaXInPixels;
 			int YOccupiedPosInPixel = yPosInPixel + deltaYInPixels;
 
@@ -117,6 +116,8 @@ double Particle::CheckProbability(float* laserScans)
 			// Go over all the cells in this angle and make sure we mark them as free
 			for(int j = 0; j < _map->convertPixelToMeter((laserScans[index] / LASER_MAX_RANGE) * MAP_MAX_CELLS_LASER); j++)
 			{
+				float xPosInPixel = _map->convertMeterToPixel(this->_positionInMeter->X());
+				float yPosInPixel = _map->convertMeterToPixel(this->_positionInMeter->Y());
 				int XFreePosInPixel = xPosInPixel + (cos(DTOR(AngleOfIndex(index)) + this->_positionInMeter->Yaw()) * j);
 				int YFreePosInPixel = yPosInPixel + (sin(DTOR(AngleOfIndex(index)) + this->_positionInMeter->Yaw()) * j);
 

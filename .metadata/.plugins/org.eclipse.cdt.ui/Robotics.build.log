@@ -1,6 +1,10 @@
-07:12:36 **** Incremental Build of configuration Debug for project Robotics ****
+09:41:07 **** Incremental Build of configuration Debug for project Robotics ****
 make all 
-make: Nothing to be done for `all'.
+Building target: Robotics
+Invoking: Cross G++ Linker
+g++  -o "Robotics"  ./src/Plans/AStarComparison.o ./src/Plans/PathPlanner.o ./src/Plans/Plan.o  ./src/Models/Particle.o ./src/Models/Position.o ./src/Models/Size.o ./src/Models/Vertex.o  ./src/Managers/ConfigurationManager.o ./src/Managers/LocalizationManager.o ./src/Managers/Manager.o  ./src/Behaviors/Behavior.o ./src/Behaviors/GoTo.o ./src/Behaviors/GoToBase.o ./src/Behaviors/StraightToLeft.o ./src/Behaviors/StraightToRight.o  ./src/Map.o ./src/Robot.o ./src/Robotics.o ./src/lodepng.o   -lplayerc++
+Finished building target: Robotics
+ 
 
-07:12:36 Build Finished (took 122ms)
+09:41:08 Build Finished (took 504ms)
 
