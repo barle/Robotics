@@ -1,11 +1,11 @@
-13:59:57 **** Incremental Build of configuration Debug for project Robotics ****
+14:29:09 **** Incremental Build of configuration Debug for project Robotics ****
 make all 
-Building file: ../src/Managers/Manager.cpp
+Building file: ../src/Plans/PathPlanner.cpp
 Invoking: Cross G++ Compiler
-g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Managers/Manager.d" -MT"src/Managers/Manager.d" -o "src/Managers/Manager.o" "../src/Managers/Manager.cpp"
-In file included from ../src/Managers/../Robot.h:11:0,
-                 from ../src/Managers/Manager.h:11,
-                 from ../src/Managers/Manager.cpp:1:
+g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Plans/PathPlanner.d" -MT"src/Plans/PathPlanner.d" -o "src/Plans/PathPlanner.o" "../src/Plans/PathPlanner.cpp"
+In file included from ../src/Plans/../Map.h:14:0,
+                 from ../src/Plans/PathPlanner.h:16,
+                 from ../src/Plans/PathPlanner.cpp:8:
 /usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position2dProxy::GoTo(double, double, double)’:
 /usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
 /usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aY’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
@@ -17,9 +17,78 @@ In file included from ../src/Managers/../Robot.h:11:0,
 /usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aRoll’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
 /usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aPitch’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
 /usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aYaw’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
-../src/Managers/Manager.cpp: In member function ‘void Manager::run()’:
-../src/Managers/Manager.cpp:28:11: warning: unused variable ‘laserScans’ [-Wunused-variable]
-Finished building: ../src/Managers/Manager.cpp
+../src/Plans/PathPlanner.cpp: In member function ‘void PathPlanner::print(std::vector<Vertex*>)’:
+../src/Plans/PathPlanner.cpp:15:26: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+Finished building: ../src/Plans/PathPlanner.cpp
+ 
+Building file: ../src/Models/Box.cpp
+Invoking: Cross G++ Compiler
+g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Models/Box.d" -MT"src/Models/Box.d" -o "src/Models/Box.o" "../src/Models/Box.cpp"
+In file included from ../src/Models/../Map.h:14:0,
+                 from ../src/Models/Box.h:19,
+                 from ../src/Models/Box.cpp:8:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position2dProxy::GoTo(double, double, double)’:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aY’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aYaw’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position3dProxy::GoTo(double, double, double, double, double, double)’:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aY’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aZ’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aRoll’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aPitch’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aYaw’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+Finished building: ../src/Models/Box.cpp
+ 
+Building file: ../src/Managers/WaypointManager.cpp
+Invoking: Cross G++ Compiler
+g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Managers/WaypointManager.d" -MT"src/Managers/WaypointManager.d" -o "src/Managers/WaypointManager.o" "../src/Managers/WaypointManager.cpp"
+In file included from ../src/Managers/../Models/../Map.h:14:0,
+                 from ../src/Managers/../Models/Box.h:19,
+                 from ../src/Managers/WaypointManager.h:22,
+                 from ../src/Managers/WaypointManager.cpp:8:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position2dProxy::GoTo(double, double, double)’:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aY’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aYaw’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position3dProxy::GoTo(double, double, double, double, double, double)’:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aY’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aZ’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aRoll’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aPitch’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aYaw’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+../src/Managers/WaypointManager.cpp: In member function ‘std::vector<Vertex*> WaypointManager::mergeStraightPoints(std::vector<Vertex*>)’:
+../src/Managers/WaypointManager.cpp:35:33: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+../src/Managers/WaypointManager.cpp:37:34: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+../src/Managers/WaypointManager.cpp:40:52: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+../src/Managers/WaypointManager.cpp:64:38: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+../src/Managers/WaypointManager.cpp:71:42: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+../src/Managers/WaypointManager.cpp: In member function ‘std::vector<Line*> WaypointManager::getLinesVector(std::vector<Vertex*>)’:
+../src/Managers/WaypointManager.cpp:112:29: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+../src/Managers/WaypointManager.cpp: In member function ‘std::vector<Vertex*> WaypointManager::getRemainingVertexes(std::vector<Vertex*>)’:
+../src/Managers/WaypointManager.cpp:153:38: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+../src/Managers/WaypointManager.cpp: In member function ‘std::vector<Vertex*> WaypointManager::optimizePath(std::vector<Vertex*>)’:
+../src/Managers/WaypointManager.cpp:185:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+../src/Managers/WaypointManager.cpp:206:43: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+Finished building: ../src/Managers/WaypointManager.cpp
+ 
+Building file: ../src/Robotics.cpp
+Invoking: Cross G++ Compiler
+g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Robotics.d" -MT"src/Robotics.d" -o "src/Robotics.o" "../src/Robotics.cpp"
+In file included from ../src/Robotics.cpp:8:0:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position2dProxy::GoTo(double, double, double)’:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aY’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aYaw’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position3dProxy::GoTo(double, double, double, double, double, double)’:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aY’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aZ’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aRoll’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aPitch’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aYaw’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+Finished building: ../src/Robotics.cpp
  
 Building target: Robotics
 Invoking: Cross G++ Linker
@@ -27,5 +96,5 @@ g++  -o "Robotics"  ./src/Plans/AStarComparison.o ./src/Plans/PathPlanner.o ./sr
 Finished building target: Robotics
  
 
-13:59:58 Build Finished (took 1s.137ms)
+14:29:13 Build Finished (took 3s.686ms)
 

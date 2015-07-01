@@ -9,8 +9,8 @@
 #define BOX_H_
 
 #define MAX_POINTS 2
-#define MID_POINT_DELTA 12
-#define MAX_LEN 4
+#define MID_POINT_DELTA 14
+#define MAX_LEN 6
 
 #include <cmath>
 #include "Vertex.h"
