@@ -1,0 +1,125 @@
+/*
+ * Robot.cpp
+ *
+ *  Created on: May 26, 2015
+ *      Author: colman
+ */
+
+#include "Robot.h"
+
+Robot::Robot(string ip, int port, Position *startInPixel, Map *map)
+	: _pc(ip, port), _pp(&_pc), _lp(&_pc) {
+	_map = map;
+
+	float yaw = _map->convertDegreeToRadian(startInPixel->Yaw());
+
+	_pp.SetMotorEnable(true);
+	_pp.SetOdometry(0,0,yaw); // do this to intialize the yaw in the robot's odometry
+	_startInPixel = startInPixel;
+	_lastPosInPixel = new Position(
+			startInPixel->X(),
+			startInPixel->Y(),
+			startInPixel->Yaw());
+
+	//init dummy painter:
+	_dummyPainter = new PlayerClient("localhost",6666);
+	_gp = new Graphics2dProxy(_dummyPainter);
+}
+
+Robot::~Robot() {
+	// TODO Auto-generated destructor stub
+}
+
+void Robot::setSpeed(float linear, float angular)
+{
+	_pp.SetSpeed(linear, angular);
+}
+
+float Robot::getX()
+{
+	return _startInPixel->X() + _map->convertMeterToPixel(_pp.GetXPos());
+}
+
+float Robot::getY()
+{
+	return _startInPixel->Y() - _map->convertMeterToPixel(_pp.GetYPos());
+}
+
+float Robot::getYaw()
+{
+	return _startInPixel->Yaw() + _map->convertRadianToDegree(_pp.GetYaw());
+}
+
+float* Robot::getLaserScan()
+{
+	unsigned int samplesCount = _lp.GetCount();
+	float *scan = new float[samplesCount];
+	for (unsigned int i = 0; i < samplesCount; i++)
+	{
+		scan[i] = _lp[i];
+	}
+	return scan;
+}
+
+void Robot::SetDeltaValues(double &deltaXInPixel, double &deltaYInPixel, double &deltaYawInDegree)
+{
+	double newXInPixel = this->getX();
+	double newYInPixel = this->getY();
+	double newYawInDegree = this->getYaw();
+
+	deltaXInPixel = newXInPixel - _lastPosInPixel->X();
+	deltaYInPixel = newYInPixel - _lastPosInPixel->Y();
+	deltaYawInDegree = newYawInDegree - _lastPosInPixel->Yaw();
+
+	this->_lastPosInPixel->Update(newXInPixel, newYInPixel, newYawInDegree);
+}
+
+int Robot::deg_to_index(double deg)
+{
+	return (deg + 120) / 0.36;
+}
+
+void Robot::read()
+{
+	_pc.Read();
+}
+
+void Robot::setOdometry(Position *posInPixel)
+{
+	double xInMeter = _map->convertPixelToMeter(posInPixel->X() - _startInPixel->X());
+	double yInMeter = _map->convertPixelToMeter(posInPixel->Y() - _startInPixel->Y());
+	double yawInRadian = _map->convertDegreeToRadian(posInPixel->Yaw() - _startInPixel->Yaw());
+	this->_lastPosInPixel->Update(posInPixel->X(),posInPixel->Y(),posInPixel->Yaw());
+	_pp.SetOdometry(xInMeter, yInMeter, yawInRadian);
+}
+
+void Robot::drawPoint(float x, float y, float size, int red, int blue, int green)
+{
+	float boxSize = _map->convertPixelToMeter(size);
+	player_point_2d_t points[5];
+	points[0].px = _map->convertPixelToMeter(x) - boxSize;
+	points[0].py = -_map->convertPixelToMeter(y) + boxSize;
+
+	points[1].px = _map->convertPixelToMeter(x) + boxSize;
+	points[1].py = -_map->convertPixelToMeter(y) + boxSize;
+
+	points[2].px = _map->convertPixelToMeter(x) + boxSize;
+	points[2].py = -_map->convertPixelToMeter(y) - boxSize;
+
+	points[3].px = _map->convertPixelToMeter(x) - boxSize;
+	points[3].py = -_map->convertPixelToMeter(y) - boxSize;
+
+	points[4].px = _map->convertPixelToMeter(x) - boxSize;
+	points[4].py = -_map->convertPixelToMeter(y) + boxSize;
+
+	player_color_t color;
+	color.red = red;
+	color.blue = blue;
+	color.green = green;
+	_gp->DrawPolygon(points, 5, true, color);
+}
+
+void Robot::ClearParticles()
+{
+	_gp->Clear();
+}

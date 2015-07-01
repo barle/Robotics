@@ -10,6 +10,8 @@
 Robot::Robot(string ip, int port, Position *startInPixel, Map *map)
 	: _pc(ip, port), _pp(&_pc), _lp(&_pc) {
 	_map = map;
+	_lastForwardSpeed = 0;
+	_lastAngularSpeed = 0;
 
 	float yaw = _map->convertDegreeToRadian(startInPixel->Yaw());
 
@@ -32,7 +34,15 @@ Robot::~Robot() {
 
 void Robot::setSpeed(float linear, float angular)
 {
+	_lastForwardSpeed = linear;
+	_lastAngularSpeed = angular;
 	_pp.SetSpeed(linear, angular);
+}
+
+void Robot::getSpeed(double &forwardSpeed, double &angularSpeed)
+{
+	forwardSpeed = _lastForwardSpeed;
+	angularSpeed = _lastAngularSpeed;
 }
 
 float Robot::getX()
@@ -87,8 +97,9 @@ void Robot::read()
 void Robot::setOdometry(Position *posInPixel)
 {
 	double xInMeter = _map->convertPixelToMeter(posInPixel->X() - _startInPixel->X());
-	double yInMeter = _map->convertPixelToMeter(posInPixel->Y() - _startInPixel->Y());
+	double yInMeter = _map->convertPixelToMeter(_startInPixel->Y() - posInPixel->Y());
 	double yawInRadian = _map->convertDegreeToRadian(posInPixel->Yaw() - _startInPixel->Yaw());
+	this->_lastPosInPixel->Update(posInPixel->X(),posInPixel->Y(),posInPixel->Yaw());
 	_pp.SetOdometry(xInMeter, yInMeter, yawInRadian);
 }
 

@@ -1,0 +1,46 @@
+#ifndef PARTICLE_H_
+#define PARTICLE_H_
+
+#define NORMAL_MOVING_PIXELS 10
+#define MAX_MOVING_PIXELS 20
+
+#define NORMAL_YAW_DEGREES 45
+#define MAX_YAW_DEGREES 90
+
+#define MAP_MAX_CELLS_LASER 5
+#define LASER_MAX_RANGE 4
+#define LASER_COUNT 666
+#define LASER_SCAN_STEP 10
+#define MEASURING_AREA 240
+
+#include "../Map.h"
+#include "../Robot.h"
+#include "Position.h"
+#include <vector>
+#include <cmath>
+#include <libplayerc++/playerc++.h>
+
+using namespace std;
+
+class Particle {
+private:
+	Position *_positionInPixel;
+	double _belief;
+	Map* _map;
+	Robot* _robot;
+	double GetMovingProbability(double xDeltaInPixel, double yDeltaInPixel, double yawDeltaDegree);
+	double CheckProbability(float* laserScans);
+	double AngleOfIndex(int index);
+
+public:
+	Particle(double xPosInPixel, double yPosInPixel, double yawPosInDegree, Map* map, Robot* robot);
+	Particle(double xPosInPixel, double yPosInPixel, double yawPosInDegree, double belief, Map* map, Robot* robot);
+	Position* GetPosition();
+	void Update(double xDeltaInPixel, double yDeltaInPixel, double yawDeltaInDegree, float* laserScans);
+	vector<Particle*> CreateNewParticles();
+	double GetBelief();
+	void Print();
+	virtual ~Particle();
+};
+
+#endif /* PARTICLE_H_ */

@@ -1,0 +1,167 @@
+#include "Particle.h"
+
+Particle::Particle(double xPosInPixel, double yPosInPixel, double yawPosInDegree, Map* map, Robot* robot)
+{
+	this->_belief = 1;
+	this->_positionInPixel = new Position(xPosInPixel, yPosInPixel, yawPosInDegree);
+	this->_map = map;
+	this->_robot = robot;
+}
+
+Particle::Particle(double xPosInPixel, double yPosInPixel, double yawPosDegree, double belief, Map* map, Robot* robot)
+{
+	this->_belief = belief;
+	this->_positionInPixel = new Position(xPosInPixel, yPosInPixel, yawPosDegree);
+	this->_map = map;
+	this->_robot = robot;
+}
+
+double Particle::GetMovingProbability(double xDeltaInPixel, double yDeltaInPixel, double yawDeltaInDegree)
+{
+	// Check if we didn't bypass the map's gridlines
+	if (this->_positionInPixel->X() > _map->GetWidth() ||
+			this->_positionInPixel->Y() > _map->GetHeight() ||
+			this->_positionInPixel->X() < 0 || this->_positionInPixel->Y() < 0)
+	{
+		return 0;
+	}
+
+	float distance = sqrt(pow(xDeltaInPixel, 2) + pow(yDeltaInPixel, 2));
+
+	if (distance > NORMAL_MOVING_PIXELS && (yawDeltaInDegree > MAX_YAW_DEGREES || yawDeltaInDegree < (0 - MAX_YAW_DEGREES)))
+	{
+		return 0.25;
+	}
+
+	if (distance > NORMAL_MOVING_PIXELS || yawDeltaInDegree> MAX_YAW_DEGREES || yawDeltaInDegree < (0 - MAX_YAW_DEGREES))
+	{
+		return 0.5;
+	}
+
+	if (yawDeltaInDegree > NORMAL_YAW_DEGREES || yawDeltaInDegree < (0 - NORMAL_YAW_DEGREES))
+	{
+		return 0.75;
+	}
+
+	return 1.0;
+}
+
+double Particle::CheckProbability(float* laserScans)
+{
+	double hits = 0;
+	double misses = 0;
+
+	int maxRangeInPixel = _map->convertMeterToPixel(LASER_MAX_RANGE);
+	float yawInRadian = _map->convertDegreeToRadian(_positionInPixel->Yaw());
+	// Go over the laser's array
+	for (int index = 0; index < LASER_COUNT; index+= LASER_SCAN_STEP)
+	{
+		if(laserScans[index] > LASER_MAX_RANGE)
+		{
+
+			for (int j = 1; j <= maxRangeInPixel; j++) {
+				int xPosInPixel = (j * cos(_map->convertDegreeToRadian(AngleOfIndex(index)) + yawInRadian)) + _positionInPixel->X();
+				int yPosInPixel = (j * sin(_map->convertDegreeToRadian(AngleOfIndex(index)) + yawInRadian)) + _positionInPixel->Y();
+
+				if(xPosInPixel > _map->GetWidth() || xPosInPixel < 0
+					|| yPosInPixel > _map->GetHeight() || yPosInPixel < 0)
+				{
+					continue;
+				}
+
+				if(_map->IsOccupiedInOriginalMap(xPosInPixel,yPosInPixel))
+				{
+					misses++;
+				}
+				else
+				{
+					hits++;
+				}
+			}
+		}
+		else
+		{
+			int xPosInPixel = (_map->convertMeterToPixel(laserScans[index]) * cos(_map->convertDegreeToRadian(AngleOfIndex(index)) + yawInRadian)) + _positionInPixel->X();
+			int yPosInPixel = (_map->convertMeterToPixel(laserScans[index]) * sin(_map->convertDegreeToRadian(AngleOfIndex(index)) + yawInRadian)) + _positionInPixel->Y();
+
+			if(_map->IsOccupiedInOriginalMap(xPosInPixel,yPosInPixel))
+			{
+				hits++;
+			}
+			else
+			{
+				misses++;
+			}
+
+			for (int j = 1; j < _map->convertMeterToPixel(laserScans[index]); j++) {
+				xPosInPixel = (j * cos(_map->convertDegreeToRadian(AngleOfIndex(index)) + yawInRadian)) + _positionInPixel->X();
+				yPosInPixel = (j * sin(_map->convertDegreeToRadian(AngleOfIndex(index)) + yawInRadian)) + _positionInPixel->Y();
+
+				if(xPosInPixel > _map->GetWidth() || xPosInPixel < 0
+					|| yPosInPixel > _map->GetHeight() || yPosInPixel < 0)
+				{
+					continue;
+				}
+
+				if(_map->IsOccupiedInOriginalMap(xPosInPixel,yPosInPixel))
+				{
+					misses++;
+				}
+				else
+				{
+					hits++;
+				}
+			}
+		}
+	}
+
+	// Calculate hits/total value
+	if (misses != 0 || hits != 0)
+	{
+		return (float)hits / (hits + misses);
+	}
+	return 1;
+}
+
+double Particle::AngleOfIndex(int index)
+{
+	// Calculate angle by laser index
+	return (index * (MEASURING_AREA / LASER_COUNT)) - (MEASURING_AREA / 2);
+}
+
+void Particle::Update(double xDeltaInPixel, double yDeltaInPixel, double yawDeltaInDegree, float* laserScans)
+{
+	double x = this->_positionInPixel->X();
+	double y = this->_positionInPixel->Y();
+	double yaw = this-> _positionInPixel->Yaw();
+	this->_positionInPixel->Update(x + xDeltaInPixel, y + yDeltaInPixel, yaw + yawDeltaInDegree);
+
+	// Calculate belief by moving probability
+	this->_belief = this->_belief * GetMovingProbability(xDeltaInPixel, yDeltaInPixel, yawDeltaInDegree);
+	if (this->_belief != 0)
+	{
+		// Calculate belief by map relevance probability
+		this->_belief = this->_belief * CheckProbability(laserScans);
+	}
+
+}
+
+Position* Particle::GetPosition()
+{
+	return this->_positionInPixel;
+}
+
+double Particle::GetBelief()
+{
+	return this->_belief;
+}
+
+void Particle::Print()
+{
+	// Print robot position
+	_robot->drawPoint(_positionInPixel->X(), _positionInPixel->Y(), 0.5, 0, 0, 0);
+}
+
+Particle::~Particle() {
+
+}

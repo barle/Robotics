@@ -1,25 +1,16 @@
 #ifndef PARTICLE_H_
 #define PARTICLE_H_
 
-#define NORMAL_MOVING_PIXELS 10
-#define MAX_MOVING_PIXELS 20
+#define NORMAL_MOVING_PIXELS 12
 
-#define NORMAL_YAW_DEGREES 45
-#define MAX_YAW_DEGREES 90
-
-#define YAW_HIGH_PROB 1
-#define YAW_OK_PROB 0.85
-#define YAW_LOW_PROB 0.7
-
-#define MOVING_HIGH_PROB 1
-#define MOVING_OK_PROB 0.85
-#define MOVING_LOW_PROB 0.7
+#define NORMAL_YAW_DEGREES 30
+#define MAX_YAW_DEGREES 60
 
 #define MAP_MAX_CELLS_LASER 5
 #define LASER_MAX_RANGE 4
 #define LASER_COUNT 666
-#define LASER_SCAN_STEP 15
-#define MEASURING_AREA 240
+#define LASER_SCAN_STEP 10
+#define MEASURING_AREA 240.0
 
 #include "../Map.h"
 #include "../Robot.h"
@@ -40,6 +31,8 @@ private:
 	double CheckProbability(float* laserScans);
 	double AngleOfIndex(int index);
 
+	bool _isNew;
+
 public:
 	Particle(double xPosInPixel, double yPosInPixel, double yawPosInDegree, Map* map, Robot* robot);
 	Particle(double xPosInPixel, double yPosInPixel, double yawPosInDegree, double belief, Map* map, Robot* robot);
@@ -47,6 +40,7 @@ public:
 	void Update(double xDeltaInPixel, double yDeltaInPixel, double yawDeltaInDegree, float* laserScans);
 	vector<Particle*> CreateNewParticles();
 	double GetBelief();
+	bool IsNew();
 	void Print();
 	virtual ~Particle();
 };

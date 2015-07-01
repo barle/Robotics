@@ -4,28 +4,22 @@ LocalizationManager::LocalizationManager(Map* map, Robot* robot) {
 	this->_map = map;
 	this->_robot = robot;
 
+	srand(time(NULL));
+
 	createAllParticles();
 }
 
-Position* LocalizationManager::GetBestPosition()
+Particle* LocalizationManager::GetBestParticle()
 {
-	float xSum = 0;
-	float ySum = 0;
-	float yawSum = 0;
-	int count = 0;
-	for(int i=0; i < _particles.size(); i++)
-	{
-		if(_particles[i]->GetBelief() >= 0.95)
-		{
-			xSum += _particles[i]->GetPosition()->X();
-			ySum += _particles[i]->GetPosition()->Y();
-			yawSum += _particles[i]->GetPosition()->Yaw();
-			count++;
-		}
-	}
-	if(count == 0)
+	if(_particles.size() == 0)
 		return NULL;
-	return new Position(xSum/count, ySum/count,yawSum/count);
+	Particle *bestParticle = _particles[0];
+	for(int i = 0; i < _particles.size(); i++)
+	{
+		if(_particles[i]->IsNew() == false && _particles[i]->GetBelief() > bestParticle->GetBelief())
+			bestParticle = _particles[i];
+	}
+	return bestParticle;
 }
 
 void LocalizationManager::createAllParticles()
@@ -35,10 +29,9 @@ void LocalizationManager::createAllParticles()
 	for (int particleIndex = 0; particleIndex < NUM_OF_PARTICLES; particleIndex++)
 	{
 		// Make them with random values from within maps bounds
-		double xPosInPixels =this->_robot->getX() + rand() % (RANDOMIZE_FACTOR*2) - (RANDOMIZE_FACTOR); // we take double factor in the start so it will sure contains the robot
-		double yPosInPixels =this->_robot->getY() + rand() % (RANDOMIZE_FACTOR*2) - (RANDOMIZE_FACTOR);
-
-		double yawInDegree = this->_robot->getYaw() + (rand() % 60) - 60;
+		double xPosInPixels =this->_robot->getX() + (rand() % (RANDOMIZE_FACTOR*2)) - RANDOMIZE_FACTOR; // we take double factor in the start so it will sure contains the robot
+		double yPosInPixels =this->_robot->getY() + (rand() % (RANDOMIZE_FACTOR*2)) - RANDOMIZE_FACTOR;
+		double yawInDegree = this->_robot->getYaw();
 
 		if(xPosInPixels < 0 || yPosInPixels < 0 ||
 			xPosInPixels >= _map->GetWidth() ||
@@ -50,7 +43,7 @@ void LocalizationManager::createAllParticles()
 		Particle* particle = new Particle(xPosInPixels, yPosInPixels, yawInDegree, _map, _robot);
 		this->_particles.push_back(particle);
 	}
-	//PrintParticles();
+	PrintParticles();
 }
 
 void LocalizationManager::filterParticles()
@@ -102,17 +95,16 @@ void LocalizationManager::resampleParticles()
 		return;
 	}
 
-	srand(time(NULL));
 	// Start creating similar particles
 	int particlesToDuplicateSize = particlesToDuplicateIndexes.size();
-	for (unsigned int duplicateIndex = 0; duplicateIndex <  particlesToDuplicateSize && _particles.size() < MAX_NUM_OF_PARTICLES; duplicateIndex++)
+	for (int duplicateIndex = 0; duplicateIndex <  particlesToDuplicateSize && _particles.size() < MAX_NUM_OF_PARTICLES; duplicateIndex++)
 	{
 		for(int i = 0; i < NUM_OF_DUPLICATIONS && _particles.size() < MAX_NUM_OF_PARTICLES; i++)
 		{
 			Position *pos = this->_particles[particlesToDuplicateIndexes[duplicateIndex]]->GetPosition();
-			double xPosInPixels = static_cast<double>(rand() % RANDOMIZE_FACTOR) - RANDOMIZE_FACTOR/2;
-			double yPosInPixels = static_cast<double>(rand() % RANDOMIZE_FACTOR) - RANDOMIZE_FACTOR/2;
-			double yawInDegree = static_cast<double>(rand() % RANDOMIZE_FACTOR) - RANDOMIZE_FACTOR/2;
+			double xPosInPixels = static_cast<double>(rand() % RANDOMIZE_FACTOR*2) - RANDOMIZE_FACTOR;
+			double yPosInPixels = static_cast<double>(rand() % RANDOMIZE_FACTOR*2) - RANDOMIZE_FACTOR;
+			double yawInDegree = static_cast<double>(rand() % RANDOMIZE_FACTOR*2) - RANDOMIZE_FACTOR;
 
 
 			double newParticleXInPixel = pos->X() + xPosInPixels;
@@ -144,17 +136,17 @@ void LocalizationManager::Update(double xDeltaInPixel, double yDeltaInPixel, dou
 	filterParticles();
 	resampleParticles();
 
-	//PrintParticles();
+	PrintParticles();
 }
 
 void LocalizationManager::PrintParticles()
 {
-	_robot->ClearParticles();
+	/*_robot->ClearParticles();
 
-	for(int i = 0; i < _particles.size(); i++)
+	for(unsigned int i = 0; i < _particles.size(); i++)
 	{
 		this->_particles[i]->Print();
-	}
+	}*/
 }
 
 LocalizationManager::~LocalizationManager() {

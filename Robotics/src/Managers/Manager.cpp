@@ -14,14 +14,13 @@ void Manager::run() {
 
 	int readsCounter = 1;
 	while (currBeh && !currBeh->stopCond()) {
-		//draw current location:
 		_robot->drawPoint(_robot->getX(),_robot->getY(), 2, 0, 255, 0);
 
 		_robot->read();
 		currBeh->action();
 
-		// Every 40 reads make all the calculations and update the particles and their corresponding data
-		if (readsCounter % 100 == 0)
+		// Every 20 reads make all the calculations and update the particles and their corresponding data
+		if (readsCounter % 20 == 0)
 		{
 			double deltaXInPixel;
 			double deltaYInPixel;
@@ -31,13 +30,18 @@ void Manager::run() {
 			// Set robot delta values
 			this->_robot->SetDeltaValues(deltaXInPixel, deltaYInPixel, deltaYawInDegree);
 
-			_loc->Update(deltaXInPixel,deltaYInPixel, deltaYawInDegree, laserScans);
-			Position* bestPosition =  _loc->GetBestPosition();
-			if(bestPosition != NULL)
+			/*_loc->Update(deltaXInPixel,deltaYInPixel, deltaYawInDegree, laserScans);
+			if(readsCounter % 400 == 0)
 			{
-				//_robot->setOdometry(bestPosition); // why not working?? :(
-				_robot->drawPoint(bestPosition->X(),bestPosition->Y(),3,0,0,0);
-			}
+				readsCounter = 0;
+				Particle* bestParticle =  _loc->GetBestParticle();
+				if(bestParticle == NULL || bestParticle->GetBelief() < 0.98)
+				{
+					continue;
+				}
+				_robot->setOdometry(bestParticle->GetPosition());
+				_robot->drawPoint(bestParticle->GetPosition()->X(),bestParticle->GetPosition()->Y(),3,0,0,0);
+			}*/
 		}
 		readsCounter++;
 

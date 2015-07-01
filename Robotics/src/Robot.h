@@ -27,6 +27,8 @@ private:
 	Map *_map;
 	Position *_lastPosInPixel;
 	Position *_startInPixel;
+	float _lastForwardSpeed;
+	float _lastAngularSpeed;
 
 public:
 	Robot(string ip, int port, Position *startInPixel, Map *map);
@@ -35,6 +37,7 @@ public:
 	void setOdometry(Position *posInPixel);
 	void SetDeltaValues(double &deltaXInPixel, double &deltaYInPixel, double &deltaYawInDegree);
 	void setSpeed(float linear, float angular);
+	void getSpeed(double &forwardSpeed, double &angularSpeed);
 	void ClearParticles();
 	float getX();
 	float getY();

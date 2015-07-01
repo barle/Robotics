@@ -1,6 +1,31 @@
-15:33:16 **** Incremental Build of configuration Debug for project Robotics ****
+13:59:57 **** Incremental Build of configuration Debug for project Robotics ****
 make all 
-make: Nothing to be done for `all'.
+Building file: ../src/Managers/Manager.cpp
+Invoking: Cross G++ Compiler
+g++ -I/usr/local/include/player-2.0/ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/Managers/Manager.d" -MT"src/Managers/Manager.d" -o "src/Managers/Manager.o" "../src/Managers/Manager.cpp"
+In file included from ../src/Managers/../Robot.h:11:0,
+                 from ../src/Managers/Manager.h:11,
+                 from ../src/Managers/Manager.cpp:1:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position2dProxy::GoTo(double, double, double)’:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aY’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1615:40: warning: narrowing conversion of ‘aYaw’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h: In member function ‘void PlayerCc::Position3dProxy::GoTo(double, double, double, double, double, double)’:
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aX’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aY’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aZ’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aRoll’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aPitch’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+/usr/local/include/player-2.0/libplayerc++/playerc++.h:1785:59: warning: narrowing conversion of ‘aYaw’ from ‘double’ to ‘float’ inside { } is ill-formed in C++11 [-Wnarrowing]
+../src/Managers/Manager.cpp: In member function ‘void Manager::run()’:
+../src/Managers/Manager.cpp:28:11: warning: unused variable ‘laserScans’ [-Wunused-variable]
+Finished building: ../src/Managers/Manager.cpp
+ 
+Building target: Robotics
+Invoking: Cross G++ Linker
+g++  -o "Robotics"  ./src/Plans/AStarComparison.o ./src/Plans/PathPlanner.o ./src/Plans/Plan.o  ./src/Models/Box.o ./src/Models/Line.o ./src/Models/Particle.o ./src/Models/Position.o ./src/Models/Size.o ./src/Models/Vertex.o  ./src/Managers/ConfigurationManager.o ./src/Managers/LocalizationManager.o ./src/Managers/Manager.o ./src/Managers/WaypointManager.o  ./src/Behaviors/Behavior.o ./src/Behaviors/GoTo.o ./src/Behaviors/GoToBase.o ./src/Behaviors/StraightToLeft.o ./src/Behaviors/StraightToRight.o  ./src/Map.o ./src/Robot.o ./src/Robotics.o ./src/lodepng.o   -lplayerc++
+Finished building target: Robotics
+ 
 
-15:33:17 Build Finished (took 93ms)
+13:59:58 Build Finished (took 1s.137ms)
 

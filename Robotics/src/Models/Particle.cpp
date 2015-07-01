@@ -6,6 +6,7 @@ Particle::Particle(double xPosInPixel, double yPosInPixel, double yawPosInDegree
 	this->_positionInPixel = new Position(xPosInPixel, yPosInPixel, yawPosInDegree);
 	this->_map = map;
 	this->_robot = robot;
+	this->_isNew = true;
 }
 
 Particle::Particle(double xPosInPixel, double yPosInPixel, double yawPosDegree, double belief, Map* map, Robot* robot)
@@ -14,6 +15,7 @@ Particle::Particle(double xPosInPixel, double yPosInPixel, double yawPosDegree, 
 	this->_positionInPixel = new Position(xPosInPixel, yPosInPixel, yawPosDegree);
 	this->_map = map;
 	this->_robot = robot;
+	this->_isNew = true;
 }
 
 double Particle::GetMovingProbability(double xDeltaInPixel, double yDeltaInPixel, double yawDeltaInDegree)
@@ -26,31 +28,24 @@ double Particle::GetMovingProbability(double xDeltaInPixel, double yDeltaInPixel
 		return 0;
 	}
 
-	double distanceMovedInPixel= sqrt(pow(xDeltaInPixel, 2) + pow(yDeltaInPixel, 2));
-	double probYaw = YAW_LOW_PROB;
-	double probMoving = MOVING_LOW_PROB;
+	float distance = sqrt(pow(xDeltaInPixel, 2) + pow(yDeltaInPixel, 2));
 
-	// Make sure we didn't rotate to much
-	if (yawDeltaInDegree< NORMAL_YAW_DEGREES && yawDeltaInDegree > -NORMAL_YAW_DEGREES)
+	if (distance > NORMAL_MOVING_PIXELS && (yawDeltaInDegree > MAX_YAW_DEGREES || yawDeltaInDegree < (0 - MAX_YAW_DEGREES)))
 	{
-		probYaw = YAW_HIGH_PROB;
-	}
-	else if (yawDeltaInDegree < MAX_YAW_DEGREES && yawDeltaInDegree > -MAX_YAW_DEGREES)
-	{
-		probYaw = YAW_OK_PROB;
+		return 0.25;
 	}
 
-	// Make sure we moved by a logical distance
-	if (distanceMovedInPixel < NORMAL_MOVING_PIXELS && distanceMovedInPixel> -NORMAL_MOVING_PIXELS)
+	if (distance > NORMAL_MOVING_PIXELS || yawDeltaInDegree> MAX_YAW_DEGREES || yawDeltaInDegree < (0 - MAX_YAW_DEGREES))
 	{
-		probMoving = MOVING_HIGH_PROB;
-	}
-	else if (distanceMovedInPixel < MAX_MOVING_PIXELS && distanceMovedInPixel > -MAX_MOVING_PIXELS)
-	{
-		probMoving = MOVING_OK_PROB;
+		return 0.5;
 	}
 
-	return probYaw * probMoving;
+	if (yawDeltaInDegree > NORMAL_YAW_DEGREES || yawDeltaInDegree < (0 - NORMAL_YAW_DEGREES))
+	{
+		return 0.75;
+	}
+
+	return 1.0;
 }
 
 double Particle::CheckProbability(float* laserScans)
@@ -58,48 +53,25 @@ double Particle::CheckProbability(float* laserScans)
 	double hits = 0;
 	double misses = 0;
 
+	int maxRangeInPixel = _map->convertMeterToPixel(LASER_MAX_RANGE);
+	float yawInRadian = _map->convertDegreeToRadian(_positionInPixel->Yaw());
 	// Go over the laser's array
 	for (int index = 0; index < LASER_COUNT; index+= LASER_SCAN_STEP)
 	{
-		if (laserScans[index] < LASER_MAX_RANGE)
+		if(laserScans[index] > LASER_MAX_RANGE - 1)
 		{
-			// Go over the relevant cells in between the occupied cell and the free cells
-			int occupiedCellIndex = (laserScans[index] / LASER_MAX_RANGE) / _map->GetMapResolution();
-			for(int j = 0; j < occupiedCellIndex; j++)
-			{
-				int XFreePosInPixel = this->_positionInPixel->X() + (cos(DTOR(AngleOfIndex(index) + this->_positionInPixel->Yaw())) * j);
-				int YFreePosInPixel = this->_positionInPixel->Y() + (sin(DTOR(AngleOfIndex(index) + this->_positionInPixel->Yaw())) * j);
+			for (int j = 12; j <= maxRangeInPixel; j+=2) {
+				float totYaw = _map->convertDegreeToRadian(AngleOfIndex(index)) + yawInRadian;
+				int xPosInPixel = (j * cos(totYaw)) + _positionInPixel->X();
+				int yPosInPixel = _positionInPixel->Y() - (j * sin(totYaw));
 
-				// Make sure we are in safe bounds
-				if (XFreePosInPixel >= 0 && XFreePosInPixel < _map->GetWidth() &&
-						YFreePosInPixel >= 0 && YFreePosInPixel < _map->GetHeight())
+				if(xPosInPixel > _map->GetWidth() || xPosInPixel < 0
+					|| yPosInPixel > _map->GetHeight() || yPosInPixel < 0)
 				{
-					if (this->_map->IsOccupiedInOriginalMap(XFreePosInPixel, YFreePosInPixel))
-					{
-						misses++;
-					}
-					else
-					{
-						hits++;
-					}
+					continue;
 				}
-			}
 
-			float occupiedDistInPixel = (laserScans[index] / LASER_MAX_RANGE) / _map->GetMapResolution();
-			float angelInRadian = DTOR(AngleOfIndex(index) + this->_positionInPixel->Yaw());
-			// Calculate the occupied position
-			float deltaXInPixels = cos(angelInRadian) * occupiedDistInPixel;
-			float deltaYInPixels = sin(angelInRadian) * occupiedDistInPixel;
-
-			int XOccupiedPosInPixel = this->_positionInPixel->X() + deltaXInPixels;
-			int YOccupiedPosInPixel = this->_positionInPixel->Y() + deltaYInPixels;
-
-
-			// Make sure we are in safe array bounds
-			if (XOccupiedPosInPixel >= 0 && XOccupiedPosInPixel < _map->GetWidth() &&
-					YOccupiedPosInPixel >= 0 && YOccupiedPosInPixel < _map->GetHeight())
-			{
-				if (this->_map->IsOccupiedInOriginalMap(XOccupiedPosInPixel, YOccupiedPosInPixel))
+				if(_map->IsOccupiedInOriginalMap(xPosInPixel,yPosInPixel))
 				{
 					misses++;
 				}
@@ -111,34 +83,53 @@ double Particle::CheckProbability(float* laserScans)
 		}
 		else
 		{
-			// Go over all the cells in this angle and make sure we mark them as free
-			for(int j = 0; j < (laserScans[index] / LASER_MAX_RANGE) / _map->GetMapResolution(); j++)
-			{
-				int XFreePosInPixel = this->_positionInPixel->X() + (cos(DTOR(AngleOfIndex(index) + this->_positionInPixel->Yaw())) * j);
-				int YFreePosInPixel = this->_positionInPixel->Y() + (sin(DTOR(AngleOfIndex(index) + this->_positionInPixel->Yaw())) * j);
+			float totYaw =_map->convertDegreeToRadian(AngleOfIndex(index)) + yawInRadian;
+			float laserDistInPixel = _map->convertMeterToPixel(laserScans[index]);
+			int xPosInPixel = (laserDistInPixel * cos(totYaw)) + _positionInPixel->X();
+			int yPosInPixel = _positionInPixel->Y() - (_map->convertMeterToPixel(laserScans[index]) * sin(totYaw));
 
-				// Make sure we are in safe array bounds
-				if (XFreePosInPixel >= 0 && XFreePosInPixel < _map->GetWidth() &&
-						YFreePosInPixel >= 0 && YFreePosInPixel < _map->GetHeight())
+			if(xPosInPixel > _map->GetWidth() || xPosInPixel < 0
+				|| yPosInPixel > _map->GetHeight() || yPosInPixel < 0)
+			{
+				continue;
+			}
+
+			if(_map->IsOccupiedInOriginalMap(xPosInPixel,yPosInPixel))
+			{
+				hits++;
+			}
+			else
+			{
+				misses++;
+			}
+
+			for (int j = 12; j < _map->convertMeterToPixel(laserScans[index]); j+=2) {
+				totYaw = _map->convertDegreeToRadian(AngleOfIndex(index)) + yawInRadian;
+				xPosInPixel = (j * cos(totYaw)) + _positionInPixel->X();
+				yPosInPixel = _positionInPixel->Y() - (j * sin(totYaw));
+
+				if(xPosInPixel > _map->GetWidth() || xPosInPixel < 0
+					|| yPosInPixel > _map->GetHeight() || yPosInPixel < 0)
 				{
-					if (this->_map->IsOccupiedInOriginalMap(XFreePosInPixel, YFreePosInPixel))
-					{
-						misses++;
-					}
-					else
-					{
-						hits++;
-					}
+					continue;
+				}
+
+				if(_map->IsOccupiedInOriginalMap(xPosInPixel,yPosInPixel))
+				{
+					misses++;
+				}
+				else
+				{
+					hits++;
 				}
 			}
 		}
-
 	}
 
 	// Calculate hits/total value
 	if (misses != 0 || hits != 0)
 	{
-		return hits / (hits + misses);
+		return (float)hits / (hits + misses);
 	}
 	return 1;
 }
@@ -151,19 +142,15 @@ double Particle::AngleOfIndex(int index)
 
 void Particle::Update(double xDeltaInPixel, double yDeltaInPixel, double yawDeltaInDegree, float* laserScans)
 {
+	this->_isNew = false;
+
 	double x = this->_positionInPixel->X();
 	double y = this->_positionInPixel->Y();
 	double yaw = this-> _positionInPixel->Yaw();
 	this->_positionInPixel->Update(x + xDeltaInPixel, y + yDeltaInPixel, yaw + yawDeltaInDegree);
 
-
-	double xDeltaBetweenRobot = _positionInPixel->X() - _robot->getX();
-	double yDeltaBetweenRobot = _positionInPixel->Y() - _robot->getY();
-	double yawDeltaBetweenRobot = _positionInPixel->Yaw() - _robot->getYaw();
-
 	// Calculate belief by moving probability
-	this->_belief = this->_belief * GetMovingProbability(xDeltaBetweenRobot, yDeltaBetweenRobot, yawDeltaBetweenRobot);
-
+	this->_belief = this->_belief * GetMovingProbability(xDeltaInPixel, yDeltaInPixel, yawDeltaInDegree);
 	if (this->_belief != 0)
 	{
 		// Calculate belief by map relevance probability
@@ -180,6 +167,11 @@ Position* Particle::GetPosition()
 double Particle::GetBelief()
 {
 	return this->_belief;
+}
+
+bool Particle::IsNew()
+{
+	return _isNew;
 }
 
 void Particle::Print()

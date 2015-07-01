@@ -1,0 +1,57 @@
+#include "Manager.h"
+
+Manager::Manager(Plan *plan, LocalizationManager *loc, Robot *robot, Map *map) {
+	this->_robot = robot;
+	this->_plan = plan;
+	this->_loc = loc;
+	this->_map = map;
+}
+
+void Manager::run() {
+	Behavior *currBeh = this->_plan->getStartBehavior();
+	if(currBeh->stopCond())
+			currBeh = currBeh->selectNext();
+
+	int readsCounter = 1;
+	while (currBeh && !currBeh->stopCond()) {
+		_robot->drawPoint(_robot->getX(),_robot->getY(), 2, 0, 255, 0);
+
+		_robot->read();
+		currBeh->action();
+
+		// Every 20 reads make all the calculations and update the particles and their corresponding data
+		if (readsCounter % 20 == 0)
+		{
+			double deltaXInPixel;
+			double deltaYInPixel;
+			double deltaYawInDegree;
+			float *laserScans = this->_robot->getLaserScan();
+
+			// Set robot delta values
+			this->_robot->SetDeltaValues(deltaXInPixel, deltaYInPixel, deltaYawInDegree);
+
+			_loc->Update(deltaXInPixel,deltaYInPixel, deltaYawInDegree, laserScans);
+			if(readsCounter % 400 == 0)
+			{
+				Particle* bestParticle =  _loc->GetBestParticle();
+				if(bestParticle == NULL || bestParticle->GetBelief() < 0.98)
+				{
+					continue;
+				}
+				/*double forwardSpeed;
+				double angularSpeed;
+				_robot->getSpeed(forwardSpeed, angularSpeed);*/
+				_robot->setOdometry(bestParticle->GetPosition());
+				_robot->drawPoint(bestParticle->GetPosition()->X(),bestParticle->GetPosition()->Y(),3,0,0,0);
+				//_robot->setSpeed(forwardSpeed,angularSpeed);
+			}
+		}
+		readsCounter++;
+
+		if (currBeh->stopCond())
+			currBeh = currBeh->selectNext();
+	}
+}
+
+Manager::~Manager() {
+}
