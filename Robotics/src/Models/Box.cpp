@@ -82,6 +82,7 @@ bool Box::isValid(Map *map)
 		}
 	}
 
+	/*
 	if(abs(this->startPnt->getLocation()->X() - this->midPnt->getLocation()->X() > MID_POINT_DELTA) ||
 		abs(this->endPnt->getLocation()->X() - this->midPnt->getLocation()->X() > MID_POINT_DELTA) ||
 		abs(this->startPnt->getLocation()->Y() - this->midPnt->getLocation()->Y() > MID_POINT_DELTA) ||
@@ -95,6 +96,20 @@ bool Box::isValid(Map *map)
 	{
 		isValid = false;
 	}
+	if(abs(this->startPnt->getLocation()->X() - this->midPnt->getLocation()->X()) > MAX_LEN||
+		abs(this->midPnt->getLocation()->Y() - this->endPnt->getLocation()->Y()) > MAX_LEN)
+	{
+		isValid = false;
+	}*/
+
+	if(abs(this->startPnt->getLocation()->X() - this->midPnt->getLocation()->X())
+		+ abs(this->startPnt->getLocation()->Y() - this->midPnt->getLocation()->Y())
+		+ abs(this->midPnt->getLocation()->X() - this->endPnt->getLocation()->X())
+		+ abs(this->midPnt->getLocation()->Y() - this->endPnt->getLocation()->Y()) > MAX_LEN)
+	{
+		isValid = false;
+	}
+
 
 	return isValid;
 }
