@@ -3,4 +3,4 @@
 //org.eclipse.debug.core.PREFERRED_DELEGATES/org.eclipse.cdt.launch.postmortemLaunchType=org.eclipse.cdt.dsf.gdb.launch.coreCLaunch,debug,;
 //org.eclipse.debug.core.PREFERRED_DELEGATES/org.eclipse.cdt.launch.remoteApplicationLaunchType=org.eclipse.rse.remotecdt.dsf.debug,debug,;
 eclipse.preferences.version=1
-prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<watchExpressions>\n<expression enabled\="true" text\="(laserScans[index]/LASER_MAX_RANGE)*MAP_MAX_CELLS_LASER"/>\n<expression enabled\="true" text\="posInPixel-&gt;X() - _startInPixel-&gt;X()"/>\n<expression enabled\="true" text\="posInPixel-&gt;Y() - _startInPixel-&gt;Y()"/>\n<expression enabled\="true" text\="AngleOfIndex(index)"/>\n</watchExpressions>\n
+prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<watchExpressions>\n<expression enabled\="true" text\="a"/>\n<expression enabled\="true" text\="(float)(y2 - y1) / (x2 - x1)"/>\n</watchExpressions>\n

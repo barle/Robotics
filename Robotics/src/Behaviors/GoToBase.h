@@ -15,10 +15,10 @@
 #include <cmath>
 
 #define MAX_DIFF_YAW 5 // Degree
-#define MAX_DIFF_RADIUS 0.2  // Meter
+#define MAX_DIFF_RADIUS 0.25  // Meter
 
-#define ANGULAR_SPEED 0.3
-#define FORWARD_SPEED 0.3
+#define ANGULAR_SPEED 0.4
+#define FORWARD_SPEED 0.4
 #define TURN_SPEED 0
 
 class GoToBase : public Behavior{

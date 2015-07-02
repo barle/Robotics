@@ -1,0 +1,245 @@
+/*
+ * WaypointManager.cpp
+ *
+ *  Created on: Jun 25, 2015
+ *      Author: colman
+ */
+
+#include "WaypointManager.h"
+
+using namespace std;
+
+WaypointManager::WaypointManager(Map *map) {
+	_map = map;
+}
+
+WaypointManager::~WaypointManager() {
+	// TODO Auto-generated destructor stub
+}
+
+vector<Vertex*> WaypointManager::mergeStraightPoints(vector<Vertex*> path)
+{
+	// Declare variables
+	vector<Vertex*> fixedPath;
+
+	int outerCounter = 0;
+	int innerCounter = 1;
+	bool firstCompere = true;
+	bool isLastRun = false;
+	int lineDirection;
+
+	// Add the first vertex
+	fixedPath.push_back(path[0]);
+
+	// Merge points in the same straight line
+	while(outerCounter < path.size())
+	{
+		while(innerCounter < path.size())
+		{
+			// If this is the fist comparison, save the direction
+			if(firstCompere && innerCounter != path.size() -1)
+			{
+				// Get the direction of the line
+				lineDirection = this->areOnSameLine(path[outerCounter], path[innerCounter]);
+				firstCompere = false;
+
+				// Promote the inner counter
+				innerCounter++;
+			}
+
+			// Check if not on the same line
+			else if(lineDirection != areOnSameLine(path[outerCounter], path[innerCounter]) && !isLastRun)
+			{
+
+				// Add the vertex
+				fixedPath.push_back(path[innerCounter - 1]);
+
+				// Reset the flag
+				firstCompere = true;
+
+				// promote the outer counter to the inner position
+				outerCounter = innerCounter - 1;
+
+				// Mark last run
+				if (innerCounter == path.size() -1)
+				{
+					isLastRun = true;
+				}
+			}
+
+			// If we get to the last cell
+			else if (innerCounter == path.size() -1)
+			{
+				// Add the vertex
+				fixedPath.push_back(path[innerCounter]);
+
+				// Set the counters to quit the loop
+				innerCounter = path.size();
+				outerCounter = path.size();
+			}
+			else
+			{
+
+				// Promote the inner counter
+				innerCounter++;
+			}
+		}
+	}
+
+	// Return the fixed path
+	return fixedPath;
+}
+
+int  WaypointManager::areOnSameLine(Vertex *first, Vertex *second)
+{
+	if(first->getLocation()->X() == second->getLocation()->X())
+	{
+		return HORIZONTAL;
+	}
+	else if (first->getLocation()->Y() == second->getLocation()->Y())
+	{
+		return VERTICAL;
+	}
+	else
+	{
+		return NONE;
+	}
+}
+
+vector<Line*> WaypointManager::getLinesVector(vector<Vertex*> path)
+{
+	vector<Line*> lineVector;
+	for(int i=1 ;i < path.size(); i++)
+	{
+		lineVector.push_back(new Line(path[i - 1], path[i]));
+	}
+
+	return lineVector;
+}
+
+vector<Vertex*> WaypointManager::getRemainingVertexes(vector<Vertex*> path)
+{
+	vector<Vertex*> remainingVertexes;
+	int initSize;
+
+	// Set the initial size
+	if((int)(path.size() % 3) == 1)
+	{
+		initSize = path.size() - 1;
+	}
+	else if((int)(path.size() % 3) == 2)
+	{
+		initSize = path.size() - 2;
+	}
+	else
+	{
+		initSize = path.size();
+	}
+
+	for(int i = initSize; i < path.size(); i++)
+	{
+		remainingVertexes.push_back(path[i]);
+	}
+
+	return remainingVertexes;
+}
+
+vector<Vertex*> WaypointManager::optimizePath(vector<Vertex*> path)
+{
+	path = mergeStraightPoints(path);
+	bool hasChanged = true;
+	while(hasChanged){
+		hasChanged = false;
+		vector<Vertex*> optimizedPath;
+		unsigned int i;
+		for(i=0; i<path.size()-2;i++){
+			Vertex* v1 = path[i];
+			Vertex* v2 = path[i+1]; // not in used just for understanding
+			Vertex* v3 = path[i+2];
+
+			optimizedPath.push_back(v1);
+
+			bool isClear = IsClearPath(v1,v3);
+			if(isClear){
+				i++;//skip the v2
+				hasChanged = true;
+			}
+		}
+		if(i==path.size()-2){ //push the one before last vertex
+			optimizedPath.push_back(path[path.size()-2]);
+		}
+		optimizedPath.push_back(path[path.size()-1]); // push the last vertex
+		path = optimizedPath;
+	}
+
+	return path;
+}
+
+bool WaypointManager::IsClearPath(Vertex *v1, Vertex *v2)
+{
+	bool isClear = true;
+	int bigX,smallX;
+	// find the bigger X's
+	if(v1->getLocation()->X() > v2->getLocation()->X())
+	{
+		bigX 	= v1->getLocation()->X();
+		smallX 	= v2->getLocation()->X();
+	}
+	else
+	{
+		bigX 	= v2->getLocation()->X();
+		smallX 	= v1->getLocation()->X();
+	}
+	int bigY,smallY;
+	// find the bigger X's
+	if(v1->getLocation()->Y() > v2->getLocation()->Y())
+	{
+		bigY 	= v1->getLocation()->Y();
+		smallY 	= v2->getLocation()->Y();
+	}
+	else
+	{
+		bigY 	= v2->getLocation()->Y();
+		smallY 	= v1->getLocation()->Y();
+	}
+
+	/*if(bigX == bigX){
+		for(int i = smallY; i< bigY; i++){
+			if(_map->IsOccupied(smallX,i)){
+				isClear = false;
+			}
+		}
+		//return isClear;
+	}
+	if(bigY == smallY){
+		for(int i = smallX; (i<bigX && isClear); i++){
+			if(_map->IsOccupied(i,smallY)){
+				isClear = false;
+			}
+		}
+		//return isClear;
+	}*/
+
+	int x1 = v1->getLocation()->X();
+	int x2 = v2->getLocation()->X();
+	int y1 = v1->getLocation()->Y();
+	int y2 = v2->getLocation()->Y();
+	// Set a linear equation
+	float a = (float)(y2 - y1) / (x2 - x1);
+
+	for(double i = smallX; (i < bigX && isClear); i+=0.2)
+	{
+		int y = ((float)a*i) -((float)a*x1) + y1;
+		// If the upper or lower cell is occupied, return false
+		if(_map->IsOccupied(i, y))
+				 /*_map->IsOccupied(i, y+1) ||
+				_map->IsOccupied(i+1, y+1) || _map->IsOccupied(i+1, y) ||
+				_map->IsOccupied(i-1, y-1) || _map->IsOccupied(i-1, y) ||
+				_map->IsOccupied(i, y-1))*/
+		{
+			isClear = false;
+		}
+
+	}
+	return isClear;
+}

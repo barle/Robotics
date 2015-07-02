@@ -12,14 +12,12 @@
 #define HORIZONTAL 1
 #define VERTICAL 2
 #define NONE 3
-#define MAX_OPTIMIZE_LOOP 100
+#define MIN_DIST_TO_MERGE 20
 
 #include <vector>
 #include <queue>
 #include "../Models/Vertex.h"
 #include "../Models/Position.h"
-#include "../Models/Line.h"
-#include "../Models/Box.h"
 #include "../Map.h"
 
 using namespace std;
@@ -27,11 +25,7 @@ using namespace std;
 class WaypointManager {
 
 private:
-	vector<Vertex*> mergeStraightPoints(vector<Vertex*> path);
-	int areOnSameLine(Vertex *first, Vertex *second);
-	vector<Line*> getLinesVector(vector<Vertex*> path);
-	vector<Box*> getBoxesVector(vector<Vertex*> path);
-	vector<Vertex*> getRemainingVertexes(vector<Vertex*> path);
+	bool IsClearPath(Vertex *v1, Vertex *v2);
 	Map *_map;
 
 public:

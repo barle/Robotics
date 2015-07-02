@@ -17,8 +17,8 @@ void Manager::run() {
 		_robot->drawPoint(_robot->getX(),_robot->getY(), 2, 0, 255, 0);
 
 		_robot->read();
-		readsCounter++;
 
+		readsCounter++;
 		currBeh->action();
 
 		// Every 20 reads make all the calculations and update the particles and their corresponding data
